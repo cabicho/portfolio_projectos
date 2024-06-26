@@ -4,20 +4,9 @@ procuramos apresentar as minhas habilidades
 
 ## Sobre mim
 
-### Meu nome é Gabriel Nobre
+### Meu nome é José Dins Carlos Cabicho
 
-Sou formado em Administração Publica e atualmente trabalho como Analista de Software na Startup WITMOB.
-
-Na Witmob, trabalho nas áreas de tecnologia e contato com o cliente, abrangendo tanto o B2B quanto o B2C. Sou responsável pela implantação, acompanhamento do sistema em nossos parceiros e auxilio o desenvolvimento de novas features.
-
-Tão importante quanto o meu portfólio é entender o porque estou na Área de Dados?
-
-É interessante pensar nessa pergunta, pois ela tem um significado bem profundo. Desde a infância busco formas de guardar e organizar minhas anotações, metrificar minhas leituras em páginas por dia, livros por mês, conseguir saber se meu planejamento para os pequenos trabalhos estavam indo bem. Claro, com o tempo fui tornando mais complexo todas essas ações, até encontrar na Área de Dados uma forma ímpar de ver o mundo.
-
-Penso nela através das relações humanas, mas de que forma?
-
-A base da geração de dados ao ponto de metrificar, agrupar, estudar, entender e gerar valor, são essas relações (em minha percepção) e vi nesta área uma oportunidade de trabalhar para permitir que essas relações sejam melhores, mais amigáveis, assertivas, produtivas e que gerem valor real para todos os envolvidos. A minha intenção não é só fazer projetos, mas trazer significado e resultados positivos a essas relações.
-
+Sou formado em Estatística.
 
 ## Habilidades desenvolvidas
 
@@ -42,10 +31,13 @@ A base da geração de dados ao ponto de metrificar, agrupar, estudar, entender 
 
 ### **Engenharia de Software**
 
-- Git, Github, Gitlab, Cookiecutter e Virtual Environment.
+- Git, Github, Gitlab, docker, kubernetes.
 - Streamlit.
 - Cloud Heroku, Render.
-- Flask API.
+- Flask API. 
+- Typescript com Nest.js.
+- Integração contínua.
+- Prometheus e Grafana
 
 ### **Soft Skils**
 
