@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.section {
+    margin-bottom: 20px;
+}
+.section h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: #333;
+}
+.section ul {
+    list-style-position: inside;
+    padding-left: 0;
+}
+.section li {
+    margin-bottom: 5px;
+}
+/* Ícones personalizados (usando Font Awesome onde possível) */
+.fa-calculator { /* Para Estatística */
+    font-size: 1.5em;
+    color: #4CAF50; /* Verde */
+}
+.fa-brain { /* Para Machine Learning */
+    font-size: 1.5em;
+    color: #2196F3; /* Azul */
+}
+.fa-chart-bar { /* Para Estatística Descritiva */
+    font-size: 1.2em;
+    color: #FFC107; /* Amarelo */
+}
+.fa-sitemap { /* Para Algoritmos */
+    font-size: 1.2em;
+    color: #9C27B0; /* Roxo */
+}
+.fa-balance-scale{ /* Para balanceamento de dados*/
+    font-size: 1.2em;
+    color: #F57C00;
+}
+.fa-filter {  /* Para Seleção de Atributos */
+    font-size: 1.2em;
+    color: #00BCD4;
+}
+.fa-arrows-alt-h { /* Para redução de dimensionalidade */
+    font-size: 1.2em;
+    color: #E65100;
+}
+
+.fa-tachometer-alt { /* Para Métricas de Performance */
+    font-size: 1.2em;
+    color: #FF5252; /* Vermelho */
+}
+.fa-code {  /* Para Pacotes de ML */
+    font-size: 1.2em;
+    color: #3F51B5;
+}

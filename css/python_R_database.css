@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+.python-icon {
+    font-size: 3em;
+    color: #3776AB;
+}
+.r-icon {
+    font-size: 3em;
+    color: #1981D3;  /* Example R color */
+}
+.database-icon {
+    font-size: 3em;
+    color: #444444;
+}

@@ -1,0 +1,58 @@
+/*<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Engineering Tools and Concepts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style> */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .icon-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            width: 150px;
+            text-align: center;
+        }
+        .icon {
+            font-size: 3em;
+        }
+
+        /* Colors */
+        .git-icon { color: #F05032; }
+        .github-icon { color: #181717; }
+        .gitlab-icon { color: #FCA326; }
+        .cookiecutter-icon { color: #88c0d0; }  /* Example color */
+        .venv-icon { color: #689F38; }        /* Example color */
+        .docker-icon { color: #0DB7ED; }
+        .kubernetes-icon { color: #326CE5; }
+        .streamlit-icon { color: #00A36C; }  /* Example */
+        .flask-icon { color: #000000; }
+        .python-api-icon { color: #4B868B; } /* Example */
+        .heroku-icon { color: #6762A4; }
+        .aws-icon { color: #FF9900; }
+        .gcp-icon { color: #4285F4; }
+        .azure-icon { color: #0078D7; }
+        .digitalocean-icon { color: #008B8B; }
