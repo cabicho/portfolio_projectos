@@ -140,12 +140,62 @@
 
 								</section>
 
-							<!-- Section -->
+							<!-- Section Projectos em Ciência de Dados -->
 								<section>
 									<header class="major">
 										<h2>Projectos em Ciência de Dados</h2>
 									</header>
-									<div class="posts">
+									<div class="posts">										
+										<!-- FlyTech_Aeronáutica -->
+										<article>
+											<a href="#" class="image"><img src="images/FlyTech_Aeronáutica.jpg" width="50%" height="30%" /></a>
+											<h2>Desafio do Negócio</h2>
+											<p><h3>Nos últimos 12 meses, a FlyTech identificou uma queda significativa nas vendas do modelo "FT-50 Executive", </h3> </p>
+											<p><h3>sua principal aeronave destinada ao público executivo, representando 35% da receita anual da empresa.</h3></p>
+											<p><h3>Paralelamente, houve um aumento da taxa de churn de clientes corporativos que anteriormente demonstraram alta fidelidade à marca.</h3></p>
+											<!--
+											<p>Eu usei python, Estatística e tecnicas não-supervisionadas de Machine Learning para segmentar um grupo de clientes com base em suas caracteristicas de performance de compra , visando selecionar grupos de clientes para formar um programa de Fidelidade com o objectivo de aumentar a receita da empresa. E o resultado dessa solução, caso fosse implementada, seria de $15MM de receita anual.</p>
+											-->
+											<h4>As ferramentas utilizadas foram:</h4>
+												<ul>
+													<li>git, github.</li> <!-- , gitlab-->
+													<li>Jypyter Notebook.</li>
+													<li>Python,Streamlit</li>
+													<!-- 
+													<li>Python, Pandas, Matplotlib e Seaborn.</li>
+													-->
+													
+													<!--
+													<li>k-Means, Hierarquical Clustering, DBScan.</li>
+													<li>AWS Cloud (EC2, S3, Postgress, SQLite).</li>
+													<li>Metabase Visualization.</li>
+													-->
+												</ul>
+											<ul class="actions">
+												<li><a href="https://github.com/stick35em10/FlyTech_Aeronautica" class="button">Saiba Mais</a></li>
+											</ul>
+										</article>
+
+										<!-- teste A B -->
+										<article>
+											<a href="#" class="image"><img src="images/projds_fidelizacao_cliente.jpg" width="50%" height="30%" /></a>
+											<h3>Construção de um programa de fidelidade com clusterização de clientes</h3>
+											<p>Eu usei python, Estatística e tecnicas não-supervisionadas de Machine Learning para segmentar um grupo de clientes com base em suas caracteristicas de performance de compra , visando selecionar grupos de clientes para formar um programa de Fidelidade com o objectivo de aumentar a receita da empresa. E o resultado dessa solução, caso fosse implementada, seria de $15MM de receita anual.</p>
+											<h4>As ferramentas utilizadas foram:</h4>
+												<ul>
+													<li>git, github, gitlab.</li>
+													<li>Python, Pandas, Matplotlib e Seaborn.</li>
+													<li>Jypyter Notebook.</li>
+													<li>k-Means, Hierarquical Clustering, DBScan.</li>
+													<li>AWS Cloud (EC2, S3, Postgress, SQLite).</li>
+													<li>Metabase Visualization.</li>
+												</ul>
+											<ul class="actions">
+												<li><a href="https://github.com/stick35em10/Teste-A-B" class="button">Saiba Mais</a></li>
+											</ul>
+										</article>
+
+										<!-- Construção de um programa de fidelidade com clusterização de clientes -->
 										<article>
 											<a href="#" class="image"><img src="images/projds_fidelizacao_cliente.jpg" width="50%" height="30%" /></a>
 											<h3>Construção de um programa de fidelidade com clusterização de clientes</h3>
@@ -163,6 +213,8 @@
 												<li><a href="#" class="button">Saiba Mais</a></li>
 											</ul>
 										</article>
+
+										<!-- Construção de um programa de fidelidade com clusterização de clientes -->
 										<article>
 											<a href="#" class="image"><img src="images/projds_imoveis_01.jpg" width="50%" height="360w" alt="" /></a>
 											<h3>Identificação de imóveis para compra e revenda a fim de maximizar o lucro</h3>
@@ -180,6 +232,7 @@
 												<li><a href="#" class="button">Saiba Mais</a></li>
 											</ul>
 										</article>
+
 										<!--
 										<article>
 											<a href="#" class="image"><img src="images/pic03.jpg" alt="" /></a>
@@ -214,6 +267,22 @@
 											</ul>
 										</article>
 									-->
+										<!-- teste A B -->
+										<!--
+										<article id="artigo-1-container">
+											<div>artigo-1-container</div>
+											 <div id="artigo-1-container"></div> 
+										 
+										</article> 
+										-->
+
+										<!-- teste A B -->
+										 <!--
+										<article id="artigo-2-container">
+											<div>artigo-2-container</div>
+											 <div id="artigo-2-container"></div>
+										 </article>
+										 -->
 									</div>
 								</section>
 								<!--
@@ -261,6 +330,28 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script>
+				async function carregarArtigo(url, containerId) {
+					try {
+						const resposta = await fetch(url);
+						if (!resposta.ok) {
+							throw new Error(`Erro ao carregar artigo de ${url}: ${resposta.status}`);
+						}
+						const texto = await resposta.text();
+						document.getElementById(containerId).innerHTML = texto;
+					} catch (erro) {
+						console.error(`Erro ao carregar artigo de ${url}:`, erro);
+						document.getElementById(containerId).innerHTML = `<p>Erro ao carregar artigo.</p>`; // Trate o erro no HTML
+					}
+				}
+	
+				document.addEventListener('DOMContentLoaded', () => {
+					carregarArtigo('article/artigo_1.html', 'artigo-1-container');
+					carregarArtigo('article/artigo_2.html', 'artigo-2-container');
+					//carregarArtigo('article/artigo_3.html', 'artigo-3-container');
+					// Chame carregarArtigo() para cada artigo que você tiver
+				});
+			</script>
 
 	</body>
 </html>
