@@ -5,6 +5,7 @@ new dell
                 git branch kub_dev_ops && git checkout kub_dev_ops
                 git add index.html && git commit -m "start kub_dev_ops, projec for kub_dev_ops"
                 git add cmd.txt && git commit -m "and cmd.txt to start kub_dev_ops, projec for kub_dev_ops"
+                git add index.html cmd.txt && git commit -m "update data science to programador python e API"  && git push origin kub_dev_ops
         3 e 1/2
             git branch main_dev && git checkout main_dev
             git checkout main
