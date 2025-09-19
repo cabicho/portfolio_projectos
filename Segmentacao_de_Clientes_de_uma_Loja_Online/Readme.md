@@ -1,12 +1,12 @@
 
-📊 ** Segmentação de Clientes RFM com K-Means **
+**📊 Segmentação de Clientes RFM com K-Means**
 
-📋 ** Descrição do Projeto **
+**📋 Descrição do Projeto**
 
 Projeto de análise e segmentação de clientes utilizando a metodologia RFM (Recência, Frequência, Valor Monetário) combinada com algoritmo de clusterização K-Means para identificar grupos de clientes com comportamentos similares.
 
 
-🗂️ ** Estrutura do Projeto **
+**🗂️ Estrutura do Projeto**
 
 Segmentacao_de_Clientes_de_uma_Loja_Online/
 
@@ -56,7 +56,8 @@ Segmentacao_de_Clientes_de_uma_Loja_Online/
 
 📊 **Métricas RFM Calculadas**
 
-Cliente	Recência	Frequência	Valor Monetário	R_log	F_log	M_log
+**Cliente	Recência	Frequência	Valor Monetário	R_log	F_log	M_log**
+
 CLT_001	35	5	1264.13	3.583519	1.791759	7.142930
 CLT_002	37	3	686.04	3.637586	1.386294	6.532393
 CLT_003	95	5	579.99	4.564348	1.791759	6.364734
@@ -68,6 +69,7 @@ CLT_005	7	6	1261.48	2.079442	1.945910	7.140833
 📈 **Estatísticas dos Clusters**
 
 **Cluster	Recência (média)	Frequência (média)	Valor Monetário (média)	Clientes**
+
 0	10.08	6.08	1141.83	65
 1	101.42	3.75	691.24	112
 2	148.24	2.00	287.43	33
@@ -76,6 +78,7 @@ CLT_005	7	6	1261.48	2.079442	1.945910	7.140833
 👥 **Segmentos de Clientes Identificados**
 
 python
+
 cluster_names = {
     0: 'Clientes em Risco',
     1: 'Clientes Novos', 
@@ -108,30 +111,32 @@ Presentes personalizados
 Atendimento prioritário
 
 🤝 **Clientes Leais (15% dos clientes → 26.5% da receita)**
+
 Características: Baixa recência, média frequência, médio gasto
 
 Ações Recomendadas:
 
-Programas de fidelidade
+    - Programas de fidelidade
 
-Cross-selling estratégico
+    - Cross-selling estratégico
 
-Pacotes promocionais personalizados
+    - Pacotes promocionais personalizados
 
-Comunicação regular
+    - Comunicação regular
 
 🆕 **Clientes Novos (14% dos clientes → 13.4% da receita)**
+
 Características: Muito baixa recência, baixa frequência
 
 Ações Recomendadas:
 
-Programa de onboarding
+    - Programa de onboarding
 
-Welcome discount
+    - Welcome discount
 
-Incentivos para primeiras compras
+    - Incentivos para primeiras compras
 
-Educação sobre produtos
+    - Educação sobre produtos
 
 ⚠️ **Clientes em Risco (63% dos clientes → 23.6% da receita)**
 
@@ -139,79 +144,75 @@ Características: Alta recência, baixa frequência, baixo gasto
 
 Ações Recomendadas:
 
-Campanhas de reativação
+    - Campanhas de reativação
 
-Pesquisas de satisfação
+    - Pesquisas de satisfação
 
-Ofertas agressivas
+    - Ofertas agressivas
 
-Programa de win-back
+    - Programa de win-back
 
 
 🛠️ **Tecnologias Utilizadas**
 
-Python 3.x
+    - Python 3.x
 
-Pandas - Manipulação de dados
+    - Pandas - Manipulação de dados
 
-Scikit-learn - Machine Learning (K-Means)
+    - Scikit-learn - Machine Learning (K-Means)
 
-Matplotlib/Seaborn - Visualização de dados
+    - Matplotlib/Seaborn - Visualização de dados
 
-NumPy - Cálculos numéricos
+    - NumPy - Cálculos numéricos
 
-Jupyter Notebook - Análise interativa
+    - Jupyter Notebook - Análise interativa
 
 
 📈 **Próximos Passos e Melhorias**
+
 🎯 **Em Desenvolvimento:**
-Dashboard Interativo no Power BI/Tableau
+    - Dashboard Interativo no Power BI/Tableau
 
-Simulação de Campanhas com análise de ROI
+    - Simulação de Campanhas com análise de ROI
 
-Deploy do Modelo com Flask/Streamlit
+    - Deploy do Modelo com Flask/Streamlit
 
-Análise Temporal de migração entre segmentos
+    - Análise Temporal de migração entre segmentos
 
 
 **📊 Funcionalidades do Dashboard:**
 
-Distribuição dos segmentos
+    - Distribuição dos segmentos
 
-Revenue por segmento
+    - Revenue por segmento
 
-Características de cada cluster
+    - Características de cada cluster
 
-Filtros por data e demografia
+    - Filtros por data e demografia
 
-Métricas de performance
+    - Métricas de performance
 
 **🔗 Links Úteis**
 
-📓 Notebook Completo: Google Colab
+📓 Notebook Completo: Google Colab, https://colab.research.google.com/drive/1h0FoNUh9-KLIZ4B1ZO3OwgKjAB13FBk3?usp=sharing#scrollTo=UJh0CIeGEk4U
 
 📁 Dataset: data_set/dados.csv
 
 📊 Visualizações: Pasta img/
 
 **🎯 Habilidades Demonstradas**
+
     ✅ Análise Exploratória de Dados
-
     ✅ Processamento e Limpeza de Dados
-
     ✅ Métodologia RFM
-
     ✅ Clusterização com K-Means
-
     ✅ Visualização de Dados
-
     ✅ Storytelling de Negócio
-
     ✅ Segmentação de Clientes
-
     ✅ Estratégias de Marketing Data-Driven
 
 **📞 Contato**
+# **📞 Contato**
 Para mais informações sobre este projeto, entre em contato ou consulte o notebook completo no link acima.
 
 **⭐ Este projeto demonstra competências em Data Science aplicada ao varejo digital, com foco em resultados práticos e acionáveis para negócios.**
