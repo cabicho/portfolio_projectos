@@ -77,6 +77,13 @@ cluster_names = {
 💰 **Análise Financeira por Segmento**
 
 **Segmento	Recência (média)	Frequência (média)	Valor Monetário (média)	Receita Total	Clientes	% Receita**
+| Segmento          | 📅 Recência (média) | 🔁 Frequência (média) | 💰 Valor Monetário (média) | 💵 Receita Total | 👥 Clientes | 📊 % Receita |
+|-------------------|-------------------|--------------------|--------------------------|-----------------|------------|-------------|
+| 🏆 Campeões          | 42.15             | 8.12               | 982.50                   | 24,562          | 25         | 36.5%       |
+| 🤝 Clientes Leais    | 35.20             | 4.85               | 387.63                   | 17,831          | 46         | 26.5%       |
+| 🆕 Clientes Novos    | 15.33             | 2.10               | 215.40                   | 9,047           | 42         | 13.4%       |
+| ⚠️ Clientes em Risco | 182.71            | 1.92               | 89.45                    | 16,638          | 186        | 23.6%       |
+
 
 Campeões	42.15	8.12	982.50	24,562	25	36.5%
 Clientes Leais	35.20	4.85	387.63	17,831	46	26.5%
