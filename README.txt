@@ -52,7 +52,7 @@ Sou formado em Estatística.
 
 Este planejamento leva em consideração somente 1 ano a partir do período atual.
 
-### **1º Trimestre de 2024 - Iniciado**
+### **1º Trimestre de 2025 - Iniciado**
 
 Está planejado o desenvolvimento de habilidades como:
 
@@ -65,7 +65,7 @@ Irei desenvolver 3 projetos de ciência de dados, ainda a definir, sendo:
 - [ ]  2º Será um problema envolvendo a Cloud do GCP.
 - [ ]  3º Será um problema envolvendo a Cloud da AWS.
 
-### **2º Trimestres de 2024**
+### **2º Trimestres de 2025**
 
 Está planejado o desenvolvimento de habilidades como:
 
@@ -77,7 +77,7 @@ Irei desenvolver 2 projetos de ciência de dados, ainda a definir, sendo:
 - [ ]  1º Será um problema de Teste A/B
 - [ ]  2º Será um problema utilizando a ferramenta Airflow.
 
-### **3º Trimestres de 2024**
+### **3º Trimestres de 2025**
 
 Está planejado o desenvolvimento de habilidades como:
 
