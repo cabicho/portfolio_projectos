@@ -9,6 +9,7 @@ Projeto de análise e segmentação de clientes utilizando a metodologia RFM (Re
 🗂️ ** Estrutura do Projeto **
 
 Segmentacao_de_Clientes_de_uma_Loja_Online/
+
 │
 ├── data_set/
 │   └── dados.csv                 # Dataset principal
@@ -30,7 +31,8 @@ Segmentacao_de_Clientes_de_uma_Loja_Online/
 └── README.md                    # Este arquivo
 
 
-text
+
+
 Segmentacao_de_Clientes_de_uma_Loja_Online/
 │
 ├── data_set/
@@ -51,21 +53,28 @@ Segmentacao_de_Clientes_de_uma_Loja_Online/
 │   └── visualization.py         # Visualizações
 │
 └── README.md                    # Este arquivo
-📊 Métricas RFM Calculadas
+
+📊 **Métricas RFM Calculadas**
+
 Cliente	Recência	Frequência	Valor Monetário	R_log	F_log	M_log
 CLT_001	35	5	1264.13	3.583519	1.791759	7.142930
 CLT_002	37	3	686.04	3.637586	1.386294	6.532393
 CLT_003	95	5	579.99	4.564348	1.791759	6.364734
 CLT_004	21	5	828.22	3.091042	1.791759	6.720485
 CLT_005	7	6	1261.48	2.079442	1.945910	7.140833
-🎯 Resultados da Clusterização
-📈 Estatísticas dos Clusters
-Cluster	Recência (média)	Frequência (média)	Valor Monetário (média)	Clientes
+
+🎯 **Resultados da Clusterização**
+
+📈 **Estatísticas dos Clusters**
+
+**Cluster	Recência (média)	Frequência (média)	Valor Monetário (média)	Clientes**
 0	10.08	6.08	1141.83	65
 1	101.42	3.75	691.24	112
 2	148.24	2.00	287.43	33
 3	62.41	6.81	1498.59	90
-👥 Segmentos de Clientes Identificados
+
+👥 **Segmentos de Clientes Identificados**
+
 python
 cluster_names = {
     0: 'Clientes em Risco',
@@ -73,17 +82,22 @@ cluster_names = {
     2: 'Campeões',
     3: 'Clientes Leais'
 }
-💰 Análise Financeira por Segmento
-Segmento	Recência (média)	Frequência (média)	Valor Monetário (média)	Receita Total	Clientes	% Receita
+
+💰 **Análise Financeira por Segmento**
+
+**Segmento	Recência (média)	Frequência (média)	Valor Monetário (média)	Receita Total	Clientes	% Receita**
+
 Campeões	42.15	8.12	982.50	24,562	25	36.5%
 Clientes Leais	35.20	4.85	387.63	17,831	46	26.5%
 Clientes Novos	15.33	2.10	215.40	9,047	42	13.4%
 Clientes em Risco	182.71	1.92	89.45	16,638	186	23.6%
-🎯 Estratégias de Marketing por Segmento
-🏆 Campeões (8% dos clientes → 36.5% da receita)
-Características: Baixa recência, alta frequência, alto gasto
 
-Ações Recomendadas:
+🎯 **Estratégias de Marketing por Segmento**
+
+🏆 **Campeões (8% dos clientes → 36.5% da receita)**
+**Características: Baixa recência, alta frequência, alto gasto**
+
+**Ações Recomendadas:**
 
 Programa VIP exclusivo
 
@@ -93,7 +107,7 @@ Presentes personalizados
 
 Atendimento prioritário
 
-🤝 Clientes Leais (15% dos clientes → 26.5% da receita)
+🤝 **Clientes Leais (15% dos clientes → 26.5% da receita)**
 Características: Baixa recência, média frequência, médio gasto
 
 Ações Recomendadas:
@@ -106,7 +120,7 @@ Pacotes promocionais personalizados
 
 Comunicação regular
 
-🆕 Clientes Novos (14% dos clientes → 13.4% da receita)
+🆕 **Clientes Novos (14% dos clientes → 13.4% da receita)**
 Características: Muito baixa recência, baixa frequência
 
 Ações Recomendadas:
@@ -119,7 +133,8 @@ Incentivos para primeiras compras
 
 Educação sobre produtos
 
-⚠️ Clientes em Risco (63% dos clientes → 23.6% da receita)
+⚠️ **Clientes em Risco (63% dos clientes → 23.6% da receita)**
+
 Características: Alta recência, baixa frequência, baixo gasto
 
 Ações Recomendadas:
@@ -132,7 +147,9 @@ Ofertas agressivas
 
 Programa de win-back
 
-🛠️ Tecnologias Utilizadas
+
+🛠️ **Tecnologias Utilizadas**
+
 Python 3.x
 
 Pandas - Manipulação de dados
@@ -145,8 +162,9 @@ NumPy - Cálculos numéricos
 
 Jupyter Notebook - Análise interativa
 
-📈 Próximos Passos e Melhorias
-🎯 Em Desenvolvimento:
+
+📈 **Próximos Passos e Melhorias**
+🎯 **Em Desenvolvimento:**
 Dashboard Interativo no Power BI/Tableau
 
 Simulação de Campanhas com análise de ROI
@@ -155,7 +173,9 @@ Deploy do Modelo com Flask/Streamlit
 
 Análise Temporal de migração entre segmentos
 
-📊 Funcionalidades do Dashboard:
+
+**📊 Funcionalidades do Dashboard:**
+
 Distribuição dos segmentos
 
 Revenue por segmento
@@ -166,34 +186,35 @@ Filtros por data e demografia
 
 Métricas de performance
 
-🔗 Links Úteis
+**🔗 Links Úteis**
+
 📓 Notebook Completo: Google Colab
 
 📁 Dataset: data_set/dados.csv
 
 📊 Visualizações: Pasta img/
 
-🎯 Habilidades Demonstradas
-✅ Análise Exploratória de Dados
+**🎯 Habilidades Demonstradas**
+    ✅ Análise Exploratória de Dados
 
-✅ Processamento e Limpeza de Dados
+    ✅ Processamento e Limpeza de Dados
 
-✅ Métodologia RFM
+    ✅ Métodologia RFM
 
-✅ Clusterização com K-Means
+    ✅ Clusterização com K-Means
 
-✅ Visualização de Dados
+    ✅ Visualização de Dados
 
-✅ Storytelling de Negócio
+    ✅ Storytelling de Negócio
 
-✅ Segmentação de Clientes
+    ✅ Segmentação de Clientes
 
-✅ Estratégias de Marketing Data-Driven
+    ✅ Estratégias de Marketing Data-Driven
 
-📞 Contato
+**📞 Contato**
 Para mais informações sobre este projeto, entre em contato ou consulte o notebook completo no link acima.
 
-⭐ Este projeto demonstra competências em Data Science aplicada ao varejo digital, com foco em resultados práticos e acionáveis para negócios.
+**⭐ Este projeto demonstra competências em Data Science aplicada ao varejo digital, com foco em resultados práticos e acionáveis para negócios.**
 
 
 
