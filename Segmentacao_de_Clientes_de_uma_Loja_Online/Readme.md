@@ -142,60 +142,74 @@ Ações Recomendadas:
 
     - Educação sobre produtos
 
-⚠️ **Clientes em Risco (63% dos clientes → 23.6% da receita)**
+## ⚠️ **Clientes em Risco** 
+**👥 Demografia**: 63% dos clientes  
+**💰 Contribuição**: 23.6% da receita total
 
-Características: Alta recência, baixa frequência, baixo gasto
+**📊 Perfil Comportamental**:
+- ⏰ Alta recência (última compra há muito tempo)
+- 🔁 Baixa frequência de compras
+- 💸 Baixo valor médio de gasto
 
-Ações Recomendadas:
+**🎯 Estratégias de Ação**:
 
-    - Campanhas de reativação
+### 📧 Campanhas de Reativação
+- Email marketing segmentado
+- Remarketing em redes sociais
+- Notificações push personalizadas
 
-    - Pesquisas de satisfação
+### 📝 Pesquisas de Satisfação
+- Questionários de experiência
+- Análise de NPS (Net Promoter Score)
+- Coleta de motivos de abandono
 
-    - Ofertas agressivas
+### 💰 Ofertas Agressivas
+- Descontos exclusivos (15-20%)
+- Frete grátis
+- Cupons de primeira compra
 
-    - Programa de win-back
+### 🔄 Programa Win-Back
+- Planos de fidelidade revitalizados
+- Recompensas por retorno
+- Atendimento personalizado
 
+## 🛠️ Tecnologias Utilizadas
 
-🛠️ **Tecnologias Utilizadas**
-
-    - **Python 3.x**
-
-    - **Pandas** - Manipulação de dados
-
-    - #Scikit-learn - Machine Learning (K-Means)
-
-    - **Matplotlib/Seaborn** - Visualização de dados
-
-    - NumPy - Cálculos numéricos
-
-    - Jupyter Notebook - Análise interativa
+- 🐍 **Python 3.x**
+- 📊 **Pandas** - Manipulação de dados
+- 🤖 **Scikit-learn** - Machine Learning (K-Means)
+- 📈 **Matplotlib/Seaborn** - Visualização de dados
+- ➕ **NumPy** - Cálculos numéricos
+- 📓 **Jupyter Notebook** - Análise interativa
 
 
 📈 **Próximos Passos e Melhorias**
 
-🎯 **Em Desenvolvimento:**
-    - Dashboard Interativo no Power BI/Tableau
+## 🎯 Próximas Implementações:
 
-    - Simulação de Campanhas com análise de ROI
+### 📊 Dashboard Interativo
+- **Plataformas**: Power BI / Tableau
+- **Objetivo**: Visualização interativa dos segmentos
 
-    - Deploy do Modelo com Flask/Streamlit
+### 📈 Simulação de Campanhas
+- **Análise**: ROI por segmento
+- **Métricas**: Conversão e retenção
 
-    - Análise Temporal de migração entre segmentos
+### 🚀 Deploy do Modelo
+- **Tecnologias**: Flask / Streamlit
+- **Funcionalidade**: Segmentação em tempo real
 
+### ⏰ Análise Temporal
+- **Foco**: Migração entre segmentos
+- **Período**: Evolução mensal/trimestral
 
-**📊 Funcionalidades do Dashboard:**
+## 📊 Funcionalidades do Dashboard:
 
-    - Distribuição dos segmentos
-
-    - Revenue por segmento
-
-    - Características de cada cluster
-
-    - Filtros por data e demografia
-
-    - Métricas de performance
-
+- 📋 **Distribuição Segmentos**: Overview dos clusters
+- 💰 **Revenue Analytics**: Receita por segmento
+- 🔍 **Cluster Insights**: Detalhes de cada grupo
+- ⚙️ **Filtros Avançados**: Data, demografia, comportamento
+- 📊 **Performance Metrics**: KPIs e indicadores
 **🔗 Links Úteis**
 
 📓 Notebook Completo: Google Colab, https://colab.research.google.com/drive/1h0FoNUh9-KLIZ4B1ZO3OwgKjAB13FBk3?usp=sharing#scrollTo=UJh0CIeGEk4U
