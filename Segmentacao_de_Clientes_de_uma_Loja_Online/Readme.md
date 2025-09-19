@@ -8,27 +8,27 @@ Projeto de análise e segmentação de clientes utilizando a metodologia RFM (Re
 
 **🗂️ Estrutura do Projeto**
 
-Segmentacao_de_Clientes_de_uma_Loja_Online/
+    Segmentacao_de_Clientes_de_uma_Loja_Online/
 
-│
-├── data_set/
-│   └── dados.csv                 # Dataset principal
-│
-├── img/
-│   ├── Análise_Exploratória.png  # Visualizações exploratórias
-│   ├── K-Means.png              # Análise de clusters
-│   └── analise_Clusters.png     # Características dos clusters
-│
-├── notebooks/
-│   └── analise_rfm.ipynb        # Jupyter Notebook com análise completa
-│
-├── src/
-│   ├── data_processing.py       # Processamento de dados
-│   ├── rfm_calculation.py       # Cálculo métricas RFM
-│   ├── clustering.py            # Clusterização K-Means
-│   └── visualization.py         # Visualizações
-│
-└── README.md                    # Este arquivo
+    │
+    ├── data_set/
+    │   └── dados.csv                 # Dataset principal
+    │
+    ├── img/
+    │   ├── Análise_Exploratória.png  # Visualizações exploratórias
+    │   ├── K-Means.png              # Análise de clusters
+    │   └── analise_Clusters.png     # Características dos clusters
+    │
+    ├── notebooks/
+    │   └── analise_rfm.ipynb        # Jupyter Notebook com análise completa
+    │
+    ├── src/
+    │   ├── data_processing.py       # Processamento de dados
+    │   ├── rfm_calculation.py       # Cálculo métricas RFM
+    │   ├── clustering.py            # Clusterização K-Means
+    │   └── visualization.py         # Visualizações
+    │
+    └── README.md                    # Este arquivo
 
 
 
