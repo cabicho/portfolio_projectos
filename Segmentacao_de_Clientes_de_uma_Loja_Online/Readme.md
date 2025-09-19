@@ -1,3 +1,6 @@
+# 1. Data set gerando, gravado e usado
+    /Segmentacao_de_Clientes_de_uma_Loja_Online/data_set/dados.csv
+
 # 2. Cálculo das Métricas RFM
 
 Tabela RFM:
@@ -72,3 +75,5 @@ Simulação de Campanhas: Adicionar uma análise de ROI simulando diferentes cam
 Deploy do Modelo: Usar Flask ou Streamlit para criar uma aplicação web onde se pode fazer a segmentação em tempo real.
 Análise Temporal: Adicionar uma dimensão temporal para ver como os clientes migram entre segmentos.
 Este projeto completo demonstra habilidades em Python, Pandas, Machine Learning, Visualização de Dados e Storytelling de Negócio
+
+# 9. Link do https://colab.research.google.com/drive/1h0FoNUh9-KLIZ4B1ZO3OwgKjAB13FBk3?usp=sharing
