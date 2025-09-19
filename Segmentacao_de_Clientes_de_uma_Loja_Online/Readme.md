@@ -34,6 +34,15 @@ Projeto de análise e segmentação de clientes utilizando a metodologia RFM (Re
 
 **Cliente	Recência	Frequência	Valor Monetário	R_log	F_log	M_log**
 
+| Cliente   | Recência | Frequência | Valor Monetário | R_log    | F_log    | M_log    |
+|-----------|----------|------------|-----------------|----------|----------|----------|
+| CLT_001   | 35       | 5          | 1264.13         | 3.583519 | 1.791759 | 7.142930 |
+| CLT_002   | 37       | 3          | 686.04          | 3.637586 | 1.386294 | 6.532393 |
+| CLT_003   | 95       | 5          | 579.99          | 4.564348 | 1.791759 | 6.364734 |
+| CLT_004   | 21       | 5          | 828.22          | 3.091042 | 1.791759 | 6.720485 |
+| CLT_005   | 7        | 6          | 1261.48         | 2.079442 | 1.945910 | 7.140833 |
+
+
 CLT_001	35	5	1264.13	3.583519	1.791759	7.142930
 CLT_002	37	3	686.04	3.637586	1.386294	6.532393
 CLT_003	95	5	579.99	4.564348	1.791759	6.364734
@@ -45,6 +54,9 @@ CLT_005	7	6	1261.48	2.079442	1.945910	7.140833
 📈 **Estatísticas dos Clusters**
 
 **Cluster	Recência (média)	Frequência (média)	Valor Monetário (média)	Clientes**
+| Cliente   | Recência | Frequência | Valor Monetário | R_log    | F_log    | M_log    |
+|:----------|---------:|-----------:|----------------:|:--------:|:--------:|:--------:|
+| CLT_001   | 35       | 5          | 1264.13         | 3.583519 | 1.791759 | 7.142930 |
 
 0	10.08	6.08	1141.83	65
 1	101.42	3.75	691.24	112
@@ -70,6 +82,15 @@ Campeões	42.15	8.12	982.50	24,562	25	36.5%
 Clientes Leais	35.20	4.85	387.63	17,831	46	26.5%
 Clientes Novos	15.33	2.10	215.40	9,047	42	13.4%
 Clientes em Risco	182.71	1.92	89.45	16,638	186	23.6%
+
+| 👤 Cliente  | 📅 Recência| 🔁 Frequência | 💰 Valor Monetário | R_log    | F_log    | M_log    |
+|-------------|------------|----------------|--------------------|----------|----------|----------|
+| CLT_001     | 35         | 5              | 1264.13            | 3.583519 | 1.791759 | 7.142930 |
+
+| Cliente   | Recência | Frequência | Valor Monetário | R_log    | F_log    | M_log    |
+|-----------|----------|------------|-----------------|----------|----------|----------|
+| CLT_001   | 35       | 5          | 1,264.13        | 3.583519 | 1.791759 | 7.142930 |
+
 
 🎯 **Estratégias de Marketing por Segmento**
 
@@ -131,13 +152,13 @@ Ações Recomendadas:
 
 🛠️ **Tecnologias Utilizadas**
 
-    - Python 3.x
+    - **Python 3.x**
 
-    - Pandas - Manipulação de dados
+    - **Pandas** - Manipulação de dados
 
-    - Scikit-learn - Machine Learning (K-Means)
+    - #Scikit-learn - Machine Learning (K-Means)
 
-    - Matplotlib/Seaborn - Visualização de dados
+    - **Matplotlib/Seaborn** - Visualização de dados
 
     - NumPy - Cálculos numéricos
 
