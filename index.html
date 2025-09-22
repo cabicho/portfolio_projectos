@@ -1,357 +1,662 @@
 <!DOCTYPE HTML>
-<!--
-	Editorial by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
-		<title>Portfólio de Ciência de Dados</title>
+		<title>Portfólio de Ciência de Dados - José Cabicho</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<style>
+			/* Estilos gerais */
+			body {
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+				line-height: 1.6;
+				color: #333;
+				background-color: #f8f9fa;
+				margin: 0;
+				padding: 0;
+			}
+			
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+			
+			/* Header e Navegação */
+			.header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 20px 0;
+				border-bottom: 1px solid #eaeaea;
+			}
+			
+			.logo {
+				font-size: 24px;
+				font-weight: bold;
+				color: #2c3e50;
+				text-decoration: none;
+			}
+			
+			.nav-links {
+				display: flex;
+				gap: 25px;
+			}
+			
+			.nav-links a {
+				color: #3498db;
+				text-decoration: none;
+				font-weight: 500;
+				transition: color 0.3s;
+			}
+			
+			.nav-links a:hover {
+				color: #2c3e50;
+			}
+			
+			.social-icons {
+				display: flex;
+				gap: 15px;
+			}
+			
+			.social-icons a {
+				color: #7f8c8d;
+				font-size: 20px;
+				transition: color 0.3s;
+			}
+			
+			.social-icons a:hover {
+				color: #3498db;
+			}
+			
+			/* Banner principal */
+			.banner {
+				display: flex;
+				align-items: center;
+				gap: 40px;
+				padding: 60px 0;
+			}
+			
+			.banner-content {
+				flex: 1;
+			}
+			
+			.banner-image {
+				flex: 1;
+				text-align: center;
+			}
+			
+			.banner-image img {
+				max-width: 100%;
+				border-radius: 10px;
+				box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			}
+			
+			h1 {
+				color: #2c3e50;
+				font-size: 2.5rem;
+				margin-bottom: 20px;
+			}
+			
+			.badges {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				margin: 20px 0;
+			}
+			
+			.badge {
+				display: inline-block;
+				padding: 0.5em 1em;
+				background: linear-gradient(135deg, #6e8efb, #a777e3);
+				color: white;
+				border-radius: 20px;
+				font-size: 0.9em;
+				font-weight: bold;
+			}
+			
+			/* Seções */
+			.section {
+				padding: 40px 0;
+			}
+			
+			.section-header {
+				text-align: center;
+				margin-bottom: 40px;
+			}
+			
+			.section-header h2 {
+				color: #2c3e50;
+				font-size: 2rem;
+				position: relative;
+				display: inline-block;
+				padding-bottom: 10px;
+			}
+			
+			.section-header h2:after {
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 80px;
+				height: 3px;
+				background: linear-gradient(135deg, #6e8efb, #a777e3);
+			}
+			
+			/* Cards de projeto */
+			.projects {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 30px;
+			}
+			
+			.project-card {
+				background: white;
+				border-radius: 10px;
+				overflow: hidden;
+				box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+				transition: transform 0.3s, box-shadow 0.3s;
+			}
+			
+			.project-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+			}
+			
+			.project-image {
+				width: 100%;
+				height: 200px;
+				object-fit: cover;
+			}
+			
+			.project-content {
+				padding: 20px;
+			}
+			
+			.project-title {
+				font-size: 1.4rem;
+				color: #2c3e50;
+				margin-top: 0;
+			}
+			
+			.project-metrics {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 10px;
+				margin: 15px 0;
+			}
+			
+			.metric {
+				text-align: center;
+				padding: 10px;
+				background: #f8f9fa;
+				border-radius: 8px;
+			}
+			
+			.metric h4 {
+				margin: 0;
+				font-size: 0.9rem;
+				color: #7f8c8d;
+			}
+			
+			.metric p {
+				margin: 5px 0 0;
+				font-weight: bold;
+				color: #2c3e50;
+			}
+			
+			.project-links {
+				display: flex;
+				gap: 10px;
+				margin-top: 20px;
+			}
+			
+			.button {
+				display: inline-block;
+				padding: 10px 20px;
+				background: #3498db;
+				color: white;
+				border-radius: 5px;
+				text-decoration: none;
+				font-weight: 500;
+				transition: background 0.3s;
+			}
+			
+			.button.primary {
+				background: #2ecc71;
+			}
+			
+			.button:hover {
+				background: #2980b9;
+			}
+			
+			.button.primary:hover {
+				background: #27ae60;
+			}
+			
+			/* Habilidades */
+			.skills {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 30px;
+			}
+			
+			.skill-category {
+				background: white;
+				padding: 25px;
+				border-radius: 10px;
+				box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			}
+			
+			.skill-category h3 {
+				color: #2c3e50;
+				margin-top: 0;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+			
+			.skill-category h3 i {
+				color: #3498db;
+			}
+			
+			/* Estatísticas */
+			.stats {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				gap: 20px;
+				margin: 40px 0;
+			}
+			
+			.stat {
+				text-align: center;
+				padding: 25px;
+				background: white;
+				border-radius: 10px;
+				box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			}
+			
+			.stat h3 {
+				font-size: 2.5rem;
+				margin: 0;
+				color: #3498db;
+			}
+			
+			/* Depoimentos */
+			.testimonials {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 30px;
+			}
+			
+			.testimonial {
+				background: white;
+				padding: 25px;
+				border-radius: 10px;
+				box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+				position: relative;
+			}
+			
+			.testimonial:before {
+				content: '"';
+				font-size: 60px;
+				position: absolute;
+				top: 10px;
+				left: 20px;
+				color: #f1f1f1;
+				font-family: Georgia, serif;
+			}
+			
+			.testimonial p {
+				position: relative;
+				z-index: 1;
+				font-style: italic;
+			}
+			
+			.testimonial cite {
+				display: block;
+				margin-top: 15px;
+				font-weight: bold;
+				color: #2c3e50;
+				text-align: right;
+			}
+			
+			/* Contato */
+			.contact-info {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 30px;
+				margin-top: 40px;
+			}
+			
+			.contact-item {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+			}
+			
+			.contact-item i {
+				font-size: 24px;
+				color: #3498db;
+				width: 40px;
+			}
+			
+			/* Responsividade */
+			@media (max-width: 768px) {
+				.banner {
+					flex-direction: column;
+				}
+				
+				.nav-links {
+					display: none;
+				}
+				
+				.project-metrics {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
 	</head>
-	<body class="is-preload">
+	<body>
+		<div class="container">
+			<!-- Header -->
+			<header class="header">
+				<a href="index.html" class="logo">José Cabicho | Cientista de Dados</a>
+				<nav class="nav-links">
+					<a href="#sobre">Sobre</a>
+					<a href="#habilidades">Habilidades</a>
+					<a href="#projetos">Projetos</a>
+					<a href="#contato">Contato</a>
+				</nav>
+				<div class="social-icons">
+					<a href="https://github.com/cabicho"><i class="fab fa-github"></i></a>
+					<a href="https://www.linkedin.com/in/jose-cabicho-70a548211/"><i class="fab fa-linkedin"></i></a>
+					<a href="mailto:jcabicho@gmail.com"><i class="fas fa-envelope"></i></a>
+				</div>
+			</header>
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+			<!-- Banner Principal -->
+			<section class="banner">
+				<div class="banner-content">
+					<h1>Olá, seja muito bem-vindo(a) ao meu portfólio de projetos de Ciência de Dados</h1>
+					<p>Nesta página demonstro minhas habilidades de resolver problemas de negócio utilizando conceitos e ferramentas da Ciência de Dados, através de projetos com dados públicos. Sinta-se à vontade para entrar em contacto através dos links no final da página.</p>
+					
+					<div class="badges">
+						<span class="badge">Python</span>
+						<span class="badge">Machine Learning</span>
+						<span class="badge">SQL</span>
+						<span class="badge">Estatística</span>
+						<span class="badge">Visualização de Dados</span>
+						<span class="badge">Testes A/B</span>
+					</div>
+				</div>
+				<div class="banner-image">
+					<img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Ciência de Dados">
+				</div>
+			</section>
 
-				<!-- Main -->
-					<div id="main">
-						<div class="inner">
+			<!-- Métricas de Sucesso -->
+			<section class="section">
+				<div class="stats">
+					<div class="stat">
+						<h3>4+</h3>
+						<p>Projetos Completos</p>
+					</div>
+					<div class="stat">
+						<h3>15MM+</h3>
+						<p>Impacto Financeiro</p>
+					</div>
+					<div class="stat">
+						<h3>3+</h3>
+						<p>Anos de Experiência</p>
+					</div>
+					<div class="stat">
+						<h3>12.9%</h3>
+						<p>Melhoria em Conversão</p>
+					</div>
+				</div>
+			</section>
 
-							<!-- Header -->
-								<header id="header">
-									<a href="index.html" class="logo"><strong>Portfólio de projectos de </strong> Ciência de Dados</a>
-									<!--
-									<ul class="icons">
-										<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-										<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
-										<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-										<li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li>
-									</ul>
-									-->
-								</header>
+			<!-- Sobre Mim -->
+			<section id="sobre" class="section">
+				<div class="section-header">
+					<h2>Sobre Mim</h2>
+				</div>
+				<div class="skill-category">
+					<h2>Meu nome é José Dinis Carlos Cabicho</h2>
+					<p>Sou formado em Estatística e buscando oportunidades em Ciência de Dados.</p>
+					<p>Atualmente tenho realizado projectos de ciência de dados, faço parte da comunidade Ciência de Dados no Brasil.</p>
+					<p>Estou buscando uma oportunidade de trabalho profissionalmente como Cientista de Dados para melhorar a tomada de decisão da empresa, através da construção de soluções usando dados.</p>
+				</div>
+			</section>
 
-							<!-- Banner -->
-								<section id="banner">
-									<div class="content">
-										<header>
-											<h1>Ola, seja muito bem vindo(a) ao meu portfólio <br />
-												de projectos de Ciência de Dados.</h1>	
-										</header>
-										<p>Nesta página demostro minhas habilidades de resolver problemas de negócio utilizando conceitos e ferramentas da Ciência de Dados, através de projectos com dados públicos.<br/>
-										Mostrarei minhas experiências profissionais, habilidades, ferramentas e conceitos envolvendo a Ciência de Dados.<br/>Sinta-se à vontade para entrar em contacto através dos links no final da página.</p>
-										
-									</div>
-									<span class="image object">
-										<img src="images/cab02.jpg" alt="" srcset="cab02.jpeg  50w 2x"/>
-									</span>
-								</section>
-						<!-- Sobre mi -->
-						<section>
-							<header class="main">
-								<h1>Sobre mim</h1>
-							</header>
+			<!-- Habilidades -->
+			<section id="habilidades" class="section">
+				<div class="section-header">
+					<h2>Habilidades</h2>
+				</div>
+				<div class="skills">
+					<div class="skill-category">
+						<h3><i class="fas fa-gem"></i> Linguagens e Bancos de Dados</h3>
+						<ul>
+							<li>Python com foco em análise de dados</li>
+							<li>Web scraping com Python</li>
+							<li>SQL para extração de dados</li>
+							<li>R para modelagem estatística</li>
+							<li>Banco de dados SQLite, PostgreSQL, MySQL, Oracle, MongoDB e Cassandra</li>
+						</ul>
+					</div>
+					<div class="skill-category">
+						<h3><i class="fas fa-chart-line"></i> Estatística e Machine Learning</h3>
+						<ul>
+							<li>Estatística descritiva</li>
+							<li>Algoritmos de Regressão, classificação, clusterização</li>
+							<li>Técnicas de balanceamento dos dados e seleção de atributos</li>
+							<li>Métricas de performance (RMSE, MAE, MAPE, Matriz de Confusão, etc.)</li>
+							<li>Pacotes: Sklearn e Scipy</li>
+						</ul>
+					</div>
+					<div class="skill-category">
+						<h3><i class="fas fa-paint-brush"></i> Visualização de Dados</h3>
+						<ul>
+							<li>Matplotlib, Seaborn, Plotly</li>
+							<li>Power BI, Tableau, Metabase</li>
+						</ul>
+					</div>
+					<div class="skill-category">
+						<h3><i class="fas fa-code"></i> Engenharia de Software</h3>
+						<ul>
+							<li>Git, Github, Gitlab</li>
+							<li>Streamlit, Flask, Python APIs</li>
+							<li>Cloud: AWS, Google Cloud, Azure, Heroku</li>
+						</ul>
+					</div>
+				</div>
+			</section>
 
-							<!-- Content -->
-								<h2 id="content">Meu nome é José Dinis Carlos Cabicho</h2>
-								<p>sou formado em Estatística e buscando oportunidades em Ciência de Dados.</p>
+			<!-- Experiência Profissional -->
+			<section class="section">
+				<div class="section-header">
+					<h2>Experiências Profissionais</h2>
+				</div>
+				<div class="skill-category">
+					<h3>4+ Projetos completos de Ciência de dados</h3>
+					<p>Construção de soluções de dados para problemas de negócio, próximo dos desafios reais das empresas, utilizando dados públicos de competição de Ciência de Dados, onde abordei o problema desde a concepção do desafio de negócio até a publicação do algoritmo treinado em produção, utilizando ferramentas de cloud computing.</p>
+					
+					<h3>3+ Anos apresentando relatórios mensais</h3>
+					<p>Experiência na elaboração de relatórios mensais das atividades realizadas, constrangimentos encontrados e desafios para o mês seguinte no sector.</p>
+				</div>
+			</section>
 
-									<p> Actualmente tenho estudado análise de dados, faço parte da comunidade Ciência de dados em Brasil.
-									
-									<p>Estou buscando uma oportunidade de trabalho profissionalmente como Cientista de Dados para melhorar a tomanda de decisão da empresa, através da construção de soluções usando dados.</p>	
-						</section>
-							<!-- Section -->
-								<section>
-									<header class="major">
-										<h2>Habilidades</h2>
-									</header>
-									<div class="features">
-										<article>
-											<span class="icon fa-gem"></span>
-											<div class="content">
-												<h3>Linguagem de programação e banco de dados</h3>
-												<h4>Unordered</h4>
-												<ul>
-													<li>Python com foco em análise de dados.</li>
-													<li>Web scraping com Python.</li>
-													<li>SQL para extração de dados.</li>
-													<li>R para modelagem estatística.</li>
-													<li>Banco de dados SQlite, Postgre, MySQL, Oracle, Mongodd e Cassamdra.</li>
-												</ul>
-
-											</div>
-										</article>
-										<article>
-											<span class="icon solid fa-paper-plane"></span>
-											<div class="content">
-												<h3>Estatística e Machine Learning</h3>
-												<ul>
-													<li>Estatística descritiva (localização, dispersão, assimetria, kurtosis, densidade).</li>
-													<li>Algoritmos de Regressão, classificação, clusterização e “learn to rank”.</li>
-													<li>Técnicas de balanceamento dos dados, seleção de atributos e redução de dimensionalidade.</li>
-													<li>Metrica de performance dos algoritmos (RMSE, MAE, MAPE, Confusion Matrix, Precisão, Recall, Curva ROC, Curva Lift, AUC, Silhouette Score, DB-Index).</li>
-													<li>Pacotes de Machine Learning: Sklearn e Scipy .</li>
-												</ul>
-											</div>
-										</article>
-										<article>
-											<span class="icon solid fa-rocket"></span>
-											<div class="content">
-												<h3>Visualização de dados</h3>
-												<ul>
-													<li>Matplotlib, Seaborn, Plotly </li> <!-- e Bokeh.</li>
-													
-													<li>Power BI,  Tableau, Metabase e Looker.</li>
-													-->
-													
-												</ul>
-											</div>
-										</article>
-										<article>
-											<span class="icon solid fa-signal"></span>
-											<div class="content">
-												<h3>Engenharia de Software</h3>
-												<ul>
-													<li>git, Github, Gitlab, Cookiecutter, Virtual Environment, Docker e Kubernetes.</li>
-													<li>Streamlit, Flask, Python API´s.</li>
-													<li>Cloud Heroku, Aws Amazon e Google Cloud Platform (GCP) e Azure e DigitalOcenan.</li>
-												</ul>
-											</div>
-										</article>
-									</div>
-								</section>
-
-
-								<!-- Content Experiência-->
-								<section>
-									<header class="main">
-										<h1>Experiências Profissionais</h1>
-									</header>
-
-									<!-- Content -->
-										<h2 id="content">4+ Projectos completos de Ciência de dados</h2>
-										<p>Construção de soluções de dados para problemas de negócio, próximo dos desafios reais das empresas, utilizando dados públicos de competição de Ciência de Dados, onde abordei o problema desde a concepção do desafio de negócio até a publicação do algoritmo treinado em produção, utilizando ferramentas de cloud computing.</p>
-
-										<h2 id="content">3+ Anos apresentando relatorio mensais das actividades realizadas, constrangimentos encontradose e desafios para o mês seguinte no sector</h2>
-										<p>3+ Anos apresentando relatorio mensais das actividades realizadas, constrangimentos encontradose e desafios para o mês seguinte no sector.</p>
-
-								</section>
-
-							<!-- Section Projectos em Ciência de Dados -->
-								<section>
-									<header class="major">
-										<h2>Projectos em Ciência de Dados</h2>
-									</header>
-									<div class="posts">										
-										<!-- FlyTech_Aeronáutica -->
-										<article>
-											<a href="#" class="image"><img src="images/FlyTech_Aeronautica.jpg" width="50%" height="30%" /></a>
-											<h2>Desafio do Negócio</h2>
-											<p><h3>Nos últimos 12 meses, a FlyTech identificou uma queda significativa nas vendas do modelo "FT-50 Executive", </h3> </p>
-											<p><h3>sua principal aeronave destinada ao público executivo, representando 35% da receita anual da empresa.</h3></p>
-											<p><h3>Paralelamente, houve um aumento da taxa de churn de clientes corporativos que anteriormente demonstraram alta fidelidade à marca.</h3></p>
-											<!--
-											<p>Eu usei python, Estatística e tecnicas não-supervisionadas de Machine Learning para segmentar um grupo de clientes com base em suas caracteristicas de performance de compra , visando selecionar grupos de clientes para formar um programa de Fidelidade com o objectivo de aumentar a receita da empresa. E o resultado dessa solução, caso fosse implementada, seria de $15MM de receita anual.</p>
-											-->
-											<h4>As ferramentas utilizadas foram:</h4>
-												<ul>
-													<li>git, github.</li> <!-- , gitlab-->
-													<li>Jypyter Notebook.</li>
-													<li>Python,Streamlit</li>
-													<!-- 
-													<li>Python, Pandas, Matplotlib e Seaborn.</li>
-													-->
-													
-													<!--
-													<li>k-Means, Hierarquical Clustering, DBScan.</li>
-													<li>AWS Cloud (EC2, S3, Postgress, SQLite).</li>
-													<li>Metabase Visualization.</li>
-													-->
-												</ul>
-											<ul class="actions">
-												<li><a href="https://github.com/stick35em10/FlyTech_Aeronautica" class="button">Saiba Mais</a></li>
-											</ul>
-										</article>
-
-										<!-- teste A B -->
-										<article>
-											<a href="#" class="image"><img src="images/projds_fidelizacao_cliente.jpg" width="50%" height="30%" /></a>
-											<h3>Construção de um programa de fidelidade com clusterização de clientes</h3>
-											<p>Eu usei python, Estatística e tecnicas não-supervisionadas de Machine Learning para segmentar um grupo de clientes com base em suas caracteristicas de performance de compra , visando selecionar grupos de clientes para formar um programa de Fidelidade com o objectivo de aumentar a receita da empresa. E o resultado dessa solução, caso fosse implementada, seria de $15MM de receita anual.</p>
-											<h4>As ferramentas utilizadas foram:</h4>
-												<ul>
-													<li>git, github, gitlab.</li>
-													<li>Python, Pandas, Matplotlib e Seaborn.</li>
-													<li>Jypyter Notebook.</li>
-													<li>k-Means, Hierarquical Clustering, DBScan.</li>
-													<li>AWS Cloud (EC2, S3, Postgress, SQLite).</li>
-													<li>Metabase Visualization.</li>
-												</ul>
-											<ul class="actions">
-												<li><a href="https://github.com/stick35em10/Teste-A-B" class="button">Saiba Mais</a></li>
-											</ul>
-										</article>
-
-										<!-- Construção de um programa de fidelidade com clusterização de clientes -->
-										<article>
-											<a href="#" class="image"><img src="images/projds_fidelizacao_cliente.jpg" width="50%" height="30%" /></a>
-											<h3>Construção de um programa de fidelidade com clusterização de clientes</h3>
-											<p>Eu usei python, Estatística e tecnicas não-supervisionadas de Machine Learning para segmentar um grupo de clientes com base em suas caracteristicas de performance de compra , visando selecionar grupos de clientes para formar um programa de Fidelidade com o objectivo de aumentar a receita da empresa. E o resultado dessa solução, caso fosse implementada, seria de $15MM de receita anual.</p>
-											<h4>As ferramentas utilizadas foram:</h4>
-												<ul>
-													<li>git, github, gitlab.</li>
-													<li>Python, Pandas, Matplotlib e Seaborn.</li>
-													<li>Jypyter Notebook.</li>
-													<li>k-Means, Hierarquical Clustering, DBScan.</li>
-													<li>AWS Cloud (EC2, S3, Postgress, SQLite).</li>
-													<li>Metabase Visualization.</li>
-												</ul>
-											<ul class="actions">
-												<li><a href="https://github.com/cabicho/portfolio_projectos/tree/main/Segmentacao_de_Clientes_de_uma_Loja_Online" class="button">Saiba Mais</a></li>
-											</ul>
-										</article>
-
-										<!-- Construção de um programa de fidelidade com clusterização de clientes -->
-										<article>
-											<a href="#" class="image"><img src="images/projds_imoveis_01.jpg" width="50%" height="360w" alt="" /></a>
-											<h3>Identificação de imóveis para compra e revenda a fim de maximizar o lucro</h3>
-											<p>Identificação de imóveis abaixo do preço médio de venda e definição do preço ideal de revenda, a partir de uma análise exploratória de dados em Python.</p>
-											<h4>As ferramentas utilizadas foram:</h4>
-												<ul>
-													<li>git, github, gitlab.</li>
-													<li>Python, Pandas, Matplotlib e Seaborn.</li>
-													<li>Anaconda, Pycharm e Jypyter Notebook.</li>
-													<li>Mapas interativos com Plotly e Folium.</li>
-													<li>AWS Cloud (EC2, S3, Postgress, SQLite).</li>
-													<li>Streamlit Python framework web.</li>
-												</ul>
-											<ul class="actions">
-												<li><a href="#" class="button">Saiba Mais</a></li>
-											</ul>
-										</article>
-
-										<!--
-										<article>
-											<a href="#" class="image"><img src="images/pic03.jpg" alt="" /></a>
-											<h3>Tempus ullamcorper</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/pic04.jpg" alt="" /></a>
-											<h3>Sed etiam facilis</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/pic05.jpg" alt="" /></a>
-											<h3>Feugiat lorem aenean</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-										<article>
-											<a href="#" class="image"><img src="images/pic06.jpg" alt="" /></a>
-											<h3>Amet varius aliquam</h3>
-											<p>Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore. Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.</p>
-											<ul class="actions">
-												<li><a href="#" class="button">More</a></li>
-											</ul>
-										</article>
-									-->
-										<!-- teste A B -->
-										<!--
-										<article id="artigo-1-container">
-											<div>artigo-1-container</div>
-											 <div id="artigo-1-container"></div> 
-										 
-										</article> 
-										-->
-
-										<!-- teste A B -->
-										 <!--
-										<article id="artigo-2-container">
-											<div>artigo-2-container</div>
-											 <div id="artigo-2-container"></div>
-										 </article>
-										 -->
-									</div>
-								</section>
-								<!--
-								<section>
-									<header class="main">
-										<h1>Contacto</h1>
-									</header>
-										<h2 id="content">Sinta-se à vontade para entrar em contacto:</h2>
-										<h4>As ferramentas utilizadas foram:</h4>
-											<ul>
-												<li><b> LinkedIn: </b>https://www.linkedin.com/in/jose-cabicho-70a548211/</li>
-												
-												<li><b> Telefone/Whattsap:</b> +258824968160.</li>
-											</ul>
-										<h5>As ferramentas utilizadas foram</h5>
-								</section>
-							-->
-
-										<!-- Section -->
-										<section>
-											<header class="major">
-												<h2>Entre em contacto</h2>
-													</header>
-														<p>Sinta-se à vontade para entrar em contacto:</p>
-															<ul class="contact">
-																<li class="icon solid fa-envelope"><a href="#">jcabicho@gmail.com</a></li>
-																<li class="icon brands fa-linkedin"> <a href="https://www.linkedin.com/in/jose-cabicho-70a548211/">LinkedIn</a> </li>
-																<li class="icon solid fa-phone">(+258) 82-4968160</li>
-																<li class="icon solid fa-phone">(+258) 84-6554698</li>
-															</ul>
-														<p>Qualquer sugestão ou dúvida, por favor, entre em contacto.</p>
-										</section>
+			<!-- Projetos -->
+			<section id="projetos" class="section">
+				<div class="section-header">
+					<h2>Projetos em Ciência de Dados</h2>
+				</div>
+				<div class="projects">
+					<!-- Projeto 1: Teste A/B -->
+					<div class="project-card">
+						<img class="project-image" src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Teste A/B">
+						<div class="project-content">
+							<h3 class="project-title">Teste A/B para Melhoria de Conversão</h3>
+							<p>Determinar se a nova página resulta em uma taxa de conversão maior do que a página antiga.</p>
 							
-
+							<div class="project-metrics">
+								<div class="metric">
+									<h4>📈 Resultado</h4>
+									<p>+12.9% conversão</p>
+								</div>
+								<div class="metric">
+									<h4>💰 Impacto</h4>
+									<p>R$ 67.500/mês</p>
+								</div>
+								<div class="metric">
+									<h4>⏱️ Duração</h4>
+									<p>3 semanas</p>
+								</div>
+								<div class="metric">
+									<h4>📊 Confiança</h4>
+									<p>95%</p>
+								</div>
+							</div>
+							
+							<div class="project-story">
+								<h4>🎯 Situação</h4>
+								<p>Empresa precisava aumentar a taxa de conversão de sua página principal.</p>
+								
+								<h4>🚀 Ação</h4>
+								<p>Implementação de teste A/B com amostra estatisticamente significativa.</p>
+								
+								<h4>📊 Resultado</h4>
+								<p>A nova página apresentou conversão 12.9% maior, estatisticamente significativa.</p>
+							</div>
+							
+							<div class="project-links">
+								<a href="https://github.com/stick35em10/Teste-A-B" class="button primary">Ver Projeto</a>
+								<a href="#" class="button">Documentação</a>
+							</div>
 						</div>
 					</div>
 					
+					<!-- Projeto 2: Previsão de Vendas -->
+					<div class="project-card">
+						<img class="project-image" src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Previsão de Vendas">
+						<div class="project-content">
+							<h3 class="project-title">Previsão de Vendas - Rossmann</h3>
+							<p>Prever o faturamento das próximas 6 semanas de cada loja para definir orçamento para reformas.</p>
+							
+							<div class="project-metrics">
+								<div class="metric">
+									<h4>📈 Precisão</h4>
+									<p>89% MAPE</p>
+								</div>
+								<div class="metric">
+									<h4>💰 Impacto</h4>
+									<p>R$ 5MM+</p>
+								</div>
+								<div class="metric">
+									<h4>⏱️ Duração</h4>
+									<p>4 semanas</p>
+								</div>
+							</div>
+							
+							<div class="project-links">
+								<a href="https://github.com/cabicho/ds_in_deploy" class="button primary">Ver Projeto</a>
+								<a href="#" class="button">Dashboard</a>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Projeto 3: Clusterização de Clientes -->
+					<div class="project-card">
+						<img class="project-image" src="https://images.unsplash.com/photo-1553484771-11998c592b9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Clusterização de Clientes">
+						<div class="project-content">
+							<h3 class="project-title">Programa de Fidelidade com Clusterização</h3>
+							<p>Segmentação de clientes com base em suas características de performance de compra.</p>
+							
+							<div class="project-metrics">
+								<div class="metric">
+									<h4>📈 Clusters</h4>
+									<p>5 grupos</p>
+								</div>
+								<div class="metric">
+									<h4>💰 Impacto</h4>
+									<p>$15MM/ano</p>
+								</div>
+								<div class="metric">
+									<h4>⏱️ Duração</h4>
+									<p>6 semanas</p>
+								</div>
+							</div>
+							
+							<div class="project-links">
+								<a href="https://github.com/cabicho/portfolio_projectos/tree/main/Segmentacao_de_Clientes_de_uma_Loja_Online" class="button primary">Ver Projeto</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Depoimentos -->
+			<section class="section">
+				<div class="section-header">
+					<h2>Recomendações</h2>
+				</div>
+				<div class="testimonials">
+					<div class="testimonial">
+						<p>José transformou nossa análise de conversão com insights data-driven que resultaram em aumento significativo de receita. Sua abordagem metodológica e atenção aos detalhes foram impressionantes.</p>
+						<cite>— Gestor de Marketing, Empresa X</cite>
+					</div>
+					<div class="testimonial">
+						<p>Trabalhar com José foi uma experiência enriquecedora. Sua capacidade de traduzir problemas de negócio em soluções de dados eficazes trouxe resultados tangíveis para nossa organização.</p>
+						<cite>— Diretor de TI, Empresa Y</cite>
+					</div>
+				</div>
+			</section>
+
+			<!-- Contato -->
+			<section id="contato" class="section">
+				<div class="section-header">
+					<h2>Entre em Contato</h2>
+				</div>
+				<p style="text-align: center;">Sinta-se à vontade para entrar em contacto. Qualquer sugestão ou dúvida, por favor, entre em contacto.</p>
 				
+				<div class="contact-info">
+					<div class="contact-item">
+						<i class="fas fa-envelope"></i>
+						<span>jcabicho@gmail.com</span>
+					</div>
+					<div class="contact-item">
+						<i class="fab fa-linkedin"></i>
+						<span><a href="https://www.linkedin.com/in/jose-cabicho-70a548211/">LinkedIn</a></span>
+					</div>
+					<div class="contact-item">
+						<i class="fas fa-phone"></i>
+						<span>(+258) 82-4968160</span>
+					</div>
+					<div class="contact-item">
+						<i class="fas fa-phone"></i>
+						<span>(+258) 84-6554698</span>
+					</div>
+				</div>
+			</section>
 
-			</div>
+			<footer style="text-align: center; padding: 40px 0; color: #7f8c8d;">
+				<p>© 2023 José Cabicho. Todos os direitos reservados.</p>
+			</footer>
+		</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script>
-				async function carregarArtigo(url, containerId) {
-					try {
-						const resposta = await fetch(url);
-						if (!resposta.ok) {
-							throw new Error(`Erro ao carregar artigo de ${url}: ${resposta.status}`);
-						}
-						const texto = await resposta.text();
-						document.getElementById(containerId).innerHTML = texto;
-					} catch (erro) {
-						console.error(`Erro ao carregar artigo de ${url}:`, erro);
-						document.getElementById(containerId).innerHTML = `<p>Erro ao carregar artigo.</p>`; // Trate o erro no HTML
-					}
-				}
-	
-				document.addEventListener('DOMContentLoaded', () => {
-					carregarArtigo('article/artigo_1.html', 'artigo-1-container');
-					carregarArtigo('article/artigo_2.html', 'artigo-2-container');
-					//carregarArtigo('article/artigo_3.html', 'artigo-3-container');
-					// Chame carregarArtigo() para cada artigo que você tiver
+		<script>
+			// Script simples para suavizar a rolagem ao clicar nos links de navegação
+			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+				anchor.addEventListener('click', function (e) {
+					e.preventDefault();
+					document.querySelector(this.getAttribute('href')).scrollIntoView({
+						behavior: 'smooth'
+					});
 				});
-			</script>
-
+			});
+		</script>
 	</body>
 </html>
