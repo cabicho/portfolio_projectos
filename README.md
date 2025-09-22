@@ -49,9 +49,18 @@ Sou formado em **Estatística** com paixão por transformar dados em insights ac
 
 ---
 
-## 📅 Roadmap de Desenvolvimento 2024
+## 📅 Roadmap de Desenvolvimento 2025/2026
 
-### **1º Trimestre de 2024** 🟡 Em andamento
+### **4º Trimestre de 2025** 🟡 Em andamento
+- [ ] Actualizar os varios projectos realizados no portfólio
+- [ ] Habilidade com MLFlow
+
+**Projetos planejados:**
+- [ ] Elasticidade de preço para e-commerce
+- [ ] Projeto utilizando Cloud GCP
+- [ ] Projeto utilizando Cloud AWS
+
+### **1º Trimestre de 2026** 
 - [ ] Ampliação do conhecimento em técnicas de Regressão e Classificação
 - [ ] Desenvolvimento do conhecimento de Cloud GCP e AWS
 
@@ -60,16 +69,16 @@ Sou formado em **Estatística** com paixão por transformar dados em insights ac
 - [ ] Projeto utilizando Cloud GCP
 - [ ] Projeto utilizando Cloud AWS
 
-### **2º Trimestre de 2024**
+### **2º Trimestre de 2026**
 - [ ] Habilidade em realizar e avaliar Teste A/B
 - [ ] Habilidade de ETL com Airflow
 
 **Projetos planejados:**
-- [ ] Problema de Teste A/B
+- [ ] Aprimorar problema de Teste A/B
 - [ ] Projeto utilizando Airflow
 
-### **3º Trimestre de 2024**
-- [ ] Aprendizado da linguagem R
+### **3º Trimestre de 2025**
+- [ ] Aprimorar o aprendizado da linguagem R
 - [ ] Habilidade com MLFlow
 
 **Projetos planejados:**
@@ -80,7 +89,7 @@ Sou formado em **Estatística** com paixão por transformar dados em insights ac
 
 ## 💼 Experiências Profissionais
 
-### **Analista de Sistema na Startup WITMOB**
+### **Analista de Dados**
 *Atualmente*
 
 Atuo nas áreas de tecnologia e relacionamento com clientes B2B e B2C no setor automotivo. Minhas responsabilidades incluem:
@@ -93,10 +102,10 @@ Atuo nas áreas de tecnologia e relacionamento com clientes B2B e B2C no setor a
 - Treinamento e implantação do sistema para clientes B2B
 - Análise de experiência do usuário para clientes B2C
 
-### **Sócio Fundador na AcTO**
-*Startup focada em democratização de informações eleitorais*
+### **Yunique**
+*...*
 
-Desenvolvemos a plataforma **"Nosso Candidato"** para as eleições de 2020, com objetivo de centralizar informações sobre candidatos:
+Desenvolvemos a plataforma **"Nosso Candidato"** ... :
 
 - Reunião de histórico de vida, propostas e ações de campanha
 - Desenvolvimento de plataforma de acesso público
@@ -104,18 +113,18 @@ Desenvolvemos a plataforma **"Nosso Candidato"** para as eleições de 2020, com
 - Desafios com transparência de informações de alguns candidatos
 
 ### **TCC: Análise de Impacto da Pandemia nas Eleições**
-*"PANDEMIA DA COVID-19 E ELEIÇÕES: uma comparação financeira das eleições no Estado do Ceará nos anos de 2016 e 2020"*
+*"..."*
 
 **Metodologia:**
-- Coleta e processamento de dados do TSE (10+ GB, 20+ tabelas)
+- Coleta e processamento de dados 
 - Análise com Power BI (aprendizado autodidata)
-- Foco no estado do Ceará devido à limitação de recursos
+- Foco no ...  devido à limitação de recursos
 
 **Principais Descobertas:**
 - 📊 Gastos com materiais de rua **aumentaram** (contrariando expectativas)
 - 💰 Recursos próprios e doações **diminuíram drasticamente**
 - 🏛️ Aumento da dependência do Fundo Partidário Eleitoral
-- 🎯 Conclusão: A pandemia não alterou significativamente os padrões de gastos
+- 🎯 Conclusão: 
 
 ---
 
