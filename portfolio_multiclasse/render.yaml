@@ -16,7 +16,7 @@ services:
     healthCheckPath: /
     autoDeploy: true
 
-  # Serviço de Banco de Dados (Opcional)
+  # Serviço de Banco de Dados ( Opcional)
   - type: postgres
     name: multiclass-db
     plan: free
@@ -26,7 +26,7 @@ services:
         databaseName: multiclass_db
         user: multiclass_user
 
-  # Serviço Redis para Cache (Opcional)
+  # Serviço Redis para Cache ( Opcional)
   - type: redis
     name: multiclass-cache
     plan: free
