@@ -1,0 +1,113 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Aplicação Principal Streamlit
+  multiclass-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: multiclass-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    volumes:
+      - ./data:/app/data:ro
+      - ./assets:/app/assets:ro
+      - ./src:/app/src:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - multiclass-network
+
+  # Nginx para proxy reverso (opcional)
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: multiclass-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - multiclass-app
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - multiclass-network
+    restart: unless-stopped
+
+  # Banco de dados para persistência (opcional)
+  postgres:
+    image: postgres:13
+    container_name: multiclass-db
+    environment:
+      - POSTGRES_DB=multiclass_db
+      - POSTGRES_USER=streamlit_user
+      - POSTGRES_PASSWORD=streamlit_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - multiclass-network
+    restart: unless-stopped
+
+  # Redis para cache (opcional)
+  redis:
+    image: redis:alpine
+    container_name: multiclass-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - multiclass-network
+    restart: unless-stopped
+
+  # Monitoramento com Prometheus (opcional)
+  prometheus:
+    image: prom/prometheus
+    container_name: multiclass-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - multiclass-network
+    restart: unless-stopped
+
+  # Grafana para dashboards de monitoramento (opcional)
+  grafana:
+    image: grafana/grafana
+    container_name: multiclass-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - multiclass-network
+    restart: unless-stopped
+
+# Volumes para persistência
+volumes:
+  postgres_data:
+  redis_data:
+  grafana_data:
+
+# Redes
+networks:
+  multiclass-network:
+    driver: bridge
