@@ -1,41 +1,30 @@
 import pandas as pd
-import yfinance as yf
+import numpy as np
 import requests
 from io import StringIO
-import streamlit as st
 
 class DataLoader:
     def __init__(self):
         self.sample_data = None
     
-    @st.cache_data(show_spinner="Carregando dados estratégicos...")
-    def load_public_data(_self):
+    def load_public_data(self):
         """Carrega dados públicos para demonstração"""
         try:
-            # Dataset sample de e-commerce (substitua por URL real)
-            url = "https://raw.githubusercontent.com/datasets/ecommerce/master/data/ecommerce.csv"
-            response = requests.get(url)
-            
-            if response.status_code == 200:
-                data = pd.read_csv(StringIO(response.text))
-            else:
-                # Fallback para dados gerados
-                data = _self.generate_sample_data()
+            # Dataset sample gerado
+            data = self.generate_sample_data()
             
             # Adicionar features estratégicas
-            data = _self.enrich_data(data)
+            data = self.enrich_data(data)
             return data
             
         except Exception as e:
-            st.error(f"Erro ao carregar dados: {e}")
-            return _self.generate_sample_data()
+            print(f"Erro ao carregar dados: {e}")
+            return self.generate_sample_data()
     
     def generate_sample_data(self):
         """Gera dados de sample para demonstração"""
-        import numpy as np
-        
         np.random.seed(42)
-        n_samples = 1000
+        n_samples = 500
         
         data = pd.DataFrame({
             'segmento': np.random.choice(['B2B Enterprise', 'SMB', 'Consumer', 'Emerging'], n_samples),
@@ -43,10 +32,11 @@ class DataLoader:
             'crescimento_projetado': np.random.uniform(5, 25, n_samples),
             'roi_esperado': np.random.uniform(8, 35, n_samples),
             'potencial_mercado': np.random.uniform(1, 10, n_samples),
-            'tamanho_oportunidade': np.random.uniform(10000, 500000, n_samples)
+            'tamanho_oportunidade': np.random.uniform(10000, 500000, n_samples),
+            'data_criacao': pd.date_range('2023-01-01', periods=n_samples, freq='H')
         })
         
-        # Simular classes de classificação multiclasse
+        # Classificação multiclasse
         conditions = [
             (data['roi_esperado'] > 25) & (data['crescimento_projetado'] > 15),
             (data['roi_esperado'] > 20) & (data['crescimento_projetado'] > 10),
@@ -67,5 +57,8 @@ class DataLoader:
     
     def enrich_data(self, data):
         """Adiciona features estratégicas aos dados"""
-        # Implementar enriquecimento de dados
+        # Adicionar métricas calculadas
+        data['valor_vida_cliente'] = data['valor_estimado'] * data['roi_esperado'] / 100
+        data['score_prioridade'] = (data['roi_esperado'] * 0.6 + data['crescimento_projetado'] * 0.4)
+        
         return data
