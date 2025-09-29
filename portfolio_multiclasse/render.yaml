@@ -1,10 +1,33 @@
+# render.yaml
 services:
   - type: web
-    name: multiclass-classification-dashboard
+    name: multiclass-gradio-dashboard
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    startCommand: python app_gradio.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0
+      - key: GRADIO_SERVER_NAME
+        value: 0.0.0.0
+      - key: GRADIO_SERVER_PORT
+        value: 10000
+    healthCheckPath: /
+    autoDeploy: true
+
+  # Serviço de Banco de Dados (Opcional)
+  - type: postgres
+    name: multiclass-db
+    plan: free
+    ipAllowList: []
+    databases:
+      - name: multiclass_main
+        databaseName: multiclass_db
+        user: multiclass_user
+
+  # Serviço Redis para Cache (Opcional)
+  - type: redis
+    name: multiclass-cache
+    plan: free
+    ipAllowList: []

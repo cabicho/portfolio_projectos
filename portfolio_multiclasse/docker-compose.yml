@@ -1,5 +1,5 @@
 # docker-compose.yml
-version: '3.8'
+version: '3.3'
 
 services:
   # Aplicação Principal Streamlit
@@ -24,7 +24,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      #start_period: 40s
     restart: unless-stopped
     networks:
       - multiclass-network

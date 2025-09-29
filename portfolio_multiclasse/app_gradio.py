@@ -2,20 +2,20 @@ import gradio as gr
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import numpy as np
+import os
 from src.data_loader import DataLoader
 from src.model import MulticlassModel
-import os
-
-# Configuração do tema
-THEME = "soft"
 
 class MulticlassGradioDashboard:
     def __init__(self):
         self.data_loader = DataLoader()
         self.model = MulticlassModel()
         self.data = self.data_loader.load_public_data()
+        
+        # Configurações para Render
+        self.server_port = int(os.getenv('GRADIO_SERVER_PORT', '7860'))
+        self.server_name = os.getenv('GRADIO_SERVER_NAME', '0.0.0.0')
         
     def criar_dashboard_estrategico(self, segmentos, periodo):
         """Painel estratégico para C-Level"""
@@ -26,7 +26,7 @@ class MulticlassGradioDashboard:
         crescimento_medio = dados_filtrados['crescimento_projetado'].mean()
         valor_total = dados_filtrados['valor_estimado'].sum()
         
-        # Gráfico 1: Mapa de Calor de Segmentos
+        # Gráfico 1: Mapa de Segmentos
         fig_segmentos = px.treemap(
             dados_filtrados,
             path=['segmento', 'classe_predita'],
@@ -52,12 +52,12 @@ class MulticlassGradioDashboard:
             ))
         
         fig_portfolio.update_layout(
-            title='Análise Strategic Portfolio - Potencial vs ROI',
+            title='Análise Strategic Portfolio',
             xaxis_title='Potencial de Mercado',
             yaxis_title='ROI Esperado (%)'
         )
         
-        # Recomendações Estratégicas
+        # Recomendações
         recomendacoes = self.gerar_recomendacoes_estrategicas(dados_filtrados)
         
         return (
@@ -69,7 +69,7 @@ class MulticlassGradioDashboard:
             recomendacoes
         )
     
-    def criar_dashboard_tatico(self, canal, metricas):
+    def criar_dashboard_tatico(self, canal, metrica):
         """Painel tático para gerência"""
         dados_filtrados = self.data.copy()
         
@@ -78,7 +78,7 @@ class MulticlassGradioDashboard:
         cac = np.random.uniform(120, 180)
         ltv = np.random.uniform(1800, 2500)
         
-        # Gráfico de Performance de Canais
+        # Gráfico de Performance
         fig_canais = px.sunburst(
             self.data,
             path=['segmento', 'classe_predita'],
@@ -87,7 +87,7 @@ class MulticlassGradioDashboard:
             title='Performance por Segmento e Classe'
         )
         
-        # Gráfico de Evolução Temporal
+        # Gráfico de Evolução
         fig_evolucao = px.line(
             self.criar_dados_temporais(),
             x='mes',
@@ -104,28 +104,29 @@ class MulticlassGradioDashboard:
             fig_evolucao
         )
     
-    def criar_dashboard_operacional(self, alertas_ativos):
+    def criar_dashboard_operacional(self, tipo_alerta):
         """Painel operacional para execução"""
-        # Simular dados em tempo real
         leads_prioritarios = self.data.nlargest(5, 'valor_estimado')
         alertas = self.gerar_alertas_operacionais()
         
-        # Tabela de Leads Prioritários
-        tabela_leads = leads_prioritarios[['segmento', 'valor_estimado', 'classe_predita', 'roi_esperado']]
+        # Tabela de Leads
+        tabela_leads = leads_prioritarios[[
+            'segmento', 'valor_estimado', 'classe_predita', 'roi_esperado'
+        ]]
         
-        # Gráfico de Ações Imediatas
-        fig_acoes = px.bar(
+        # Gráfico de Alertas
+        fig_alertas = px.bar(
             alertas,
             x='prioridade',
             y='quantidade',
             color='tipo',
-            title='Alertas e Ações por Prioridade'
+            title='Alertas por Prioridade'
         )
         
-        # Lista de Ações Recomendadas
-        acoes_recomendadas = self.gerar_acoes_instantaneas()
+        # Ações Recomendadas
+        acoes = self.gerar_acoes_instantaneas()
         
-        return tabela_leads, fig_acoes, acoes_recomendadas
+        return tabela_leads, fig_alertas, acoes
     
     def criar_dados_temporais(self):
         """Criar dados temporais para análise"""
@@ -144,16 +145,14 @@ class MulticlassGradioDashboard:
         return pd.DataFrame(dados_temp)
     
     def gerar_recomendacoes_estrategicas(self, dados):
-        """Gerar recomendações estratégicas baseadas nos dados"""
         recomendacoes = [
-            "🔵 **Alta Prioridade:** Aumentar investimento em segmentos com ROI > 25%",
-            "🟢 **Média Prioridade:** Expandir para mercados emergentes identificados",
-            "🟡 **Baixa Prioridade:** Otimizar custos em segmentos de baixo crescimento"
+            "🎯 **Alta Prioridade:** Investir em segmentos com ROI > 25%",
+            "📈 **Média Prioridade:** Expandir para mercados emergentes", 
+            "⚡ **Baixa Prioridade:** Otimizar custos operacionais"
         ]
         return "\n\n".join(recomendacoes)
     
     def gerar_alertas_operacionais(self):
-        """Gerar alertas operacionais"""
         return pd.DataFrame({
             'prioridade': ['Alta', 'Alta', 'Média', 'Média', 'Baixa'],
             'quantidade': [3, 5, 8, 6, 12],
@@ -161,144 +160,124 @@ class MulticlassGradioDashboard:
         })
     
     def gerar_acoes_instantaneas(self):
-        """Gerar ações instantâneas para time operacional"""
         acoes = [
-            "📞 **Contatar Lead:** Empresa XYZ - Potencial R$ 250k",
+            "📞 **Contatar:** Empresa XYZ - Potencial R$ 250k",
             "🎯 **Proposta:** Cliente ABC - Renewal em 30 dias", 
-            "⚠️ **Follow-up:** Cliente DEF - Atraso no pagamento",
-            "🚀 **Upsell:** Cliente GHI - Produto Premium",
-            "📊 **Análise:** Cliente JKL - Comportamento alterado"
+            "⚠️ **Follow-up:** Cliente DEF - Atraso pagamento",
+            "🚀 **Upsell:** Cliente GHI - Produto Premium"
         ]
         return "\n".join(acoes)
     
     def criar_interface(self):
         """Criar interface Gradio completa"""
-        
-        with gr.Blocks(theme=THEME, title="Sistema Multiclasse Estratégico") as dashboard:
+        with gr.Blocks(
+            theme=gr.themes.Soft(),
+            title="Sistema Multiclasse Estratégico - Render"
+        ) as dashboard:
+            
             gr.Markdown(
                 """
                 # 🎯 Sistema de Classificação Multiclasse Estratégico
-                **Dashboard Multi-nível para Tomada de Decisão Baseada em IA**
+                **Deploy Profissional no Render Cloud**
                 """
             )
             
             with gr.Tabs() as tabs:
-                # TAB 1: PAINEL ESTRATÉGICO
-                with gr.TabItem("🎯 Estratégico (C-Level)"):
+                # TAB ESTRATÉGICO
+                with gr.TabItem("🎯 Estratégico"):
                     with gr.Row():
-                        with gr.Column(scale=1):
-                            segmentos_estrategico = gr.CheckboxGroup(
-                                choices=list(self.data['segmento'].unique()),
-                                value=list(self.data['segmento'].unique())[:2],
-                                label="Segmentos de Foco"
-                            )
-                            periodo_estrategico = gr.Dropdown(
-                                choices=["Último Trimestre", "Último Semestre", "Último Ano"],
-                                value="Último Trimestre",
-                                label="Período de Análise"
-                            )
-                            btn_estrategico = gr.Button("Atualizar Análise Estratégica", variant="primary")
-                        
-                        with gr.Column(scale=2):
-                            kpis_estrategico = gr.Markdown()
+                        segmentos = gr.CheckboxGroup(
+                            choices=list(self.data['segmento'].unique()),
+                            value=list(self.data['segmento'].unique())[:2],
+                            label="Segmentos"
+                        )
+                        periodo = gr.Dropdown(
+                            choices=["Trimestre", "Semestre", "Ano"],
+                            value="Trimestre",
+                            label="Período"
+                        )
+                    
+                    btn_estrategico = gr.Button("Analisar", variant="primary")
+                    kpis_estrategico = gr.Markdown()
                     
                     with gr.Row():
-                        with gr.Column():
-                            grafico_segmentos = gr.Plot(label="Mapa de Segmentos")
-                        with gr.Column():
-                            grafico_portfolio = gr.Plot(label="Análise de Portfolio")
+                        grafico_segmentos = gr.Plot()
+                        grafico_portfolio = gr.Plot()
                     
-                    with gr.Row():
-                        recomendacoes_estrategico = gr.Markdown(label="Recomendações Estratégicas")
+                    recomendacoes = gr.Markdown()
                 
-                # TAB 2: PAINEL TÁTICO
-                with gr.TabItem("📊 Tático (Gerência)"):
+                # TAB TÁTICO
+                with gr.TabItem("📊 Tático"):
                     with gr.Row():
-                        with gr.Column(scale=1):
-                            canal_tatico = gr.Dropdown(
-                                choices=["Marketing Digital", "Vendas Diretas", "Parceiros", "Todos"],
-                                value="Todos",
-                                label="Canal de Vendas"
-                            )
-                            metricas_tatico = gr.CheckboxGroup(
-                                choices=["Conversão", "CAC", "LTV", "ROI"],
-                                value=["Conversão", "ROI"],
-                                label="Métricas Principais"
-                            )
-                            btn_tatico = gr.Button("Atualizar Métricas", variant="primary")
-                        
-                        with gr.Column(scale=2):
-                            kpis_tatico = gr.Markdown()
+                        canal = gr.Dropdown(
+                            choices=["Marketing", "Vendas", "Parceiros", "Todos"],
+                            value="Todos",
+                            label="Canal"
+                        )
+                        metrica = gr.Dropdown(
+                            choices=["Conversão", "ROI", "Crescimento"],
+                            value="ROI",
+                            label="Métrica Principal"
+                        )
+                    
+                    btn_tatico = gr.Button("Analisar", variant="primary")
+                    kpis_tatico = gr.Markdown()
                     
                     with gr.Row():
-                        with gr.Column():
-                            grafico_canais = gr.Plot(label="Performance por Canal")
-                        with gr.Column():
-                            grafico_evolucao = gr.Plot(label="Evolução Temporal")
+                        grafico_canais = gr.Plot()
+                        grafico_evolucao = gr.Plot()
                 
-                # TAB 3: PAINEL OPERACIONAL
-                with gr.TabItem("⚡ Operacional (Execução)"):
-                    with gr.Row():
-                        with gr.Column(scale=1):
-                            alertas_operacional = gr.CheckboxGroup(
-                                choices=["Oportunidades", "Riscos", "Follow-ups", "Todos"],
-                                value=["Oportunidades", "Riscos"],
-                                label="Tipos de Alertas"
-                            )
-                            btn_operacional = gr.Button("Atualizar Alertas", variant="primary")
-                        
-                        with gr.Column(scale=2):
-                            tabela_leads = gr.Dataframe(
-                                label="Leads Prioritários",
-                                headers=["Segmento", "Valor Estimado", "Classe", "ROI"],
-                                datatype=["str", "number", "str", "number"]
-                            )
+                # TAB OPERACIONAL
+                with gr.TabItem("⚡ Operacional"):
+                    tipo_alerta = gr.CheckboxGroup(
+                        choices=["Oportunidades", "Riscos", "Follow-ups"],
+                        value=["Oportunidades"],
+                        label="Alertas"
+                    )
+                    
+                    btn_operacional = gr.Button("Atualizar", variant="primary")
                     
                     with gr.Row():
-                        with gr.Column():
-                            grafico_alertas = gr.Plot(label="Distribuição de Alertas")
-                        with gr.Column():
-                            acoes_operacional = gr.Markdown(label="Ações Recomendadas")
+                        tabela_leads = gr.Dataframe(
+                            headers=["Segmento", "Valor", "Classe", "ROI"]
+                        )
+                        grafico_alertas = gr.Plot()
+                    
+                    acoes_recomendadas = gr.Markdown()
             
-            # Conectores de Eventos
+            # Event Handlers
             btn_estrategico.click(
-                fn=self.criar_dashboard_estrategico,
-                inputs=[segmentos_estrategico, periodo_estrategico],
-                outputs=[kpis_estrategico, grafico_segmentos, grafico_portfolio, recomendacoes_estrategico]
+                self.criar_dashboard_estrategico,
+                [segmentos, periodo],
+                [kpis_estrategico, grafico_segmentos, grafico_portfolio, recomendacoes]
             )
             
             btn_tatico.click(
-                fn=self.criar_dashboard_tatico,
-                inputs=[canal_tatico, metricas_tatico],
-                outputs=[kpis_tatico, grafico_canais, grafico_evolucao]
+                self.criar_dashboard_tatico,
+                [canal, metrica],
+                [kpis_tatico, grafico_canais, grafico_evolucao]
             )
             
             btn_operacional.click(
-                fn=self.criar_dashboard_operacional,
-                inputs=[alertas_operacional],
-                outputs=[tabela_leads, grafico_alertas, acoes_operacional]
-            )
-            
-            # Inicializar com dados padrão
-            dashboard.load(
-                fn=self.criar_dashboard_estrategico,
-                inputs=[segmentos_estrategico, periodo_estrategico],
-                outputs=[kpis_estrategico, grafico_segmentos, grafico_portfolio, recomendacoes_estrategico]
+                self.criar_dashboard_operacional,
+                [tipo_alerta],
+                [tabela_leads, grafico_alertas, acoes_recomendadas]
             )
         
         return dashboard
+    
+    def launch(self):
+        """Iniciar aplicação com configurações do Render"""
+        app = self.criar_interface()
+        app.launch(
+            server_name=self.server_name,
+            server_port=self.server_port,
+            share=False,
+            debug=False  # False para produção
+        )
 
-# Função principal
-def main():
-    dashboard_app = MulticlassGradioDashboard()
-    app = dashboard_app.criar_interface()
-    return app
-
+# Ponto de entrada otimizado para Render
 if __name__ == "__main__":
-    app = main()
-    app.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=False,
-        debug=True
-    )
+    print("🚀 Iniciando Sistema Multiclasse no Render...")
+    dashboard = MulticlassGradioDashboard()
+    dashboard.launch()
