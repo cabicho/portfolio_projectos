@@ -4,8 +4,10 @@ gradio==4.12.0
 # Data Processing
 #pandas==2.1.0
 pandas==1.5.3
-numpy==1.24.0
-scikit-learn==1.3.0
+#numpy==1.24.0
+numpy==1.23.5
+#scikit-learn==1.3.0
+scikit-learn==1.2.2
 
 # Visualizations
 plotly==5.15.0
@@ -13,8 +15,13 @@ plotly-express==0.4.1
 
 # Utilities
 requests==2.31.0
-joblib==1.3.0
-scipy==1.11.0
+#joblib==1.3.0
+joblib==1.2.0
+#scipy==1.11.0
+scipy==1.10.1
+
+setuptools==65.5.0
+wheel==0.38.4
 
 # Database (Opcional)
 psycopg2-binary==2.9.7

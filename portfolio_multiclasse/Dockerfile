@@ -3,6 +3,8 @@ FROM python:3.9-slim
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
@@ -13,6 +15,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instalar dependências Python
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar código da aplicação

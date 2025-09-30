@@ -2,20 +2,23 @@
 services:
   - type: web
     name: multiclass-gradio-dashboard
-    env: python
+    #env: python
+    env: docker
+    docker: #Dockerfile-gradio
+      dockerfile: Dockerfile 
     plan: free
     # ← FORÇAR VERSÃO AQUI
-    pythonVersion: "3.9.18"  
+    #pythonVersion: "3.9.18"  
 
     #rootDir: portfolio_projectos/portfolio_multiclasse
     # Comandos que entram na subpasta do projeto
     # buildCommand: pip install --upgrade pip setuptools wheel
-    buildCommand: |
-      cd portfolio_multiclasse
-      pip install -r requirements.txt
-    startCommand: |
-      cd portfolio_multiclasse
-      python app_gradio.py
+    #buildCommand: |
+    #  cd portfolio_multiclasse
+    #  pip install -r requirements.txt
+    #startCommand: |
+    #  cd portfolio_multiclasse
+    #  python app_gradio.py
 
     envVars:
       #- key: PYTHON_VERSION
