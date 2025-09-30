@@ -1,12 +1,19 @@
 # render.yaml (na raiz do repositório)
 services:
   - type: web
-    name: multiclass-dashboard
+    name: multiclass-gradio-dashboard
     env: python
     plan: free
-    rootDir: portfolio_projectos/portfolio_multiclasse
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app_gradio.py
+
+    #rootDir: portfolio_projectos/portfolio_multiclasse
+    # Comandos que entram na subpasta do projeto
+    buildCommand: |
+      cd portfolio_multiclasse
+      pip install -r requirements.txt
+    startCommand: |
+      cd portfolio_multiclasse
+      python app_gradio.py
+
     envVars:
       - key: GRADIO_SERVER_PORT
         value: 10000
