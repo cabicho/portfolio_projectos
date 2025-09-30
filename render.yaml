@@ -2,7 +2,7 @@
 services:
   - type: web
     name: multiclass-gradio-dashboard
-    env: python
+    env: docker
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python app_gradio.py
@@ -15,19 +15,3 @@ services:
         value: 10000
     healthCheckPath: /
     autoDeploy: true
-
-  # Serviço de Banco de Dados ( Opcional)
-  - type: postgres
-    name: multiclass-db
-    plan: free
-    ipAllowList: []
-    databases:
-      - name: multiclass_main
-        databaseName: multiclass_db
-        user: multiclass_user
-
-  # Serviço Redis para Cache ( Opcional)
-  - type: redis
-    name: multiclass-cache
-    plan: free
-    ipAllowList: []
