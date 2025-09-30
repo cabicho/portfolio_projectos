@@ -1,4 +1,3 @@
-# render.yaml (na raiz do repositório)
 services:
   - type: web
     name: multiclass-gradio-dashboard
