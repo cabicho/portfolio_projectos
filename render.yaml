@@ -2,11 +2,10 @@
 services:
   - type: web
     name: multiclass-gradio-dashboard
-    #env: python
     env: docker
-    docker: #Dockerfile-gradio
+    docker:
       dockerfile: Dockerfile 
-    plan: free
+    #plan: free
     # ← FORÇAR VERSÃO AQUI
     #pythonVersion: "3.9.18"  
 
