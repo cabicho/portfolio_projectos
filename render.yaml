@@ -4,9 +4,12 @@ services:
     name: multiclass-gradio-dashboard
     env: python
     plan: free
+    # ← FORÇAR VERSÃO AQUI
+    pythonVersion: "3.9.18"  
 
     #rootDir: portfolio_projectos/portfolio_multiclasse
     # Comandos que entram na subpasta do projeto
+    # buildCommand: pip install --upgrade pip setuptools wheel
     buildCommand: |
       cd portfolio_multiclasse
       pip install -r requirements.txt
@@ -15,6 +18,8 @@ services:
       python app_gradio.py
 
     envVars:
+      #- key: PYTHON_VERSION
+      #  value: 3.9.18
       - key: GRADIO_SERVER_NAME
         value: 0.0.0.0
       - key: GRADIO_SERVER_PORT
