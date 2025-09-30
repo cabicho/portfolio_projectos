@@ -5,4 +5,7 @@ services:
     dockerfile: Dockerfile
     envVars:
       - key: GRADIO_SERVER_PORT
-        value: 10000
+        value: "10000"
+    plans:
+      - name: starter
+    numInstances: 1
