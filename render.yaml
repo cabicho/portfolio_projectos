@@ -2,10 +2,22 @@ services:
   - type: web
     name: multiclass-gradio-dashboard
     env: docker
-    dockerfile: Dockerfile
+    repo: https://github.com/cabicho/portfolio_projectos
+    buildCommand: ""
+    startCommand: "python app.py"
+    plan: free
     envVars:
       - key: GRADIO_SERVER_PORT
         value: "10000"
-    plan: free
-    numInstances: 1
-    healthCheckPath: /
+
+#services:
+#  - type: web
+#    name: multiclass-gradio-dashboard
+#    env: docker
+#    dockerfile: Dockerfile
+#    envVars:
+#      - key: GRADIO_SERVER_PORT
+#        value: "10000"
+#    plan: free
+#    numInstances: 1
+#    healthCheckPath: /
