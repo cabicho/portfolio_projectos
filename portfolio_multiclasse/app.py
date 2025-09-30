@@ -1,231 +1,205 @@
-import streamlit as st
+import gradio as gr
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from src.data_loader import DataLoader
-from src.model import MulticlassModel
-from src.visualizations import create_strategic_visualizations
+import numpy as np
+from sklearn.datasets import make_classification
 import os
-import base64
 
-# Configuração da página para melhor performance
-st.set_page_config(
-    page_title="Sistema Multiclasse Estratégico",
-    page_icon="🎯",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# Configuração da porta para Render
+port = int(os.getenv("PORT", 10000))
 
-# Cache para melhor performance no Render
-@st.cache_data(show_spinner=False)
-def load_data():
-    """Carrega dados com cache para performance"""
-    loader = DataLoader()
-    return loader.load_public_data()
-
-@st.cache_resource(show_spinner=False)
-def load_model():
-    """Carrega modelo com cache"""
-    return MulticlassModel()
-
-def add_logo():
-    """Adiciona logo personalizado"""
-    logo_path = os.path.join("assets", "logo.png")
-    if os.path.exists(logo_path):
-        st.sidebar.image(logo_path, width=200)
-
-class MulticlassDashboard:
-    def __init__(self):
-        self.data = load_data()
-        self.model = load_model()
-        
-    def run(self):
-        # Sidebar com navegação
-        add_logo()
-        st.sidebar.title("🧭 Navegação Estratégica")
-        
-        # Seleção de nível de acesso
-        nivel_acesso = st.sidebar.radio(
-            "Selecione seu Nível:",
-            ["🎯 Estratégico", "📊 Tático", "⚡ Operacional"],
-            index=0
-        )
-        
-        # Filtros dinâmicos
-        st.sidebar.subheader("🔍 Filtros de Análise")
-        segmentos = st.sidebar.multiselect(
-            "Segmentos:",
-            options=self.data['segmento'].unique(),
-            default=self.data['segmento'].unique()[:2]
-        )
-        
-        # Aplicar filtros
-        dados_filtrados = self.data[self.data['segmento'].isin(segmentos)]
-        
-        # Renderizar painel baseado no nível
-        if nivel_acesso == "🎯 Estratégico":
-            self.render_strategic_panel(dados_filtrados)
-        elif nivel_acesso == "📊 Tático":
-            self.render_tactical_panel(dados_filtrados)
-        else:
-            self.render_operational_panel(dados_filtrados)
+def create_sample_data():
+    """Cria dados de exemplo para classificação multiclasse"""
+    X, y = make_classification(
+        n_samples=1000,
+        n_features=4,
+        n_informative=2,
+        n_redundant=0,
+        n_repeated=0,
+        n_classes=3,
+        n_clusters_per_class=1,
+        random_state=42
+    )
     
-    def render_strategic_panel(self, data):
-        st.title("🎯 Painel Estratégico - Visão C-Level")
-        
-        # KPIs em colunas
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.metric(
-                "ROI Portfolio", 
-                "24.3%", 
-                "+5.2%",
-                help="Retorno sobre investimento do portfólio atual"
-            )
-        
-        with col2:
-            st.metric(
-                "Market Share", 
-                "18.7%", 
-                "+2.1%",
-                help="Participação de mercado total"
-            )
-        
-        with col3:
-            st.metric(
-                "Eficiência Capital", 
-                "32.1%", 
-                "+8.7%",
-                help="Eficiência na alocação de capital"
-            )
-        
-        with col4:
-            st.metric(
-                "Crescimento Estratégico", 
-                "15.8%", 
-                "+3.4%",
-                help="Taxa de crescimento em mercados estratégicos"
-            )
-        
-        # Visualizações estratégicas
-        st.subheader("📈 Análise de Portfolio Estratégico")
-        
-        col_viz1, col_viz2 = st.columns(2)
-        
-        with col_viz1:
-            fig_segmentos = self.create_segment_heatmap(data)
-            st.plotly_chart(fig_segmentos, use_container_width=True)
-        
-        with col_viz2:
-            fig_portfolio = self.create_portfolio_analysis(data)
-            st.plotly_chart(fig_portfolio, use_container_width=True)
-        
-        # Recomendações estratégicas
-        st.subheader("💡 Recomendações Estratégicas")
-        self.show_strategic_recommendations(data)
+    feature_names = [f"Feature_{i+1}" for i in range(X.shape[1])]
+    df = pd.DataFrame(X, columns=feature_names)
+    df['Target'] = y
+    df = df.round(3)
     
-    def create_segment_heatmap(self, data):
-        """Cria mapa de calor de segmentos"""
-        segment_summary = data.groupby('segmento').agg({
-            'valor_estimado': 'sum',
-            'crescimento_projetado': 'mean',
-            'roi_esperado': 'mean'
-        }).reset_index()
+    return df
+
+def predict_class(feature1, feature2, feature3, feature4):
+    """Função de predição simulada"""
+    # Simulação de um modelo de machine learning
+    np.random.seed(hash(f"{feature1}{feature2}{feature3}{feature4}") % 10000)
+    prediction = np.random.randint(0, 3)
+    probabilities = np.random.dirichlet(np.ones(3), size=1)[0]
+    
+    classes = ['Classe A', 'Classe B', 'Classe C']
+    
+    result = {
+        "Predição": classes[prediction],
+        "Confiança": f"{probabilities[prediction]:.2%}",
+        "Detalhes das Probabilidades": {
+            classes[i]: f"{prob:.3f}" for i, prob in enumerate(probabilities)
+        }
+    }
+    
+    return result
+
+def show_data_sample(n_samples=10):
+    """Mostra uma amostra dos dados"""
+    df = create_sample_data()
+    return df.head(n_samples)
+
+def generate_stats():
+    """Gera estatísticas dos dados"""
+    df = create_sample_data()
+    stats = {
+        "Estatísticas Gerais": {
+            "Total de Amostras": len(df),
+            "Número de Features": 4,
+            "Número de Classes": 3,
+            "Classes": ["A", "B", "C"]
+        },
+        "Estatísticas Descritivas": df.describe().round(3).to_dict()
+    }
+    correlation = df.corr().round(3)
+    return stats, correlation
+
+# Criar a interface Gradio
+with gr.Blocks(
+    title="Dashboard Multiclasse - Docker no Render",
+    theme=gr.themes.Soft(),
+    css="""
+    .gradio-container {
+        max-width: 1200px !important;
+    }
+    """
+) as demo:
+    
+    gr.Markdown(
+        """
+        # 🎯 Dashboard de Classificação Multiclasse
+        ## 🐋 **Deploy com Dockerfile no Render**
         
-        fig = px.treemap(
-            segment_summary,
-            path=['segmento'],
-            values='valor_estimado',
-            color='crescimento_projetado',
-            color_continuous_scale='RdYlGn',
-            title='Mapa de Valor por Segmento Estratégico'
+        *Sistema de demonstração para classificação multiclasse usando Gradio*
+        """
+    )
+    
+    with gr.Tab("🎯 Predição Interativa"):
+        with gr.Row():
+            with gr.Column():
+                gr.Markdown("### 🔧 Configure as Features:")
+                with gr.Row():
+                    feature1 = gr.Slider(-4, 4, value=0.5, label="Feature 1", step=0.1)
+                    feature2 = gr.Slider(-4, 4, value=-0.2, label="Feature 2", step=0.1)
+                with gr.Row():
+                    feature3 = gr.Slider(-4, 4, value=1.2, label="Feature 3", step=0.1)
+                    feature4 = gr.Slider(-4, 4, value=-1.0, label="Feature 4", step=0.1)
+                
+                predict_btn = gr.Button("🔮 Executar Predição", variant="primary", size="lg")
+            
+            with gr.Column():
+                gr.Markdown("### 📊 Resultado da Predição:")
+                output = gr.JSON(label="Detalhes da Predição")
+                
+                gr.Markdown("### 📈 Informações Técnicas:")
+                gr.Markdown("""
+                - **Modelo**: Simulação de Classificação Multiclasse
+                - **Classes**: A, B, C
+                - **Features**: 4 características numéricas
+                - **Deploy**: Docker no Render
+                """)
+        
+        predict_btn.click(
+            fn=predict_class,
+            inputs=[feature1, feature2, feature3, feature4],
+            outputs=output
         )
-        return fig
     
-    def create_portfolio_analysis(self, data):
-        """Cria análise de portfolio"""
-        fig = go.Figure()
-        
-        # Agrupar por classe predita
-        for classe in data['classe_predita'].unique():
-            dados_classe = data[data['classe_predita'] == classe]
-            fig.add_trace(go.Scatter(
-                x=dados_classe['potencial_mercado'],
-                y=dados_classe['roi_esperado'],
-                mode='markers',
-                name=classe,
-                marker=dict(
-                    size=dados_classe['tamanho_oportunidade'],
-                    sizemode='area',
-                    sizeref=2.*max(dados_classe['tamanho_oportunidade'])/(40.**2),
-                    sizemin=4
+    with gr.Tab("📁 Dados e Amostras"):
+        with gr.Row():
+            with gr.Column():
+                gr.Markdown("### 📋 Controle de Amostras:")
+                data_count = gr.Slider(5, 50, value=10, label="Número de Amostras", step=5)
+                data_btn = gr.Button("🔄 Carregar Dados", variant="secondary", size="lg")
+            
+            with gr.Column():
+                gr.Markdown("### 📊 Visualização de Dados:")
+                data_output = gr.Dataframe(
+                    label="Amostra dos Dados Gerados",
+                    headers=["Feature_1", "Feature_2", "Feature_3", "Feature_4", "Target"],
+                    datatype=["number", "number", "number", "number", "number"],
+                    row_count=5,
+                    col_count=5,
+                    wrap=True
                 )
-            ))
         
-        fig.update_layout(
-            title='Análise Strategic Portfolio - Potencial vs ROI',
-            xaxis_title='Potencial de Mercado',
-            yaxis_title='ROI Esperado (%)',
-            hovermode='closest'
-        )
-        return fig
-    
-    def show_strategic_recommendations(self, data):
-        """Exibe recomendações estratégicas"""
-        recommendations = [
-            {
-                "prioridade": "Alta",
-                "categoria": "Alocação de Capital",
-                "recomendacao": "Aumentar investimento em segmento B2B Enterprise em 25%",
-                "impacto_esperado": "+15% ROI",
-                "prazo": "Q1 2024"
-            },
-            {
-                "prioridade": "Média",
-                "categoria": "Expansão de Mercado",
-                "recomendacao": "Explorar mercado LATAM com foco em Brasil e México",
-                "impacto_esperado": "+8% Market Share",
-                "prazo": "Q2 2024"
-            },
-            {
-                "prioridade": "Alta",
-                "categoria": "Otimização de Portfolio",
-                "recomendacao": "Descontinuar produtos com ROI < 5%",
-                "impacto_esperado": "+12% Eficiência",
-                "prazo": "Q1 2024"
-            }
-        ]
-        
-        rec_df = pd.DataFrame(recommendations)
-        st.dataframe(
-            rec_df,
-            column_config={
-                "prioridade": st.column_config.TextColumn("Prioridade"),
-                "categoria": st.column_config.TextColumn("Categoria"),
-                "recomendacao": st.column_config.TextColumn("Recomendação"),
-                "impacto_esperado": st.column_config.TextColumn("Impacto Esperado"),
-                "prazo": st.column_config.TextColumn("Prazo")
-            },
-            hide_index=True,
-            use_container_width=True
+        data_btn.click(
+            fn=lambda n: show_data_sample(int(n)),
+            inputs=[data_count],
+            outputs=data_output
         )
     
-    def render_tactical_panel(self, data):
-        st.title("📊 Painel Tático - Visão Gerencial")
-        # Implementação similar para nível tático
-        pass
+    with gr.Tab("📈 Análise Estatística"):
+        gr.Markdown("### 📊 Estatísticas Descritivas")
+        stats_btn = gr.Button("📋 Gerar Análise Estatística", variant="primary")
+        
+        with gr.Row():
+            with gr.Column():
+                stats_output = gr.JSON(label="Estatísticas dos Dados")
+            with gr.Column():
+                correlation_output = gr.Dataframe(
+                    label="Matriz de Correlação",
+                    headers=["F1", "F2", "F3", "F4", "Target"],
+                    row_count=5,
+                    col_count=5
+                )
+        
+        stats_btn.click(
+            fn=generate_stats,
+            outputs=[stats_output, correlation_output]
+        )
     
-    def render_operational_panel(self, data):
-        st.title("⚡ Painel Operacional - Visão Execução")
-        # Implementação similar para nível operacional
-        pass
+    with gr.Tab("🐋 Sobre o Deploy"):
+        gr.Markdown(
+            """
+            ## 🚀 Configuração Docker no Render
+            
+            ### 📦 Estrutura do Projeto:
+            ```
+            portfolio_multiclasse_gradfo/
+            ├── Dockerfile          # Configuração do container
+            ├── requirements.txt    # Dependências Python
+            ├── app.py             # Aplicação Gradio
+            └── (sem render.yaml)   # Deploy manual
+            ```
+            
+            ### 🔧 Tecnologias Utilizadas:
+            - **Python 3.9** (runtime)
+            - **Gradio 4.13.0** (interface web)
+            - **Pandas & NumPy** (processamento de dados)
+            - **Scikit-learn** (geração de dados)
+            - **Docker** (containerização)
+            
+            ### 🌐 Configuração de Rede:
+            - **Porta**: 10000 (configurável via variável PORT)
+            - **Health Check**: Automático via curl
+            - **Protocol**: HTTP
+            
+            ### ✅ Status do Deploy:
+            - **Container**: 🐋 Dockerfile
+            - **Platform**: Render.com
+            - **Config**: Manual (sem render.yaml)
+            - **Health**: ✅ Monitorado
+            """
+        )
 
-# Ponto de entrada da aplicação
 if __name__ == "__main__":
-    # Verifica se está rodando no Render
-    if 'RENDER' in os.environ:
-        st.info("🚀 Aplicação rodando no Render Cloud")
-    
-    dashboard = MulticlassDashboard()
-    dashboard.run()
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=port,
+        share=False,
+        show_error=True,
+        debug=False
+    )
