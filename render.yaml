@@ -3,6 +3,6 @@ services:
     name: multiclass-gradio-dashboard
     env: docker
     dockerfile: Dockerfile
-    plan: free
-    rootDir: portfolio_projectos/portfolio_multiclasse
-    autoDeploy: true
+    envVars:
+      - key: GRADIO_SERVER_PORT
+        value: 10000
