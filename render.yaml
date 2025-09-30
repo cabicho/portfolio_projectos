@@ -1,32 +1,11 @@
 services:
   - type: web
-    plan: free
-    name: multiclass-gradio-dashboard-gradio
-#    env: docker
-    repo: https://github.com/render-examples/django.git
-#    docker:
-#    dockerfile: Dockerfile
-#    buildCommand: './build.sh'
-#    startCommand: 'python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker'
-#    envVars:
-#      - key: DATABASE_URL
-#        fromDatabase:
-#          name: django-app-db
-#          property: connectionString
-
-#databases:
-#  - name: django-app-db
-#    plan: free
-
-#services:
-#  - type: web
-#    name: multiclass-gradio-dashboard
+    name: multiclass-gradio-dashboard
     env: docker
-    docker:
-      dockerfile: Dockerfile
-#    envVars:
-#      - key: GRADIO_SERVER_PORT
-#        value: "10000"
-#    plan: free
-#    numInstances: 1
-#    healthCheckPath: /
+    dockerfile: Dockerfile
+    envVars:
+      - key: GRADIO_SERVER_PORT
+        value: "10000"
+    plan: free
+    numInstances: 1
+    healthCheckPath: /
