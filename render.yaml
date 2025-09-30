@@ -5,4 +5,5 @@ services:
     env: docker
     dockerfile: Dockerfile
     plan: free
-    # rootDir: portfolio_projectos/portfolio_multiclasse
+    rootDir: portfolio_projectos/portfolio_multiclasse
+    autoDeploy: true
