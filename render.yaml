@@ -3,8 +3,8 @@ services:
     name: multiclass-gradio-dashboard
     env: docker
     repo: https://github.com/cabicho/portfolio_projectos
-    buildCommand: ""
-    startCommand: "python app.py"
+#    buildCommand: ""
+#    startCommand: "python app.py"
     plan: free
     envVars:
       - key: GRADIO_SERVER_PORT
