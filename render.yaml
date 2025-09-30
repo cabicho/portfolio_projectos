@@ -1,0 +1,23 @@
+# render.yaml (na raiz do repositório)
+services:
+  - type: web
+    name: multiclass-dashboard
+    env: python
+    plan: free
+    rootDir: portfolio_projectos/portfolio_multiclasse
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app_gradio.py
+    envVars:
+      - key: GRADIO_SERVER_PORT
+        value: 10000
+
+  - type: web
+    name: outro-projeto
+    env: python
+    plan: free
+    rootDir: projetos/outro_projeto
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
