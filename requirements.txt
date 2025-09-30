@@ -3,3 +3,9 @@ pandas==1.5.3
 numpy==1.23.5
 plotly==5.15.0
 requests==2.31.0
+setuptools>=45.0
+wheel
+#gradio
+#numpy
+#pandas
+scikit-learn
