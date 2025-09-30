@@ -4,7 +4,7 @@ services:
     name: multiclass-gradio-dashboard-gradio
     env: docker
     repo: https://github.com/render-examples/django.git
-    #docker:
+#    docker:
     dockerfile: Dockerfile
 #    buildCommand: './build.sh'
 #    startCommand: 'python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker'
