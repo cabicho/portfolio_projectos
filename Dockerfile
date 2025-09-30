@@ -4,4 +4,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 10000
-CMD ["python", "app_gradio.py"]
+CMD ["python", "portfolio_multiclasse/app_gradio.py"]
