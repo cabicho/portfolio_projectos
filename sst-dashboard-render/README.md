@@ -1,18 +1,14 @@
-# 📊 Dashboard SST - Saúde e Segurança no Trabalho
+# 📊 SST Dashboard - Portfolio Projecto
 
-Sistema completo para análise e predição de métricas de Saúde e Segurança no Trabalho com impacto financeiro.
+**🔗 Repositório:** [https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render](https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render)
 
-## 🚀 Quick Start
+Sistema completo para análise preditiva de métricas de Saúde e Segurança no Trabalho com impacto financeiro.
 
-### Pré-requisitos
-- Docker
-- Docker Compose
+## 🚀 Deploy no Render
 
-### Deploy Rápido
+### Deploy Automático
 
 ```bash
-# 1. Executar script de deploy
-./deploy.sh
-
-# 2. Acessar o dashboard
-# http://localhost:7860
+# Executar script de deploy
+chmod +x deploy-render.sh
+./deploy-render.sh

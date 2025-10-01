@@ -1,0 +1,24 @@
+FROM redis:7-alpine
+
+# Configurações otimizadas para Render Free
+RUN echo "bind 0.0.0.0" >> /etc/redis/redis.conf && \
+    echo "port 10000" >> /etc/redis/redis.conf && \
+    echo "timeout 0" >> /etc/redis/redis.conf && \
+    echo "tcp-keepalive 300" >> /etc/redis/redis.conf && \
+    echo "save 900 1" >> /etc/redis/redis.conf && \
+    echo "save 300 10" >> /etc/redis/redis.conf && \
+    echo "save 60 10000" >> /etc/redis/redis.conf && \
+    echo "stop-writes-on-bgsave-error yes" >> /etc/redis/redis.conf && \
+    echo "rdbcompression yes" >> /etc/redis/redis.conf && \
+    echo "rdbchecksum yes" >> /etc/redis/redis.conf && \
+    echo "dbfilename dump.rdb" >> /etc/redis/redis.conf && \
+    echo "dir /data" >> /etc/redis/redis.conf && \
+    echo "maxmemory 128mb" >> /etc/redis/redis.conf && \
+    echo "maxmemory-policy allkeys-lru" >> /etc/redis/redis.conf && \
+    echo "appendonly yes" >> /etc/redis/redis.conf && \
+    echo "appendfilename \"appendonly.aof\"" >> /etc/redis/redis.conf && \
+    echo "appendfsync everysec" >> /etc/redis/redis.conf
+
+EXPOSE 10000
+
+CMD ["redis-server", "/etc/redis/redis.conf"]
