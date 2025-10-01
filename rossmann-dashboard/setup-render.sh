@@ -1,3 +1,101 @@
+#!/bin/bash
+# setup-render.sh
+#Execute o script de setup:
+
+#chmod +x setup-render.sh
+#./setup-render.sh
+
+echo "🚀 Preparando projeto para deploy no Render..."
+
+# Criar estrutura de diretórios
+mkdir -p api
+
+# Criar arquivos necessários
+echo "📁 Criando estrutura de arquivos..."
+
+# Criar render.yaml (já feito acima)
+
+# Criar api/app.py
+cat > api/app.py << 'EOF'
+from flask import Flask, jsonify
+import pandas as pd
+from datetime import datetime
+
+app = Flask(__name__)
+
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
+
+@app.route('/api/kpis')
+def get_kpis():
+    kpis = {
+        "total_revenue": 285982336,
+        "eligible_stores": 1247,
+        "model_accuracy": 89.2,
+        "attention_stores": 84
+    }
+    return jsonify(kpis)
+
+@app.route('/api/predictions')
+def get_predictions():
+    predictions = [
+        {"week": 1, "revenue": 48500000},
+        {"week": 2, "revenue": 47200000},
+        {"week": 3, "revenue": 46800000},
+        {"week": 4, "revenue": 47500000},
+        {"week": 5, "revenue": 48000000},
+        {"week": 6, "revenue": 47900000}
+    ]
+    return jsonify(predictions)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)
+EOF
+
+# Criar build_assets.py
+cat > build_assets.py << 'EOF'
+import os
+import shutil
+
+def build_assets():
+    """Copia assets para o diretório correto no build do Render"""
+    if not os.path.exists('assets'):
+        os.makedirs('assets')
+    
+    if os.path.exists('assets/styles.css'):
+        print("✅ Assets CSS encontrados")
+    else:
+        with open('assets/styles.css', 'w') as f:
+            f.write("/* CSS do Dashboard Rossmann */\n")
+        print("📁 CSS básico criado")
+    
+    print("✅ Build de assets concluído")
+
+if __name__ == '__main__':
+    build_assets()
+EOF
+
+# Criar worker.py
+cat > worker.py << 'EOF'
+import time
+import os
+
+def main():
+    print("🚀 Worker Rossmann iniciado")
+    while True:
+        print("🤖 Worker rodando...", time.ctime())
+        time.sleep(60)
+
+if __name__ == '__main__':
+    main()
+EOF
+
+# Criar runtime.txt
+echo "python-3.9.0" > runtime.txt
+
+# Atualizar app.py para produção
+cat > app.py << 'EOF'
 """
 Dashboard Executivo - Rossmann - Versão Render
 """
@@ -99,3 +197,13 @@ server = app.server
 if __name__ == '__main__':
     print(f"🚀 Iniciando no Render - Porta: {PORT}")
     app.run_server(debug=DEBUG, host='0.0.0.0', port=PORT)
+EOF
+
+echo "✅ Setup para Render concluído!"
+echo ""
+echo "📋 Próximos passos:"
+echo "1. git add ."
+echo "2. git commit -m 'Preparar para deploy no Render'"
+echo "3. git push"
+echo "4. Conectar repositório no Render.com"
+echo "5. Deploy automático!"

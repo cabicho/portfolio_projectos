@@ -1,0 +1,61 @@
+# render.yaml
+services:
+  # Backend API Flask
+  - type: web
+    name: rossmann-api
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: python api/app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DASH_DEBUG_MODE
+        value: false
+      - key: FLASK_ENV
+        value: production
+    healthCheckPath: /health
+
+  # Frontend Dashboard
+  - type: web
+    name: rossmann-dashboard
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: |
+      pip install -r requirements.txt
+      python build_assets.py
+    startCommand: gunicorn app:server --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DASH_DEBUG_MODE
+        value: false
+      - key: PORT
+        value: 8050
+      - key: RENDER
+        value: true
+    healthCheckPath: /_dash-health-check
+    autoDeploy: true
+
+  # Worker para processamento em background (opcional)
+  - type: worker
+    name: rossmann-worker
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: python worker.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: RENDER
+        value: true
+
+# Databases (opcional para versões futuras)
+# databases:
+#   - name: rossmann-db
+#     databaseName: rossmann
+#     plan: free
+#     region: oregon

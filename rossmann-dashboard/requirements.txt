@@ -4,10 +4,9 @@ plotly==5.15.0
 pandas==2.0.3
 numpy==1.24.3
 requests==2.31.0
-gunicorn==21.2.0
-
 # Dependências para produção
 gunicorn==21.2.0
 
-# Dependências para produção
-gunicorn==21.2.0
+# adicionais for render.yaml 
+Flask==2.3.3
+Werkzeug==2.3.7
