@@ -1,0 +1,16 @@
+gradio==3.50.0
+pandas==2.0.3
+numpy==1.24.3
+plotly==5.15.0
+scikit-learn==1.3.0
+xgboost==1.7.5
+fastapi==0.104.0
+uvicorn==0.24.0
+sqlalchemy==2.0.20
+psycopg2-binary==2.9.7
+redis==5.0.1
+python-dotenv==1.0.0
+prometheus-client==0.17.1
+requests==2.31.0
+celery==5.3.4
+flower==2.0.0
