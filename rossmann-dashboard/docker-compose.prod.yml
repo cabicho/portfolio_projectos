@@ -1,0 +1,17 @@
+# docker-compose.prod.yml - Configurações de Produção
+version: '3.3'
+
+services:
+  rossmann-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DASH_DEBUG_MODE=False
+      - FLASK_ENV=production
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/_dash-health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

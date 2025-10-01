@@ -1,0 +1,218 @@
+/* Estilos customizados para o Dashboard Rossmann */
+
+:root {
+  --primary-color: #0066CC;
+  --secondary-color: #FF6600;
+  --success-color: #00CC66;
+  --warning-color: #FFAA00;
+  --danger-color: #CC3300;
+  --light-bg: #f8f9fa;
+  --dark-text: #2c3e50;
+}
+
+/* Layout Geral */
+.main-container {
+  background-color: var(--light-bg);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #004499 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* KPI Cards */
+.kpi-card {
+  background: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 100%;
+  border-left: 4px solid var(--primary-color);
+}
+
+.kpi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.kpi-icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.kpi-title {
+  color: var(--dark-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-value {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 2rem;
+  margin: 8px 0;
+  line-height: 1.2;
+}
+
+.kpi-trend {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 0.85rem;
+}
+
+.trend-icon {
+  margin-right: 4px;
+  font-size: 0.9rem;
+}
+
+.text-success {
+  color: var(--success-color) !important;
+  font-weight: 600;
+}
+
+.text-danger {
+  color: var(--danger-color) !important;
+  font-weight: 600;
+}
+
+.comparison-text {
+  margin-left: 4px;
+  font-size: 0.8rem;
+}
+
+.kpi-detail {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Filtros */
+.filter-label {
+  font-weight: 600;
+  color: var(--dark-text);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* Alertas */
+.alert-item {
+  margin-bottom: 12px;
+  border: none;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.alert-icon {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.alert-store {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.alert-message {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.alert-time {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.alert-details {
+  color: #6c757d;
+}
+
+.alerts-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Tabelas */
+.dash-table-container .dash-spreadsheet-container {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+/* Cards Gerais */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 1.25rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .main-container {
+    padding: 10px;
+  }
+  
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+  
+  .kpi-title {
+    font-size: 0.8rem;
+  }
+  
+  .dashboard-header {
+    padding: 1.5rem;
+  }
+}
+
+/* Animações */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.kpi-card.updating {
+  animation: pulse 1s ease-in-out;
+}
+
+/* Scrollbar customizada */
+.alerts-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.alerts-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.alerts-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.alerts-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

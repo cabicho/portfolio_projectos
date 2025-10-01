@@ -1,0 +1,26 @@
+# Dockerfile para Desenvolvimento - Dashboard Rossmann
+FROM python:3.9-slim
+
+ENV PYTHONUNBUFFERED=1
+ENV DASH_DEBUG_MODE=True
+ENV PORT=8050
+
+WORKDIR /app
+
+# Instala curl para health checks e ferramentas de desenvolvimento
+RUN apt-get update && apt-get install -y \
+    curl \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia requirements primeiro para cache
+COPY requirements.txt .
+
+# Instala dependências
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expõe porta
+EXPOSE 8050
+
+# Comando para desenvolvimento (hot-reload automático)
+CMD ["python", "app.py"]

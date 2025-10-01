@@ -1,0 +1,20 @@
+# docker-compose.override.yml - Configurações de Desenvolvimento
+version: '3.3'
+
+services:
+  rossmann-dashboard-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - DASH_DEBUG_MODE=True
+      - FLASK_ENV=development
+    volumes:
+      - .:/app
+    command: python app.py
+
+  rossmann-dashboard:
+    environment:
+      - DASH_DEBUG_MODE=False
+      - FLASK_ENV=production
+    restart: always

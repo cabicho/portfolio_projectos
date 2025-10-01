@@ -1,0 +1,57 @@
+# docker-compose.yml - Versão compatível
+version: '3.3'
+
+services:
+  # Serviço de Produção
+  rossmann-dashboard:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: rossmann-dashboard-prod
+    ports:
+      - "8050:8050"
+    environment:
+      - DASH_DEBUG_MODE=False
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/_dash-health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "description=Rossmann Dashboard Production"
+      - "version=1.0"
+
+  # Serviço de Desenvolvimento
+  rossmann-dashboard-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: rossmann-dashboard-dev
+    ports:
+      - "8050:8050"
+    environment:
+      - DASH_DEBUG_MODE=True
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./components:/app/components
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./app.py:/app/app.py
+      - ./run.py:/app/run.py
+    stdin_open: true
+    tty: true
+
+  # Serviço para testes
+  rossmann-dashboard-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: rossmann-dashboard-test
+    ports:
+      - "8051:8050"
+    environment:
+      - DASH_DEBUG_MODE=True
+      - PYTHONUNBUFFERED=1
+    command: ["python", "-c", "print('Tests would run here')"]

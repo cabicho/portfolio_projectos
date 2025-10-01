@@ -1,0 +1,152 @@
+"""
+Dashboard Executivo - Rossmann Sales Prediction
+Otimizado para Docker
+"""
+
+import os
+import dash
+import dash_bootstrap_components as dbc
+from dash import html, dcc
+
+# Configurações Docker
+DEBUG = os.getenv('DASH_DEBUG_MODE', 'False').lower() == 'true'
+HOST = '0.0.0.0'
+PORT = int(os.getenv('PORT', 8050))
+
+# Importações dos componentes
+try:
+    from components.kpi_cards import initialize_kpi_cards
+    from components.trend_chart import create_trend_chart
+    from components.heat_map import create_heat_map
+    from components.alerts_panel import create_alerts_panel
+    from components.comparison_table import create_comparison_table
+    from components.filters import create_filters_component
+except ImportError as e:
+    print(f"Erro ao importar componentes: {e}")
+    # Fallback para desenvolvimento
+    def initialize_kpi_cards(app): return html.Div("Loading...")
+    def create_trend_chart(): return html.Div("Loading...")
+    def create_heat_map(): return html.Div("Loading...")
+    def create_alerts_panel(): return html.Div("Loading...")
+    def create_comparison_table(): return html.Div("Loading...")
+    def create_filters_component(): return html.Div("Loading...")
+
+# Configuração da aplicação
+app = dash.Dash(
+    __name__,
+    external_stylesheets=[
+        dbc.themes.BOOTSTRAP,
+        dbc.icons.FONT_AWESOME
+    ],
+    meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ]
+)
+
+app.title = "📊 Rossmann - Dashboard Executivo"
+app._favicon = "assets/favicon.ico" if os.path.exists("assets/favicon.ico") else None
+
+# Layout principal
+app.layout = dbc.Container([
+    
+    # Header
+    dbc.Row([
+        dbc.Col([
+            html.H1("📊 Dashboard Executivo - Rossmann", 
+                   className="text-center mb-2"),
+            html.P("Previsão de vendas para as próximas 6 semanas", 
+                  className="text-center text-muted mb-4"),
+            html.Div([
+                dbc.Badge("Docker", color="primary", className="me-2"),
+                dbc.Badge("Produção" if not DEBUG else "Desenvolvimento", 
+                         color="success" if not DEBUG else "warning")
+            ], className="text-center")
+        ], width=12)
+    ], className="dashboard-header"),
+    
+    # Componente de Filtros
+    create_filters_component(),
+    
+    # KPI Cards
+    initialize_kpi_cards(app),
+    
+    # Primeira linha de gráficos
+    dbc.Row([
+        dbc.Col(create_trend_chart(), width=6, className="mb-4"),
+        dbc.Col(create_heat_map(), width=6, className="mb-4"),
+    ]),
+    
+    # Segunda linha de componentes
+    dbc.Row([
+        dbc.Col(create_alerts_panel(), width=6, className="mb-4"),
+        dbc.Col(create_comparison_table(), width=6, className="mb-4"),
+    ]),
+    
+    # Footer
+    dbc.Row([
+        dbc.Col([
+            html.Hr(),
+            html.P([
+                "Desenvolvido com ❤️ para ",
+                html.Strong("Rossmann Sales Prediction"),
+                " | ",
+                html.Small("Container: ", id="container-info"),
+                html.Small(os.getenv('HOSTNAME', 'Unknown'), className="text-muted")
+            ], className="text-center text-muted")
+        ])
+    ]),
+    
+    # Componentes ocultos para atualização
+    dcc.Interval(id='interval-component', interval=60000, n_intervals=0),
+    dcc.Store(id='filter-store'),
+    dcc.Store(id='kpi-data-store')
+    
+], fluid=True, className="main-container")
+
+# Callback para container info
+@app.callback(
+    Output("container-info", "children"),
+    Input("interval-component", "n_intervals")
+)
+def update_container_info(n):
+    return f"Container: {os.getenv('HOSTNAME', 'Unknown')} | "
+
+# Registra callbacks
+def register_all_callbacks():
+    """Registra todos os callbacks da aplicação"""
+    try:
+        from components.kpi_cards import register_kpi_callbacks
+        from components.trend_chart import register_trend_callbacks
+        from components.heat_map import register_heatmap_callbacks
+        from components.alerts_panel import register_alerts_callbacks
+        from components.comparison_table import register_comparison_callbacks
+        
+        register_kpi_callbacks(app)
+        register_trend_callbacks(app)
+        register_heatmap_callbacks(app)
+        register_alerts_callbacks(app)
+        register_comparison_callbacks(app)
+        print("✅ Todos os callbacks registrados com sucesso")
+    except Exception as e:
+        print(f"⚠️ Erro ao registrar callbacks: {e}")
+
+# Registra callbacks
+register_all_callbacks()
+
+# Servidor para produção
+server = app.server
+
+if __name__ == '__main__':
+    print(f"🚀 Iniciando Dashboard Rossmann")
+    print(f"🔧 Debug: {DEBUG}")
+    print(f"🌐 Host: {HOST}")
+    print(f"📡 Porta: {PORT}")
+    print(f"🐳 Docker: {os.path.exists('/.dockerenv')}")
+    
+    app.run_server(
+        debug=DEBUG,
+        host=HOST,
+        port=PORT,
+        dev_tools_ui=DEBUG,
+        dev_tools_hot_reload=DEBUG
+    )
