@@ -13,7 +13,6 @@ services:
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-      python -c "import nltk; nltk.download('punkt')" 2>/dev/null || true
     startCommand: python dashboard_sst.py
     envVars:
       - key: PYTHON_VERSION
@@ -30,10 +29,6 @@ services:
         value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
     healthCheckPath: /
     autoDeploy: true
-    disk:
-      name: sst-data-cabicho
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
 
   # API de Predições (FastAPI)
   - type: web
@@ -80,15 +75,19 @@ services:
         value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
     autoDeploy: true
 
-  # Redis (Usando imagem Docker)
+  # Redis (Usando serviço web simples)
   - type: web
     name: sst-redis-cabicho
-    env: docker
+    env: python
     plan: free
     region: ohio
     branch: sst-dashboard
-    dockerfilePath: sst-dashboard-render/redis/Dockerfile.render
-    startCommand: redis-server --appendonly yes --save 60 1 --loglevel warning --maxmemory 128mb --maxmemory-policy allkeys-lru
+    rootDir: sst-dashboard-render/redis-server
+    buildCommand: pip install redis
+    startCommand: python redis_server.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
     healthCheckPath: /
     autoDeploy: true
 
