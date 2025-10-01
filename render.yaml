@@ -1,23 +1,68 @@
+# render.yaml
 services:
+  # Backend API Flask
   - type: web
-    name: multiclass-gradio-dashboard
-    env: docker
-    repo: https://github.com/cabicho/portfolio_projectos
-#    buildCommand: ""
-#    startCommand: "python app.py"
+    name: rossmann-api
+    env: python
     plan: free
+    region: oregon
+    rootDir: portfolio_projectos/rossmann-dashboard
+    buildCommand: |
+      cd portfolio_projectos/rossmann-dashboard
+      pip install -r requirements.txt
+    startCommand: |
+      cd portfolio_projectos/rossmann-dashboard
+      python api/app.py
     envVars:
-      - key: GRADIO_SERVER_PORT
-        value: "10000"
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DASH_DEBUG_MODE
+        value: false
+      - key: FLASK_ENV
+        value: production
+    healthCheckPath: /health
 
-#services:
-#  - type: web
-#    name: multiclass-gradio-dashboard
-#    env: docker
-#    dockerfile: Dockerfile
-#    envVars:
-#      - key: GRADIO_SERVER_PORT
-#        value: "10000"
-#    plan: free
-#    numInstances: 1
-#    healthCheckPath: /
+  # Frontend Dashboard
+  - type: web
+    name: rossmann-dashboard
+    env: python
+    plan: free
+    region: oregon
+    rootDir: portfolio_projectos/rossmann-dashboard
+    buildCommand: |
+      cd portfolio_projectos/rossmann-dashboard
+      pip install -r requirements.txt
+      python build_assets.py
+    startCommand: |
+      cd portfolio_projectos/rossmann-dashboard
+      gunicorn app:server --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DASH_DEBUG_MODE
+        value: false
+      - key: PORT
+        value: 8050
+      - key: RENDER
+        value: true
+    healthCheckPath: /_dash-health-check
+    autoDeploy: true
+
+  # Worker para processamento em background
+  - type: worker
+    name: rossmann-worker
+    env: python
+    plan: free
+    region: oregon
+    rootDir: portfolio_projectos/rossmann-dashboard
+    buildCommand: |
+      cd portfolio_projectos/rossmann-dashboard
+      pip install -r requirements.txt
+    startCommand: |
+      cd portfolio_projectos/rossmann-dashboard
+      python worker.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: RENDER
+        value: true
