@@ -1,54 +1,102 @@
 # render.yaml
+version: 1
+
 services:
+  # Dashboard Principal (Gradio)
   - type: web
-    name: rossmann-dashboard
+    name: sst-dashboard-cabicho
     env: python
     plan: free
+    region: ohio
+    branch: sst-dashboard
+    rootDir: sst-dashboard-render
     buildCommand: |
-      # Buscar e entrar no diretório do projeto
-      if [ -f "portfolio_projectos/rossmann-dashboard/requirements.txt" ]; then
-        cd portfolio_projectos/rossmann-dashboard
-      elif [ -f "rossmann-dashboard/requirements.txt" ]; then
-        cd rossmann-dashboard
-      elif [ -f "requirements.txt" ]; then
-        echo "✅ Usando diretório atual"
-      else
-        echo "🔍 Procurando requirements.txt..."
-        PROJECT_DIR=$(find . -name "requirements.txt" -exec dirname {} \; | head -1)
-        if [ -n "$PROJECT_DIR" ]; then
-          cd "$PROJECT_DIR"
-          echo "✅ Entrando em: $(pwd)"
-        else
-          echo "❌ requirements.txt não encontrado!"
-          exit 1
-        fi
-      fi
+      pip install --upgrade pip
       pip install -r requirements.txt
-    startCommand: |
-      # Mesma lógica para start
-      if [ -f "portfolio_projectos/rossmann-dashboard/app.py" ]; then
-        cd portfolio_projectos/rossmann-dashboard
-      elif [ -f "rossmann-dashboard/app.py" ]; then
-        cd rossmann-dashboard
-      elif [ -f "app.py" ]; then
-        echo "✅ Usando diretório atual"
-      else
-        echo "🔍 Procurando app.py..."
-        PROJECT_DIR=$(find . -name "app.py" -exec dirname {} \; | head -1)
-        if [ -n "$PROJECT_DIR" ]; then
-          cd "$PROJECT_DIR"
-          echo "✅ Entrando em: $(pwd)"
-        else
-          echo "❌ app.py não encontrado!"
-          exit 1
-        fi
-      fi
-      gunicorn app:server --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+      python -c "import nltk; nltk.download('punkt')" 2>/dev/null || true
+    startCommand: python dashboard_sst.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0
-      - key: DASH_DEBUG_MODE
-        value: false
-      - key: PORT
-        value: 8050
-    healthCheckPath: /_dash-health-check
+      - key: ENVIRONMENT
+        value: production
+      - key: RENDER
+        value: true
+      - key: GRADIO_SERVER_NAME
+        value: 0.0.0.0
+      - key: GRADIO_SERVER_PORT
+        value: 10000
+      - key: GITHUB_REPO
+        value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
+    healthCheckPath: /
+    autoDeploy: true
+    disk:
+      name: sst-data-cabicho
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+
+  # API de Predições (FastAPI)
+  - type: web
+    name: sst-api-cabicho
+    env: python
+    plan: free
+    region: ohio
+    branch: sst-dashboard
+    rootDir: sst-dashboard-render/api
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: ENVIRONMENT
+        value: production
+      - key: RENDER
+        value: true
+      - key: GITHUB_REPO
+        value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
+    healthCheckPath: /health
+    autoDeploy: true
+
+  # Worker Background (Processamento de Dados)
+  - type: worker
+    name: sst-worker-cabicho
+    env: python
+    plan: free
+    region: ohio
+    branch: sst-dashboard
+    rootDir: sst-dashboard-render/worker
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: python worker.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: ENVIRONMENT
+        value: production
+      - key: GITHUB_REPO
+        value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
+    autoDeploy: true
+
+  # Redis (Usando imagem Docker)
+  - type: web
+    name: sst-redis-cabicho
+    env: docker
+    plan: free
+    region: ohio
+    branch: sst-dashboard
+    dockerfilePath: sst-dashboard-render/redis/Dockerfile.render
+    startCommand: redis-server --appendonly yes --save 60 1 --loglevel warning --maxmemory 128mb --maxmemory-policy allkeys-lru
+    healthCheckPath: /
+    autoDeploy: true
+
+databases:
+  # Banco de Dados PostgreSQL
+  - name: sst-database-cabicho
+    plan: free
+    region: ohio
+    databaseName: sst_dashboard
+    user: sst_user
+    ipAllowList: []
