@@ -15,13 +15,11 @@ python-multipart==0.0.6
 # Database
 sqlalchemy==2.0.20
 psycopg2-binary==2.9.7
-redis==5.0.1
 
 # Utilities
 python-dotenv==1.0.0
 prometheus-client==0.17.1
 requests==2.31.0
-celery==5.3.4
 
 # Análise de dados
 seaborn==0.12.2

@@ -1,8 +1,6 @@
-# render.yaml
 version: 1
 
 services:
-  # Dashboard Principal (Gradio)
   - type: web
     name: sst-dashboard-cabicho
     env: python
@@ -10,27 +8,18 @@ services:
     region: ohio
     branch: sst-dashboard
     rootDir: sst-dashboard-render
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: python dashboard_sst.py
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
       - key: ENVIRONMENT
         value: production
       - key: RENDER
         value: true
-      - key: GRADIO_SERVER_NAME
-        value: 0.0.0.0
       - key: GRADIO_SERVER_PORT
         value: 10000
-      - key: GITHUB_REPO
-        value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
     healthCheckPath: /
     autoDeploy: true
 
-  # API de Predições (FastAPI)
   - type: web
     name: sst-api-cabicho
     env: python
@@ -38,64 +27,12 @@ services:
     region: ohio
     branch: sst-dashboard
     rootDir: sst-dashboard-render/api
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
       - key: ENVIRONMENT
         value: production
       - key: RENDER
         value: true
-      - key: GITHUB_REPO
-        value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
     healthCheckPath: /health
     autoDeploy: true
-
-  # Worker Background (Processamento de Dados)
-  - type: worker
-    name: sst-worker-cabicho
-    env: python
-    plan: free
-    region: ohio
-    branch: sst-dashboard
-    rootDir: sst-dashboard-render/worker
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements.txt
-    startCommand: python worker.py
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
-      - key: ENVIRONMENT
-        value: production
-      - key: GITHUB_REPO
-        value: "https://github.com/cabicho/portfolio_projectos/tree/sst-dashboard/sst-dashboard-render"
-    autoDeploy: true
-
-  # Redis (Usando serviço web simples)
-  - type: web
-    name: sst-redis-cabicho
-    env: python
-    plan: free
-    region: ohio
-    branch: sst-dashboard
-    rootDir: sst-dashboard-render/redis-server
-    buildCommand: pip install redis
-    startCommand: python redis_server.py
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
-    healthCheckPath: /
-    autoDeploy: true
-
-databases:
-  # Banco de Dados PostgreSQL
-  - name: sst-database-cabicho
-    plan: free
-    region: ohio
-    databaseName: sst_dashboard
-    user: sst_user
-    ipAllowList: []
