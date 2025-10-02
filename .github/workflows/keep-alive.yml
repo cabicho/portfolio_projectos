@@ -1,0 +1,17 @@
+name: Keep Render Alive
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # A cada 5 minutos
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Service
+        run: |
+          curl -X GET https://rossmann-dashboard-fks0.onrender.com/
+          curl -X GET https://rossmann-dashboard-fks0.onrender.com/_dash-health-check
+          curl -X GET https://rossmann-dashboard-fks0.onrender.com/
+          curl -X GET https://multiclass-gradio-dashboard-fks0.onrender.com/
+          curl -X GET https://multiclass-gradio-dashboard-6ug1.onrender.com/
