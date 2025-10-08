@@ -1,0 +1,66 @@
+# docker-compose-simple.yml
+version: '3.3'
+
+services:
+  # Database
+  postgres:
+    image: postgres:13
+    container_name: de_portfolio_postgres
+    environment:
+      POSTGRES_DB: ecommerce_dw
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - data_network
+
+  # Airflow (opcional - podemos remover temporariamente)
+  airflow-webserver:
+    image: apache/airflow:2.5.1
+    container_name: de_portfolio_airflow_webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:admin@postgres:5432/airflow
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./src:/opt/airflow/src
+    depends_on:
+      - postgres
+    networks:
+      - data_network
+
+  # ETL Scheduler usando imagem Python existente
+  etl-scheduler:
+    image: python:3.9-slim
+    container_name: de_portfolio_etl_scheduler
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=ecommerce_dw
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DATA_PATH=/app/data
+    depends_on:
+      - postgres
+    networks:
+      - data_network
+    command: ["sleep", "infinity"]  # Mantém container rodando
+
+volumes:
+  postgres_data:
+
+networks:
+  data_network:
+    driver: bridge

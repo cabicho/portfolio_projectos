@@ -1,0 +1,51 @@
+product_id,product_name,category,sub_category,price,cost,profit_margin
+1,Product_1,Electronics,Phones,100,60.0,0.4
+2,Product_2,Furniture,Chairs,110,66.0,0.4
+3,Product_3,Office Supplies,Binders,120,72.0,0.4
+4,Product_4,Electronics,Phones,130,78.0,0.4
+5,Product_5,Furniture,Chairs,140,84.0,0.4
+6,Product_6,Office Supplies,Binders,150,90.0,0.4
+7,Product_7,Electronics,Phones,160,96.0,0.4
+8,Product_8,Furniture,Chairs,170,102.0,0.4
+9,Product_9,Office Supplies,Binders,180,108.0,0.4
+10,Product_10,Electronics,Phones,190,114.0,0.4
+11,Product_11,Furniture,Chairs,200,120.0,0.4
+12,Product_12,Office Supplies,Binders,210,126.0,0.4
+13,Product_13,Electronics,Phones,220,132.0,0.4
+14,Product_14,Furniture,Chairs,230,138.0,0.4
+15,Product_15,Office Supplies,Binders,240,144.0,0.4
+16,Product_16,Electronics,Phones,250,150.0,0.4
+17,Product_17,Furniture,Chairs,260,156.0,0.4
+18,Product_18,Office Supplies,Binders,270,162.0,0.4
+19,Product_19,Electronics,Phones,280,168.0,0.4
+20,Product_20,Furniture,Chairs,290,174.0,0.4
+21,Product_21,Office Supplies,Binders,300,180.0,0.4
+22,Product_22,Electronics,Phones,310,186.0,0.4
+23,Product_23,Furniture,Chairs,320,192.0,0.4
+24,Product_24,Office Supplies,Binders,330,198.0,0.4
+25,Product_25,Electronics,Phones,340,204.0,0.4
+26,Product_26,Furniture,Chairs,350,210.0,0.4
+27,Product_27,Office Supplies,Binders,360,216.0,0.4
+28,Product_28,Electronics,Phones,370,222.0,0.4
+29,Product_29,Furniture,Chairs,380,228.0,0.4
+30,Product_30,Office Supplies,Binders,390,234.0,0.4
+31,Product_31,Electronics,Phones,400,240.0,0.4
+32,Product_32,Furniture,Chairs,410,246.0,0.4
+33,Product_33,Office Supplies,Binders,420,252.0,0.4
+34,Product_34,Electronics,Phones,430,258.0,0.4
+35,Product_35,Furniture,Chairs,440,264.0,0.4
+36,Product_36,Office Supplies,Binders,450,270.0,0.4
+37,Product_37,Electronics,Phones,460,276.0,0.4
+38,Product_38,Furniture,Chairs,470,282.0,0.4
+39,Product_39,Office Supplies,Binders,480,288.0,0.4
+40,Product_40,Electronics,Phones,490,294.0,0.4
+41,Product_41,Furniture,Chairs,500,300.0,0.4
+42,Product_42,Office Supplies,Binders,510,306.0,0.4
+43,Product_43,Electronics,Phones,520,312.0,0.4
+44,Product_44,Furniture,Chairs,530,318.0,0.4
+45,Product_45,Office Supplies,Binders,540,324.0,0.4
+46,Product_46,Electronics,Phones,550,330.0,0.4
+47,Product_47,Furniture,Chairs,560,336.0,0.4
+48,Product_48,Office Supplies,Binders,570,342.0,0.4
+49,Product_49,Electronics,Phones,580,348.0,0.4
+50,Product_50,Furniture,Chairs,590,354.0,0.4

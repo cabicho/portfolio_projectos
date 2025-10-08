@@ -1,0 +1,101 @@
+customer_id,customer_name,segment,region,registration_date
+1,Customer_1,Corporate,North,2020-01-01
+2,Customer_2,Consumer,South,2020-01-02
+3,Customer_3,Home Office,East,2020-01-03
+4,Customer_4,Corporate,West,2020-01-04
+5,Customer_5,Consumer,North,2020-01-05
+6,Customer_6,Home Office,South,2020-01-06
+7,Customer_7,Corporate,East,2020-01-07
+8,Customer_8,Consumer,West,2020-01-08
+9,Customer_9,Home Office,North,2020-01-09
+10,Customer_10,Corporate,South,2020-01-10
+11,Customer_11,Consumer,East,2020-01-11
+12,Customer_12,Home Office,West,2020-01-12
+13,Customer_13,Corporate,North,2020-01-13
+14,Customer_14,Consumer,South,2020-01-14
+15,Customer_15,Home Office,East,2020-01-15
+16,Customer_16,Corporate,West,2020-01-16
+17,Customer_17,Consumer,North,2020-01-17
+18,Customer_18,Home Office,South,2020-01-18
+19,Customer_19,Corporate,East,2020-01-19
+20,Customer_20,Consumer,West,2020-01-20
+21,Customer_21,Home Office,North,2020-01-21
+22,Customer_22,Corporate,South,2020-01-22
+23,Customer_23,Consumer,East,2020-01-23
+24,Customer_24,Home Office,West,2020-01-24
+25,Customer_25,Corporate,North,2020-01-25
+26,Customer_26,Consumer,South,2020-01-26
+27,Customer_27,Home Office,East,2020-01-27
+28,Customer_28,Corporate,West,2020-01-28
+29,Customer_29,Consumer,North,2020-01-29
+30,Customer_30,Home Office,South,2020-01-30
+31,Customer_31,Corporate,East,2020-01-31
+32,Customer_32,Consumer,West,2020-02-01
+33,Customer_33,Home Office,North,2020-02-02
+34,Customer_34,Corporate,South,2020-02-03
+35,Customer_35,Consumer,East,2020-02-04
+36,Customer_36,Home Office,West,2020-02-05
+37,Customer_37,Corporate,North,2020-02-06
+38,Customer_38,Consumer,South,2020-02-07
+39,Customer_39,Home Office,East,2020-02-08
+40,Customer_40,Corporate,West,2020-02-09
+41,Customer_41,Consumer,North,2020-02-10
+42,Customer_42,Home Office,South,2020-02-11
+43,Customer_43,Corporate,East,2020-02-12
+44,Customer_44,Consumer,West,2020-02-13
+45,Customer_45,Home Office,North,2020-02-14
+46,Customer_46,Corporate,South,2020-02-15
+47,Customer_47,Consumer,East,2020-02-16
+48,Customer_48,Home Office,West,2020-02-17
+49,Customer_49,Corporate,North,2020-02-18
+50,Customer_50,Consumer,South,2020-02-19
+51,Customer_51,Home Office,East,2020-02-20
+52,Customer_52,Corporate,West,2020-02-21
+53,Customer_53,Consumer,North,2020-02-22
+54,Customer_54,Home Office,South,2020-02-23
+55,Customer_55,Corporate,East,2020-02-24
+56,Customer_56,Consumer,West,2020-02-25
+57,Customer_57,Home Office,North,2020-02-26
+58,Customer_58,Corporate,South,2020-02-27
+59,Customer_59,Consumer,East,2020-02-28
+60,Customer_60,Home Office,West,2020-02-29
+61,Customer_61,Corporate,North,2020-03-01
+62,Customer_62,Consumer,South,2020-03-02
+63,Customer_63,Home Office,East,2020-03-03
+64,Customer_64,Corporate,West,2020-03-04
+65,Customer_65,Consumer,North,2020-03-05
+66,Customer_66,Home Office,South,2020-03-06
+67,Customer_67,Corporate,East,2020-03-07
+68,Customer_68,Consumer,West,2020-03-08
+69,Customer_69,Home Office,North,2020-03-09
+70,Customer_70,Corporate,South,2020-03-10
+71,Customer_71,Consumer,East,2020-03-11
+72,Customer_72,Home Office,West,2020-03-12
+73,Customer_73,Corporate,North,2020-03-13
+74,Customer_74,Consumer,South,2020-03-14
+75,Customer_75,Home Office,East,2020-03-15
+76,Customer_76,Corporate,West,2020-03-16
+77,Customer_77,Consumer,North,2020-03-17
+78,Customer_78,Home Office,South,2020-03-18
+79,Customer_79,Corporate,East,2020-03-19
+80,Customer_80,Consumer,West,2020-03-20
+81,Customer_81,Home Office,North,2020-03-21
+82,Customer_82,Corporate,South,2020-03-22
+83,Customer_83,Consumer,East,2020-03-23
+84,Customer_84,Home Office,West,2020-03-24
+85,Customer_85,Corporate,North,2020-03-25
+86,Customer_86,Consumer,South,2020-03-26
+87,Customer_87,Home Office,East,2020-03-27
+88,Customer_88,Corporate,West,2020-03-28
+89,Customer_89,Consumer,North,2020-03-29
+90,Customer_90,Home Office,South,2020-03-30
+91,Customer_91,Corporate,East,2020-03-31
+92,Customer_92,Consumer,West,2020-04-01
+93,Customer_93,Home Office,North,2020-04-02
+94,Customer_94,Corporate,South,2020-04-03
+95,Customer_95,Consumer,East,2020-04-04
+96,Customer_96,Home Office,West,2020-04-05
+97,Customer_97,Corporate,North,2020-04-06
+98,Customer_98,Consumer,South,2020-04-07
+99,Customer_99,Home Office,East,2020-04-08
+100,Customer_100,Corporate,West,2020-04-09

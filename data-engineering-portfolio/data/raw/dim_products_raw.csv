@@ -1,0 +1,51 @@
+product_id,product_name,category,sub_category,price
+1,Product_1,Electronics,Phones,100
+2,Product_2,Furniture,Chairs,110
+3,Product_3,Office Supplies,Binders,120
+4,Product_4,Electronics,Phones,130
+5,Product_5,Furniture,Chairs,140
+6,Product_6,Office Supplies,Binders,150
+7,Product_7,Electronics,Phones,160
+8,Product_8,Furniture,Chairs,170
+9,Product_9,Office Supplies,Binders,180
+10,Product_10,Electronics,Phones,190
+11,Product_11,Furniture,Chairs,200
+12,Product_12,Office Supplies,Binders,210
+13,Product_13,Electronics,Phones,220
+14,Product_14,Furniture,Chairs,230
+15,Product_15,Office Supplies,Binders,240
+16,Product_16,Electronics,Phones,250
+17,Product_17,Furniture,Chairs,260
+18,Product_18,Office Supplies,Binders,270
+19,Product_19,Electronics,Phones,280
+20,Product_20,Furniture,Chairs,290
+21,Product_21,Office Supplies,Binders,300
+22,Product_22,Electronics,Phones,310
+23,Product_23,Furniture,Chairs,320
+24,Product_24,Office Supplies,Binders,330
+25,Product_25,Electronics,Phones,340
+26,Product_26,Furniture,Chairs,350
+27,Product_27,Office Supplies,Binders,360
+28,Product_28,Electronics,Phones,370
+29,Product_29,Furniture,Chairs,380
+30,Product_30,Office Supplies,Binders,390
+31,Product_31,Electronics,Phones,400
+32,Product_32,Furniture,Chairs,410
+33,Product_33,Office Supplies,Binders,420
+34,Product_34,Electronics,Phones,430
+35,Product_35,Furniture,Chairs,440
+36,Product_36,Office Supplies,Binders,450
+37,Product_37,Electronics,Phones,460
+38,Product_38,Furniture,Chairs,470
+39,Product_39,Office Supplies,Binders,480
+40,Product_40,Electronics,Phones,490
+41,Product_41,Furniture,Chairs,500
+42,Product_42,Office Supplies,Binders,510
+43,Product_43,Electronics,Phones,520
+44,Product_44,Furniture,Chairs,530
+45,Product_45,Office Supplies,Binders,540
+46,Product_46,Electronics,Phones,550
+47,Product_47,Furniture,Chairs,560
+48,Product_48,Office Supplies,Binders,570
+49,Product_49,Electronics,Phones,580
+50,Product_50,Furniture,Chairs,590
