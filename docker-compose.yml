@@ -1,0 +1,54 @@
+version: '3.3'
+# docker-compose.yml
+
+services:
+  mozambique-dashboard:
+    build: .
+    container_name: sso-mozambique-dashboard
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./data/mozambique:/app/data/mozambique
+      - ./scripts/mozambique:/app/scripts/mozambique
+    working_dir: /app
+    command: python scripts/mozambique/dashboard_app.py
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/_dash-health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  data-collector:
+    build: .
+    container_name: sso-data-collector
+    volumes:
+      - ./data/mozambique:/app/data/mozambique
+      - ./scripts/mozambique:/app/scripts/mozambique
+    working_dir: /app
+    command: >
+      sh -c "echo '📊 Coletando dados...' &&
+             python scripts/mozambique/collect_data.py &&
+             echo '🔍 Analisando dados...' &&
+             python scripts/mozambique/analyze_data.py &&
+             echo '✅ Dados prontos para o dashboard'"
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  jupyter-analysis:
+    build: .
+    container_name: sso-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./data/mozambique:/app/data/mozambique
+      - ./scripts/mozambique:/app/scripts/mozambique
+      - ./notebooks:/app/notebooks
+    working_dir: /app
+    command: >
+      sh -c "pip install jupyter && 
+             jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''"
+    environment:
+      - PYTHONUNBUFFERED=1
+  
