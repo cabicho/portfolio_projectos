@@ -1,0 +1,23 @@
+name: Mozambique Analysis
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - run: pip install -r requirements-mozambique.txt
+      - run: mkdir -p data/mozambique/{raw,processed,reports}
+      - run: python scripts/mozambique/collect_data.py
+      - run: python scripts/mozambique/analyze_data.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: results
+          path: data/mozambique/
