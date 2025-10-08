@@ -1,0 +1,10 @@
+{
+  "data_coleta": "2025-10-08T04:40:09.026644",
+  "total_empresas": 200,
+  "fontes": [
+    "INE",
+    "MISAU",
+    "Empresas Simuladas"
+  ],
+  "status": "completo"
+}

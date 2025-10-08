@@ -1,16 +1,35 @@
+# Dockerfile
 FROM python:3.9-slim
+
 WORKDIR /app
 
-# Instala dependências do sistema necessárias
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    gcc \
+    g++ \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala setuptools primeiro
-RUN pip install --upgrade pip setuptools==58.0.0 wheel
+# Copiar requirements
+COPY requirements-mozambique.txt .
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Instalar dependências Python (incluindo Jupyter)
+RUN pip install --no-cache-dir -r requirements-mozambique.txt && \
+    pip install --no-cache-dir jupyter dash
+
+# Copiar código
 COPY . .
-EXPOSE 10000
-CMD ["python", "portfolio_multiclasse/app_gradio.py"]
+
+# Criar diretórios necessários
+RUN mkdir -p data/mozambique/{raw,processed,reports} && \
+    mkdir -p notebooks
+
+# Expor portas
+EXPOSE 8050 8888
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8050/ || exit 1
+
+# Comando padrão (dashboard)
+CMD ["python", "scripts/mozambique/dashboard_app.py"]
