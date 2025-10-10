@@ -1,5 +1,8 @@
+
 # render.yaml - Corrigido para estrutura real
+# render.yaml - Atualizado para plano free
 # Arquivo principal: app.py
+
 
 services:
   - type: web
