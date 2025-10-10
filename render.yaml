@@ -16,7 +16,7 @@ services:
       pip install --upgrade pip
       pip install -r requirements.txt
       python scripts/init_db.py
-    startCommand: python app.py
+    startCommand: python app/main.py
     envVars:
       - key: DATABASE_URL
         sync: false
