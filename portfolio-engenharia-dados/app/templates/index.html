@@ -12,12 +12,20 @@
         <p class="text-center text-muted">Portfólio - Engenheiro de Dados</p>
         
         {% if message %}
-        <div class="alert alert-success">{{ message }}</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         {% endif %}
+        
         {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         {% endif %}
 
+        <!-- Business Intelligence -->
         <div class="row mt-4">
             <div class="col-md-6">
                 <div class="card">
@@ -25,18 +33,20 @@
                         <h5>📊 Business Intelligence (25%)</h5>
                     </div>
                     <div class="card-body">
-                        <p>Relatórios e dashboards automatizados</p>
-                        <button class="btn btn-outline-primary btn-sm">Listar Relatórios</button>
+                        <p class="card-text">Relatórios e dashboards automatizados</p>
+                        <a href="/list-reports" class="btn btn-outline-primary btn-sm">Listar Relatórios</a>
                     </div>
                 </div>
             </div>
+
+            <!-- Engenharia de Dados -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-success text-white">
                         <h5>⚙️ Engenharia de Dados (30%)</h5>
                     </div>
                     <div class="card-body">
-                        <p>Pipeline de dados multi-fonte</p>
+                        <p class="card-text">Pipeline de dados multi-fonte</p>
                         <form action="/run-pipeline" method="post">
                             <button type="submit" class="btn btn-success btn-sm">Executar Pipeline ETL</button>
                         </form>
@@ -45,19 +55,24 @@
             </div>
         </div>
 
+        <!-- Status -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-info text-white">
-                        <h5>ℹ️ Sobre o Projeto</h5>
+                        <h5>ℹ️ Status do Sistema</h5>
                     </div>
                     <div class="card-body">
-                        <p><strong>Deploy:</strong> {{ api_url }}</p>
-                        <p><strong>Tecnologias:</strong> FastAPI, PostgreSQL (Neon), Render</p>
+                        <p><strong>Projetos no Portfólio:</strong> {{ projects_count }}</p>
+                        <p><strong>URL da API:</strong> {{ api_url }}</p>
+                        <p><strong>Banco de Dados:</strong> Neon PostgreSQL</p>
+                        <a href="/api/health" class="btn btn-outline-info btn-sm" target="_blank">Verificar Saúde do Sistema</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
