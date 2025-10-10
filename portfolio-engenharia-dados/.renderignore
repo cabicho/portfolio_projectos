@@ -1,0 +1,8 @@
+Dockerfile
+docker-compose.yml
+airflow-logs/
+logs/
+data/raw/
+__pycache__/
+*.pyc
+.env
