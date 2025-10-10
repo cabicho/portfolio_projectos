@@ -13,6 +13,7 @@
         
         <div class="text-center mb-4">
             <a href="/" class="btn btn-outline-secondary">← Voltar ao Dashboard</a>
+            <a href="/force-init-db" class="btn btn-warning btn-sm" target="_blank">🔄 Forçar Inicialização do BD</a>
         </div>
 
         <!-- Métricas Principais -->
@@ -51,43 +52,66 @@
             </div>
         </div>
 
-        <!-- Relatórios Disponíveis -->
-        <div class="row mt-5">
-            <div class="col-md-6">
+        <!-- Vendas por Categoria -->
+        {% if sales_by_category %}
+        <div class="row mt-4">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>📈 Relatório de Vendas</h5>
+                        <h5>📈 Vendas por Categoria</h5>
                     </div>
                     <div class="card-body">
-                        <p>Análise detalhada de vendas por categoria e região</p>
-                        <button class="btn btn-primary">Gerar Relatório</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>⚙️ Relatório ETL</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>Performance e status dos pipelines de dados</p>
-                        <button class="btn btn-primary">Gerar Relatório</button>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Categoria</th>
+                                        <th>Quantidade Vendida</th>
+                                        <th>Receita Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category in sales_by_category %}
+                                    <tr>
+                                        <td><strong>{{ category.category }}</strong></td>
+                                        <td>{{ category.total_quantity }}</td>
+                                        <td>R$ {{ "%.2f"|format(category.total_revenue or 0) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
 
+        <!-- Ações Rápidas -->
         <div class="row mt-4">
-            <div class="col-12">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-success text-white">
+                        <h5>⚙️ Ações do Sistema</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/run-pipeline" method="post" class="mb-3">
+                            <button type="submit" class="btn btn-success w-100">🔄 Executar Pipeline ETL</button>
+                        </form>
+                        <a href="/api/health" class="btn btn-outline-info w-100" target="_blank">❤️ Verificar Saúde da API</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
                         <h5>✅ Status do Sistema</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>API:</strong> {{ api_url }}</p>
                         <p><strong>Banco de Dados:</strong> Neon PostgreSQL</p>
-                        <p><strong>Status:</strong> Online e Operacional</p>
-                        <a href="/api/health" class="btn btn-outline-success btn-sm" target="_blank">Verificar Saúde da API</a>
+                        <p><strong>Status:</strong> ✅ Online e Operacional</p>
+                        <p><strong>Vendas Registradas:</strong> {{ total_sales }}</p>
                     </div>
                 </div>
             </div>

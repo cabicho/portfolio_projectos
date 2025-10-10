@@ -25,7 +25,43 @@
         </div>
         {% endif %}
 
-        <!-- Business Intelligence -->
+        <!-- Métricas Principais -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body text-center">
+                        <h4>{{ projects_count }}</h4>
+                        <small>Projetos</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body text-center">
+                        <h4>{{ sales_count }}</h4>
+                        <small>Vendas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body text-center">
+                        <h4>R$ {{ "%.2f"|format(total_revenue) }}</h4>
+                        <small>Receita</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body text-center">
+                        <h4>✅</h4>
+                        <small>Online</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Intelligence & Engenharia de Dados -->
         <div class="row mt-4">
             <div class="col-md-6">
                 <div class="card">
@@ -34,12 +70,11 @@
                     </div>
                     <div class="card-body">
                         <p class="card-text">Relatórios e dashboards automatizados</p>
-                        <a href="/list-reports" class="btn btn-outline-primary btn-sm">Listar Relatórios</a>
+                        <a href="/list-reports" class="btn btn-outline-primary btn-sm">📈 Listar Relatórios</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Engenharia de Dados -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-success text-white">
@@ -48,14 +83,53 @@
                     <div class="card-body">
                         <p class="card-text">Pipeline de dados multi-fonte</p>
                         <form action="/run-pipeline" method="post">
-                            <button type="submit" class="btn btn-success btn-sm">Executar Pipeline ETL</button>
+                            <button type="submit" class="btn btn-success btn-sm">🔄 Executar Pipeline ETL</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Status -->
+        <!-- Últimas Vendas -->
+        {% if recent_sales %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>🛒 Últimas Vendas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Categoria</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço</th>
+                                        <th>Região</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sale in recent_sales %}
+                                    <tr>
+                                        <td>{{ sale.product_name }}</td>
+                                        <td><span class="badge bg-secondary">{{ sale.category }}</span></td>
+                                        <td>{{ sale.quantity }}</td>
+                                        <td>R$ {{ "%.2f"|format(sale.price) }}</td>
+                                        <td><span class="badge bg-info">{{ sale.region }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Status do Sistema -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
@@ -63,10 +137,11 @@
                         <h5>ℹ️ Status do Sistema</h5>
                     </div>
                     <div class="card-body">
-                        <p><strong>Projetos no Portfólio:</strong> {{ projects_count }}</p>
-                        <p><strong>URL da API:</strong> {{ api_url }}</p>
+                        <p><strong>API:</strong> {{ api_url }}</p>
                         <p><strong>Banco de Dados:</strong> Neon PostgreSQL</p>
-                        <a href="/api/health" class="btn btn-outline-info btn-sm" target="_blank">Verificar Saúde do Sistema</a>
+                        <p><strong>Status:</strong> <span class="badge bg-success">Online</span></p>
+                        <a href="/api/health" class="btn btn-outline-info btn-sm" target="_blank">❤️ Verificar Saúde</a>
+                        <a href="/force-init-db" class="btn btn-outline-warning btn-sm" target="_blank">🔄 Forçar BD</a>
                     </div>
                 </div>
             </div>

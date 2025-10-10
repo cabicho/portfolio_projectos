@@ -20,27 +20,77 @@ async def get_db_connection():
         raise Exception("DATABASE_URL não configurada")
     return await asyncpg.connect(DATABASE_URL)
 
+async def ensure_tables_exist():
+    """Garante que todas as tabelas existam"""
+    try:
+        conn = await get_db_connection()
+        
+        # Criar sales_data se não existir
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS sales_data (
+                id SERIAL PRIMARY KEY,
+                product_name VARCHAR(100) NOT NULL,
+                category VARCHAR(50) NOT NULL,
+                quantity INTEGER NOT NULL,
+                price DECIMAL(10,2) NOT NULL,
+                sale_date DATE NOT NULL,
+                region VARCHAR(50) NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        ''')
+        
+        # Criar outras tabelas se não existirem
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS projects (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(200) NOT NULL,
+                description TEXT,
+                technology_stack TEXT[],
+                github_url VARCHAR(300),
+                live_demo_url VARCHAR(300),
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        ''')
+        
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS etl_jobs (
+                id SERIAL PRIMARY KEY,
+                job_name VARCHAR(100) NOT NULL,
+                status VARCHAR(50) NOT NULL,
+                records_processed INTEGER,
+                start_time TIMESTAMP DEFAULT NOW(),
+                end_time TIMESTAMP,
+                error_message TEXT
+            )
+        ''')
+        
+        await conn.close()
+        return True
+    except Exception as e:
+        print(f"⚠️ Erro ao garantir tabelas: {e}")
+        return False
+
+@app.on_event("startup")
+async def startup_event():
+    """Garantir que tabelas existam na inicialização"""
+    print("🔧 Verificando tabelas do banco de dados...")
+    await ensure_tables_exist()
+
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     """Página principal com dashboard"""
     try:
+        await ensure_tables_exist()
         conn = await get_db_connection()
         
-        # Buscar dados com tratamento de erro
-        try:
-            projects_count = await conn.fetchval("SELECT COUNT(*) FROM projects")
-        except:
-            projects_count = 0
-            
-        try:
-            etl_jobs = await conn.fetch("SELECT * FROM etl_jobs ORDER BY start_time DESC LIMIT 5")
-        except:
-            etl_jobs = []
-            
-        try:
-            sales_data = await conn.fetch("SELECT * FROM sales_data ORDER BY sale_date DESC LIMIT 10")
-        except:
-            sales_data = []
+        # Buscar dados
+        projects_count = await conn.fetchval("SELECT COUNT(*) FROM projects")
+        etl_jobs = await conn.fetch("SELECT * FROM etl_jobs ORDER BY start_time DESC LIMIT 5")
+        sales_count = await conn.fetchval("SELECT COUNT(*) FROM sales_data")
+        total_revenue = await conn.fetchval("SELECT SUM(price * quantity) FROM sales_data") or 0
+        
+        # Buscar últimas vendas
+        recent_sales = await conn.fetch("SELECT * FROM sales_data ORDER BY sale_date DESC, id DESC LIMIT 5")
         
         await conn.close()
         
@@ -48,17 +98,21 @@ async def root(request: Request):
             "request": request,
             "projects_count": projects_count,
             "etl_jobs": etl_jobs,
-            "sales_data": sales_data,
+            "sales_count": sales_count,
+            "total_revenue": float(total_revenue),
+            "recent_sales": recent_sales,
             "api_url": "https://portfolio-engenharia-api-42tz.onrender.com"
         })
         
     except Exception as e:
         return templates.TemplateResponse("index.html", {
             "request": request,
-            "error": f"Erro de conexão: {str(e)}",
+            "error": f"Erro: {str(e)}",
             "projects_count": 0,
             "etl_jobs": [],
-            "sales_data": [],
+            "sales_count": 0,
+            "total_revenue": 0,
+            "recent_sales": [],
             "api_url": "https://portfolio-engenharia-api-42tz.onrender.com"
         })
 
@@ -66,25 +120,8 @@ async def root(request: Request):
 async def run_pipeline(request: Request):
     """Executar pipeline ETL"""
     try:
+        await ensure_tables_exist()
         conn = await get_db_connection()
-        
-        # Verificar se a tabela sales_data existe, se não, criar
-        try:
-            await conn.execute("SELECT 1 FROM sales_data LIMIT 1")
-        except:
-            # Criar tabela se não existir
-            await conn.execute('''
-                CREATE TABLE IF NOT EXISTS sales_data (
-                    id SERIAL PRIMARY KEY,
-                    product_name VARCHAR(100),
-                    category VARCHAR(50),
-                    quantity INTEGER,
-                    price DECIMAL(10,2),
-                    sale_date DATE,
-                    region VARCHAR(50),
-                    created_at TIMESTAMP DEFAULT NOW()
-                )
-            ''')
         
         # Registrar job
         job_id = await conn.fetchval('''
@@ -92,13 +129,13 @@ async def run_pipeline(request: Request):
             VALUES ($1, $2, $3) RETURNING id
         ''', 'pipeline_manual', 'running', datetime.now())
         
-        # Dados de exemplo
+        # Dados de exemplo para ETL
         sample_data = [
-            ('Laptop Dell', 'Electronics', 2, 1200.00, '2024-01-22', 'North'),
-            ('Mouse Wireless', 'Electronics', 15, 45.99, '2024-01-22', 'South'),
-            ('Notebook', 'Office', 25, 4.99, '2024-01-21', 'East'),
-            ('Pen Set', 'Office', 40, 12.99, '2024-01-21', 'West'),
-            ('Monitor 24"', 'Electronics', 3, 299.99, '2024-01-22', 'North')
+            ('Laptop Gaming', 'Electronics', 1, 1999.99, '2024-10-10', 'North'),
+            ('Wireless Mouse', 'Electronics', 10, 35.99, '2024-10-10', 'South'),
+            ('Office Chair', 'Furniture', 2, 299.99, '2024-10-10', 'East'),
+            ('Desk Lamp', 'Furniture', 5, 45.50, '2024-10-09', 'West'),
+            ('Notebook Pack', 'Office', 20, 8.99, '2024-10-09', 'North')
         ]
         
         # Inserir dados
@@ -117,15 +154,16 @@ async def run_pipeline(request: Request):
         
         await conn.close()
         
-        return RedirectResponse(url="/?message=Pipeline executado com sucesso! 5 registros processados.", status_code=303)
+        return RedirectResponse(url="/?message=✅ Pipeline executado com sucesso! 5 novos registros adicionados.", status_code=303)
         
     except Exception as e:
-        return RedirectResponse(url=f"/?error=Erro no pipeline: {str(e)}", status_code=303)
+        return RedirectResponse(url=f"/?error=❌ Erro no pipeline: {str(e)}", status_code=303)
 
 @app.get("/list-reports")
 async def list_reports(request: Request):
     """Listar relatórios disponíveis"""
     try:
+        await ensure_tables_exist()
         conn = await get_db_connection()
         
         # Buscar métricas para relatórios
@@ -133,6 +171,13 @@ async def list_reports(request: Request):
         total_etl_jobs = await conn.fetchval("SELECT COUNT(*) FROM etl_jobs")
         total_sales = await conn.fetchval("SELECT COUNT(*) FROM sales_data")
         total_revenue = await conn.fetchval("SELECT SUM(price * quantity) FROM sales_data") or 0
+        
+        # Métricas por categoria
+        sales_by_category = await conn.fetch('''
+            SELECT category, SUM(quantity) as total_quantity, SUM(price * quantity) as total_revenue
+            FROM sales_data 
+            GROUP BY category
+        ''')
         
         await conn.close()
         
@@ -142,11 +187,29 @@ async def list_reports(request: Request):
             "total_etl_jobs": total_etl_jobs,
             "total_sales": total_sales,
             "total_revenue": float(total_revenue),
+            "sales_by_category": sales_by_category,
             "api_url": "https://portfolio-engenharia-api-42tz.onrender.com"
         })
         
     except Exception as e:
         return RedirectResponse(url=f"/?error=Erro ao gerar relatórios: {str(e)}", status_code=303)
+
+@app.get("/force-init-db")
+async def force_init_db():
+    """Forçar inicialização do banco de dados"""
+    try:
+        # Executar script de força
+        import subprocess
+        result = subprocess.run([
+            "python", "scripts/force_init_tables.py"
+        ], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            return {"message": "✅ Banco de dados forçadamente inicializado!", "output": result.stdout}
+        else:
+            return {"error": "❌ Falha na inicialização", "output": result.stderr}
+    except Exception as e:
+        return {"error": f"Erro: {str(e)}"}
 
 @app.get("/api/health")
 async def health():
@@ -162,8 +225,8 @@ async def health():
             try:
                 count = await conn.fetchval(f"SELECT COUNT(*) FROM {table}")
                 table_status[table] = {"exists": True, "count": count}
-            except:
-                table_status[table] = {"exists": False, "count": 0}
+            except Exception as e:
+                table_status[table] = {"exists": False, "count": 0, "error": str(e)}
         
         await conn.close()
         
