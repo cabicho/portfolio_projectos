@@ -3,7 +3,7 @@ services:
     name: mocambique-health-pipeline
     env: python
     plan: free
-    region: frankfurt
+    region: ohio
     repo: https://github.com/cabicho/portfolio_projectos
     branch: pipeline_saude_mocambique
     rootDir: pipeline-saude-mocambique
@@ -11,7 +11,4 @@ services:
       pip install --upgrade pip
       pip install -r requirements.txt
     startCommand: uvicorn src.api.dashboard:app --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: DATABASE_URL
-        fromSecret: true
     autoDeploy: true
