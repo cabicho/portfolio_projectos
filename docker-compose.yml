@@ -1,0 +1,113 @@
+version: '3.3'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:13
+    container_name: mozambique_postgres
+    environment:
+      POSTGRES_DB: health_occupational
+      POSTGRES_USER: health_user
+      POSTGRES_PASSWORD: health_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - health_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U health_user -d health_occupational"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PgAdmin (Interface de administração)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: mozambique_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@health.gov.mz
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    networks:
+      - health_network
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  # API FastAPI
+  api:
+    build:
+      context: ./pipeline-saude-mocambique
+      dockerfile: Dockerfile.api
+    container_name: mozambique_api
+    environment:
+      DATABASE_URL: postgresql://health_user:health_password@postgres:5432/health_occupational
+      PYTHONPATH: /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./pipeline-saude-mocambique:/app
+      - ./data:/app/data
+    networks:
+      - health_network
+    depends_on:
+      - postgres
+    command: >
+      sh -c "cd /app &&
+             sleep 10 &&
+             uvicorn src.api.dashboard:app --host 0.0.0.0 --port 8000 --reload"
+
+  # Pipeline de Dados (sem profile - sempre disponível)
+  pipeline:
+    build:
+      context: ./pipeline-saude-mocambique
+      dockerfile: Dockerfile.pipeline
+    container_name: mozambique_pipeline
+    environment:
+      DATABASE_URL: postgresql://health_user:health_password@postgres:5432/health_occupational
+      PYTHONPATH: /app
+    volumes:
+      - ./pipeline-saude-mocambique:/app
+      - ./data:/app/data
+    networks:
+      - health_network
+    depends_on:
+      - postgres
+    command: >
+      sh -c "cd /app &&
+             echo 'Aguardando banco de dados...' &&
+             sleep 15 &&
+             python src/main.py"
+
+  # Jupyter Notebook para Análise (sem profile - sempre disponível)
+  jupyter:
+    build:
+      context: ./pipeline-saude-mocambique
+      dockerfile: Dockerfile.jupyter
+    container_name: mozambique_jupyter
+    environment:
+      DATABASE_URL: postgresql://health_user:health_password@postgres:5432/health_occupational
+      JUPYTER_TOKEN: health123
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./pipeline-saude-mocambique:/app
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+    networks:
+      - health_network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  health_network:
+    driver: bridge

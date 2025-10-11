@@ -1,0 +1,20 @@
+name: Health Check Monitor
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: pipeline_saude_mocambique
+          
+      - name: Health Check
+        run: |
+          chmod +x .github/workflows/health-check.sh
+          .github/workflows/health-check.sh

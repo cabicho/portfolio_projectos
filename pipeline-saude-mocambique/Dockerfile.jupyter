@@ -1,0 +1,27 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar requirements e instalar dependências
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt jupyterlab pandasql
+
+# Copiar código e dados
+COPY src/ ./src/
+COPY data/ ./data/
+
+# Criar diretório para notebooks
+RUN mkdir -p notebooks
+
+# Expor porta do Jupyter
+EXPOSE 8888
+
+# Comando para Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=health123"]
