@@ -1,2 +1,10 @@
 error_to_solve.txt  
 README.md 
+portfolio-engenharia-dados/__pycache__/
+portfolio-engenharia-dados/img/
+data-engineering-portfolio/docker-compose.yml.backup
+data-engineering-portfolio/docker-compose.yml.08102025.backup
+data-engineering-portfolio/backup/
+data-engineering-portfolio/6.Comandos_para_Executar_Agora.txt
+data-engineering-portfolio/.env
+backup/
