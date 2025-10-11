@@ -1,122 +1,209 @@
-#!/usr/bin/env python3
-"""
-init_database.py - Inicialização robusta do banco Neon
-"""
-import os
 import asyncpg
+import os
 import asyncio
-import sys
+import json
+from datetime import datetime, timedelta
 
-async def initialize_database():
-    """Initialize all required tables in Neon"""
+async def create_regulatory_data_warehouse():
+    """Criar Data Warehouse para Relatórios Regulamentares"""
     database_url = os.getenv("DATABASE_URL")
+    conn = await asyncpg.connect(database_url)
     
-    if not database_url:
-        print("❌ DATABASE_URL não encontrada")
-        return False
+    # ========== DIMENSÕES ==========
     
-    try:
-        print("🔗 Conectando ao Neon PostgreSQL...")
-        conn = await asyncpg.connect(database_url)
-        
-        # Criar tabela projects
+    # Dimensão Clientes
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS dim_clientes (
+            cliente_id SERIAL PRIMARY KEY,
+            nome VARCHAR(200) NOT NULL,
+            tipo_cliente VARCHAR(50),
+            segmento VARCHAR(100),
+            regiao VARCHAR(50),
+            data_cadastro DATE,
+            status VARCHAR(20)
+        )
+    ''')
+    
+    # Dimensão Produtos
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS dim_produtos (
+            produto_id SERIAL PRIMARY KEY,
+            nome_produto VARCHAR(200) NOT NULL,
+            categoria VARCHAR(100),
+            subcategoria VARCHAR(100),
+            preco_base DECIMAL(10,2),
+            data_inclusao DATE
+        )
+    ''')
+    
+    # Dimensão Tempo
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS dim_tempo (
+            data_id SERIAL PRIMARY KEY,
+            data_completa DATE,
+            ano INTEGER,
+            semestre INTEGER,
+            trimestre INTEGER,
+            mes INTEGER,
+            dia INTEGER,
+            dia_semana INTEGER,
+            feriado BOOLEAN
+        )
+    ''')
+    
+    # ========== FATOS ==========
+    
+    # Fato Vendas
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS fato_vendas (
+            venda_id SERIAL PRIMARY KEY,
+            cliente_id INTEGER REFERENCES dim_clientes(cliente_id),
+            produto_id INTEGER REFERENCES dim_produtos(produto_id),
+            data_id INTEGER REFERENCES dim_tempo(data_id),
+            quantidade INTEGER,
+            valor_total DECIMAL(10,2),
+            regiao VARCHAR(50),
+            canal_venda VARCHAR(50),
+            status_venda VARCHAR(20)
+        )
+    ''')
+    
+    # ========== TABELAS OPERACIONAIS ==========
+    
+    # Requisitos de Negócio
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS requisitos_negocio (
+            id SERIAL PRIMARY KEY,
+            unidade_negocio VARCHAR(100),
+            descricao TEXT,
+            prioridade VARCHAR(20),
+            contato VARCHAR(100),
+            status VARCHAR(20),
+            data_solicitacao TIMESTAMP DEFAULT NOW()
+        )
+    ''')
+    
+    # Solicitações de Suporte
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS solicitacoes_suporte (
+            id SERIAL PRIMARY KEY,
+            titulo VARCHAR(200),
+            descricao TEXT,
+            urgencia VARCHAR(20),
+            solicitante VARCHAR(100),
+            status VARCHAR(20),
+            data_abertura TIMESTAMP DEFAULT NOW(),
+            data_resolucao TIMESTAMP
+        )
+    ''')
+    
+    # Pipelines ETL
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS pipelines_etl (
+            id SERIAL PRIMARY KEY,
+            nome_pipeline VARCHAR(100),
+            status VARCHAR(50),
+            registros_processados INTEGER,
+            ultima_execucao TIMESTAMP DEFAULT NOW(),
+            detalhes_execucao TEXT
+        )
+    ''')
+    
+    # Fontes de Dados
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS fontes_dados (
+            id SERIAL PRIMARY KEY,
+            nome_fonte VARCHAR(100),
+            tipo_fonte VARCHAR(50),
+            conexao_ativa BOOLEAN,
+            ultima_atualizacao TIMESTAMP
+        )
+    ''')
+    
+    # Relatórios Regulatórios
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS relatorios_regulatorios (
+            id SERIAL PRIMARY KEY,
+            tipo_relatorio VARCHAR(100),
+            periodo VARCHAR(50),
+            status VARCHAR(50),
+            data_geracao TIMESTAMP DEFAULT NOW(),
+            arquivo_gerado VARCHAR(200)
+        )
+    ''')
+    
+    # Tabela simplificada para demonstração
+    await conn.execute('''
+        CREATE TABLE IF NOT EXISTS vendas (
+            id SERIAL PRIMARY KEY,
+            produto VARCHAR(100),
+            quantidade INTEGER,
+            valor_total DECIMAL(10,2),
+            data_venda DATE,
+            regiao VARCHAR(50),
+            cliente VARCHAR(100)
+        )
+    ''')
+    
+    # ========== INSERIR DADOS DE EXEMPLO ==========
+    
+    # Clientes
+    await conn.execute('''
+        INSERT INTO dim_clientes (nome, tipo_cliente, segmento, regiao, data_cadastro, status)
+        VALUES 
+        ('Empresa A Ltda', 'Corporativo', 'Tecnologia', 'Sul', '2023-01-15', 'Ativo'),
+        ('Comércio B ME', 'Pequena Empresa', 'Varejo', 'Norte', '2023-02-20', 'Ativo'),
+        ('Serviços C SA', 'Corporativo', 'Consultoria', 'Sudeste', '2023-03-10', 'Inativo'),
+        ('Indústria D EPP', 'Média Empresa', 'Manufatura', 'Nordeste', '2023-04-05', 'Ativo')
+        ON CONFLICT DO NOTHING
+    ''')
+    
+    # Produtos
+    await conn.execute('''
+        INSERT INTO dim_produtos (nome_produto, categoria, subcategoria, preco_base, data_inclusao)
+        VALUES 
+        ('Software Gestão', 'Software', 'ERP', 1500.00, '2023-01-01'),
+        ('Consultoria TI', 'Serviços', 'Consultoria', 5000.00, '2023-01-01'),
+        ('Suporte Premium', 'Serviços', 'Suporte', 800.00, '2023-01-01'),
+        ('Treinamento', 'Serviços', 'Educação', 1200.00, '2023-01-01')
+        ON CONFLICT DO NOTHING
+    ''')
+    
+    # Inserir vendas de exemplo
+    for i in range(50):
         await conn.execute('''
-            CREATE TABLE IF NOT EXISTS projects (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(200) NOT NULL,
-                description TEXT,
-                technology_stack TEXT[],
-                github_url VARCHAR(300),
-                live_demo_url VARCHAR(300),
-                created_at TIMESTAMP DEFAULT NOW(),
-                updated_at TIMESTAMP DEFAULT NOW()
-            )
-        ''')
-        print("✅ Tabela 'projects' criada/verificada")
-        
-        # Criar tabela etl_jobs
-        await conn.execute('''
-            CREATE TABLE IF NOT EXISTS etl_jobs (
-                id SERIAL PRIMARY KEY,
-                job_name VARCHAR(100) NOT NULL,
-                status VARCHAR(50) NOT NULL,
-                records_processed INTEGER,
-                start_time TIMESTAMP DEFAULT NOW(),
-                end_time TIMESTAMP,
-                error_message TEXT
-            )
-        ''')
-        print("✅ Tabela 'etl_jobs' criada/verificada")
-        
-        # Criar tabela sales_data (a que está faltando)
-        await conn.execute('''
-            CREATE TABLE IF NOT EXISTS sales_data (
-                id SERIAL PRIMARY KEY,
-                product_name VARCHAR(100),
-                category VARCHAR(50),
-                quantity INTEGER,
-                price DECIMAL(10,2),
-                sale_date DATE,
-                region VARCHAR(50),
-                created_at TIMESTAMP DEFAULT NOW()
-            )
-        ''')
-        print("✅ Tabela 'sales_data' criada/verificada")
-        
-        # Inserir dados de exemplo em projects
-        await conn.execute('''
-            INSERT INTO projects (name, description, technology_stack, github_url, live_demo_url)
-            VALUES 
-            ('Pipeline ETL Completo', 'Pipeline de dados com extração, transformação e carga', 
-            '{"Python", "PostgreSQL", "FastAPI", "Docker"}', 
-            'https://github.com/cabicho/portfolio_projectos', 
-            'https://portfolio-engenharia-api-42tz.onrender.com'),
-            
-            ('Data Warehouse Cloud', 'Armazém de dados na nuvem com modelagem dimensional', 
-            '{"PostgreSQL", "dbt", "SQL", "Neon"}', 
-            'https://github.com/cabicho/portfolio_projectos', 
-            'https://portfolio-engenharia-api-42tz.onrender.com')
-            ON CONFLICT DO NOTHING
-        ''')
-        print("✅ Dados de exemplo inseridos em 'projects'")
-        
-        # Inserir alguns jobs ETL de exemplo
-        await conn.execute('''
-            INSERT INTO etl_jobs (job_name, status, records_processed)
-            VALUES 
-            ('initial_load', 'completed', 150),
-            ('daily_sync', 'completed', 45),
-            ('data_validation', 'completed', 200)
-            ON CONFLICT DO NOTHING
-        ''')
-        print("✅ Jobs ETL de exemplo inseridos")
-        
-        # Verificar tabelas criadas
-        tables = await conn.fetch('''
-            SELECT table_name 
-            FROM information_schema.tables 
-            WHERE table_schema = 'public'
-            ORDER BY table_name
-        ''')
-        
-        print("📋 Tabelas no banco de dados:")
-        for table in tables:
-            print(f"   - {table['table_name']}")
-        
-        await conn.close()
-        print("🎉 Banco de dados inicializado com sucesso!")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Erro ao inicializar banco: {e}")
-        return False
+            INSERT INTO vendas (produto, quantidade, valor_total, data_venda, regiao, cliente)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        ''', 
+        f'Produto {i % 4 + 1}', 
+        (i % 10) + 1,
+        ((i % 10) + 1) * 100.0,
+        datetime.now() - timedelta(days=i % 30),
+        ['Norte', 'Nordeste', 'Sudeste', 'Sul', 'Centro-Oeste'][i % 5],
+        f'Cliente {i % 4 + 1}'
+        )
+    
+    # Inserir dados de exemplo nas outras tabelas
+    await conn.execute('''
+        INSERT INTO requisitos_negocio (unidade_negocio, descricao, prioridade, contato, status)
+        VALUES 
+        ('Vendas', 'Relatório de performance mensal por região', 'Alta', 'joao.silva@empresa.com', 'Em Desenvolvimento'),
+        ('Marketing', 'Dashboard de campanhas e conversões', 'Média', 'maria.santos@empresa.com', 'Pendente'),
+        ('Financeiro', 'Relatório de compliance regulamentar trimestral', 'Alta', 'carlos.oliveira@empresa.com', 'Concluído')
+        ON CONFLICT DO NOTHING
+    ''')
+    
+    await conn.execute('''
+        INSERT INTO pipelines_etl (nome_pipeline, status, registros_processados)
+        VALUES 
+        ('Pipeline Vendas', 'Ativo', 1500),
+        ('Pipeline Clientes', 'Ativo', 500),
+        ('Pipeline Produtos', 'Em Manutenção', 200)
+        ON CONFLICT DO NOTHING
+    ''')
+    
+    print("✅ Data Warehouse criado com sucesso!")
+    await conn.close()
 
 if __name__ == "__main__":
-    print("🚀 Iniciando inicialização do banco de dados...")
-    success = asyncio.run(initialize_database())
-    if success:
-        print("💫 Banco de dados pronto para uso!")
-        sys.exit(0)
-    else:
-        print("💥 Falha na inicialização do banco")
-        sys.exit(1)
+    asyncio.run(create_regulatory_data_warehouse())

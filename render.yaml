@@ -1,21 +1,16 @@
-
-# render.yaml - Corrigido para estrutura real
-# render.yaml - Atualizado para plano free
-# Arquivo principal: app.py
-
-
 services:
   - type: web
-    name: portfolio-engenharia-api
+    name: portfolio-engenharia-dados
     env: python
     plan: free
     region: ohio
-    branch: portfolio_engenharia_dados
+    branch: main
     rootDir: portfolio-engenharia-dados
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-      python scripts/init_db.py
+      python scripts/init_database.py
+      python scripts/data_warehouse.py
     startCommand: python app/main.py
     envVars:
       - key: DATABASE_URL

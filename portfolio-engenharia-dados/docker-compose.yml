@@ -1,66 +1,38 @@
 version: '3.3'
 
 services:
-  postgres:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/regulatory_db
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
     image: postgres:13
     environment:
-      POSTGRES_DB: regulatory_db
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
+      - POSTGRES_DB=regulatory_db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  airflow:
-    image: apache/airflow:2.7.0
-    user: "0:0"  # Run as root to avoid permission issues
+  pgadmin:
+    image: dpage/pgadmin4
     environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:password@postgres:5432/regulatory_db
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
-      AIRFLOW__LOGGING__BASE_LOG_FOLDER: /opt/airflow/logs
-      AIRFLOW__LOGGING__REMOTE_LOGGING: 'false'
+      - PGADMIN_DEFAULT_EMAIL=admin@marrar.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
-      - "8080:8080"
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./scripts:/opt/airflow/scripts
-      - ./airflow-logs:/opt/airflow/logs
+      - "8080:80"
     depends_on:
-      - postgres
-    command: >
-      bash -c "
-        mkdir -p /opt/airflow/logs /opt/airflow/dags /opt/airflow/plugins;
-        chmod -R 777 /opt/airflow/logs /opt/airflow/dags /opt/airflow/plugins;
-        until pg_isready -h postgres -p 5432; do
-          echo 'Waiting for PostgreSQL...';
-          sleep 5;
-        done;
-        airflow db init;
-        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true;
-        airflow webserver --port 8080
-      "
-
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    environment:
-      DATABASE_URL: postgresql://admin:password@postgres:5432/regulatory_db
-    depends_on:
-      - postgres
-    volumes:
-      - ./data:/app/data
+      - db
 
 volumes:
   postgres_data:
-  airflow-logs:

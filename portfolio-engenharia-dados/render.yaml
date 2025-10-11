@@ -1,17 +1,16 @@
-# render.yaml
-# Configuração para portfolio-engenharia-dados - Neon AWS US East 2 (Ohio)
-
 services:
   - type: web
-    name: portfolio-engenharia-api
+    name: portfolio-engenharia-dados
     env: python
     plan: free
-    region: ohio  # Mesma região do Neon para melhor performance
-    branch: portfolio_engenharia_dados
+    region: ohio
+    branch: main
+    rootDir: portfolio-engenharia-dados
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-      python scripts/init_db.py
+      python scripts/init_database.py
+      python scripts/data_warehouse.py
     startCommand: python app/main.py
     envVars:
       - key: DATABASE_URL
@@ -20,20 +19,3 @@ services:
         value: 3.11.0
       - key: ENVIRONMENT
         value: production
-      - key: NEON_REGION
-        value: aws-us-east-2
-
-  # Worker para processamento ETL em background
-  - type: worker
-    name: etl-processor
-    env: python
-    plan: free
-    region: ohio
-    branch: portfolio_engenharia_dados
-    buildCommand: pip install -r requirements.txt
-    startCommand: python scripts/run_etl_worker.py
-    envVars:
-      - key: DATABASE_URL
-        sync: false
-      - key: PYTHON_VERSION
-        value: 3.11.0
