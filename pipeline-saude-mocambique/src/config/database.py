@@ -15,17 +15,17 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Configuração asyncpg
+# Configuração asyncpg - CORREÇÃO AQUI
 async def get_async_connection():
     """Conexão assíncrona com o banco"""
-    async_conn_string = DATABASE_URL.replace('postgresql://', 'postgresql+asyncpg://')
+    # REMOVER o '+asyncpg' da string de conexão
+    async_conn_string = DATABASE_URL.replace('postgresql://', 'postgresql://')
     return await asyncpg.connect(async_conn_string)
 
 async def create_tables():
     """Cria as tabelas no banco de dados"""
     conn = await get_async_connection()
     try:
-        # Tabela de dados OMS
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS who_data (
                 id SERIAL PRIMARY KEY,
@@ -38,7 +38,6 @@ async def create_tables():
             )
         ''')
         
-        # Tabela de doenças ocupacionais
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS occupational_diseases (
                 id SERIAL PRIMARY KEY,
@@ -57,7 +56,6 @@ async def create_tables():
             )
         ''')
         
-        # Tabela de avaliação de risco
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS risk_assessment (
                 id SERIAL PRIMARY KEY,

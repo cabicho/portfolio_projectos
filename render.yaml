@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mozambique-health-pipeline
+    name: mocambique-health-pipeline
     env: python
     plan: free
     region: frankfurt
@@ -13,8 +13,5 @@ services:
     startCommand: uvicorn src.api.dashboard:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        fromService:
-          type: postgresql
-          name: your-database-service
-          property: connectionString
+        fromSecret: true
     autoDeploy: true

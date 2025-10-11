@@ -1,5 +1,7 @@
 import pandas as pd
-from config.database import get_async_connection
+#from config.database import get_async_connection
+from src.config.database import get_async_connection
+
 import os
 
 class DatabaseLoader:

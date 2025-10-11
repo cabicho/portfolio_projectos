@@ -4,7 +4,8 @@ import pandas as pd
 import plotly.express as px
 import os
 from datetime import datetime
-from config.database import get_async_connection
+#from config.database import get_async_connection
+from src.config.database import get_async_connection
 
 app = FastAPI(
     title="Dashboard Saúde Ocupacional - Moçambique",

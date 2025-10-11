@@ -1,0 +1,10 @@
+{
+  "timestamp": "20251011_180357",
+  "data_sources": {
+    "who": 298,
+    "occupational_diseases": 4,
+    "environmental_exposure": 10,
+    "risk_assessment": 10
+  },
+  "database_loaded": true
+}
