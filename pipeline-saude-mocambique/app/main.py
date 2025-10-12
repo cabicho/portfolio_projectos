@@ -1,4 +1,9 @@
 import os
+import sys
+
+# Adicionar o diretório src ao path do Python
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import uvicorn
 
 if __name__ == "__main__":
@@ -8,7 +13,7 @@ if __name__ == "__main__":
     from src.api.dashboard import app
     
     uvicorn.run(
-        "src.api.dashboard:app",
+        app,
         host=host,
         port=port,
         reload=False

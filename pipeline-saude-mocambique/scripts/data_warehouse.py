@@ -14,6 +14,11 @@ async def populate_data_warehouse():
     try:
         conn = await asyncpg.connect(database_url)
         
+        # Limpar dados existentes primeiro
+        await conn.execute('DELETE FROM occupational_diseases')
+        await conn.execute('DELETE FROM risk_assessment')
+        
+        # Inserir dados
         await conn.execute('''
             INSERT INTO occupational_diseases 
             (ano, doencas_respiratorias, lesoes_musculoesqueleticas, perda_auditiva, 
@@ -24,7 +29,6 @@ async def populate_data_warehouse():
             (2021, 1320, 920, 360, 230, 105, 680, 450, 610, 190, 'INS Moçambique'),
             (2022, 1400, 950, 380, 250, 115, 710, 480, 640, 200, 'INS Moçambique'),
             (2023, 1480, 980, 400, 270, 125, 740, 510, 670, 210, 'INS Moçambique')
-            ON CONFLICT (ano) DO NOTHING
         ''')
         
         await conn.execute('''
@@ -41,7 +45,6 @@ async def populate_data_warehouse():
             ('Nampula', 37.9, 'Médio', 115000, 'Particulas'),
             ('Cabo Delgado', 35.2, 'Médio', 92000, 'Particulas'),
             ('Niassa', 31.8, 'Baixo', 58000, 'Particulas')
-            ON CONFLICT (provincia) DO NOTHING
         ''')
         
         print("✅ Data warehouse populado com sucesso")
