@@ -345,3 +345,61 @@ async def dashboard():
             </body>
         </html>
         """
+# Adicionar ao pipeline-saude-mocambique/src/api/dashboard.py
+from src.verify.data_sources_verification import DataSourcesVerification
+
+# Adicionar este endpoint ao app FastAPI
+@app.get("/api/verify-dashboard")
+async def verification_dashboard():
+    """Dashboard de verificação das fontes de dados"""
+    try:
+        verifier = DataSourcesVerification()
+        report = await verifier.verify_all_sources()
+        
+        # Criar visualização HTML do relatório
+        html_content = f"""
+        <html>
+            <head>
+                <title>Verificação de Fontes - SST Moçambique</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
+                    .container {{ max-width: 1200px; margin: 0 auto; }}
+                    .header {{ background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }}
+                    .source-card {{ background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }}
+                    .status-active {{ border-left: 5px solid #28a745; }}
+                    .status-inactive {{ border-left: 5px solid #dc3545; }}
+                    .status-error {{ border-left: 5px solid #ffc107; }}
+                    .badge {{ padding: 5px 10px; border-radius: 15px; color: white; font-size: 12px; }}
+                    .badge-success {{ background: #28a745; }}
+                    .badge-warning {{ background: #ffc107; }}
+                    .badge-danger {{ background: #dc3545; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🔍 Verificação de Fontes de Dados SST</h1>
+                        <p>Status Geral: <span class="badge badge-{'success' if report['summary']['overall_status'] == '✅ EXCELENTE' else 'warning' if report['summary']['overall_status'] == '⚠️  REGULAR' else 'danger'}">{report['summary']['overall_status']}</span></p>
+                        <p>Fontes Ativas: {report['summary']['sources_with_data']}/{report['summary']['total_sources']}</p>
+                        <p>Total de Registros: {report['summary']['total_records']}</p>
+                    </div>
+                    
+                    {"".join([f"""
+                    <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
+                        <h3>🔹 {name.upper()}</h3>
+                        <p><strong>Status:</strong> {source['status']}</p>
+                        <p><strong>Registros:</strong> {source['total_records']}</p>
+                        <p><strong>Tipo:</strong> {source['source_type']}</p>
+                        <p><strong>Qualidade:</strong> {source.get('data_quality', 'N/A')}</p>
+                        {"<p><strong>Amostra:</strong><br>" + "<br>".join([f"• {ind['indicador_nome']} ({ind['ano']}): {ind['valor']}" for ind in source.get('indicators_sample', [])[:2]]) + "</p>" if source.get('indicators_sample') else ""}
+                    </div>
+                    """ for name, source in report['sources'].items()])}
+                </div>
+            </body>
+        </html>
+        """
+        
+        return HTMLResponse(content=html_content)
+        
+    except Exception as e:
+        return HTMLResponse(content=f"<h1>Erro na verificação: {str(e)}</h1>")
