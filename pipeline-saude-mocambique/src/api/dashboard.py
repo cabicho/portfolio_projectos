@@ -345,9 +345,19 @@ async def dashboard():
             </body>
         </html>
         """
+# Crie uma função auxiliar ou variável separada
+def format_sample_indicator(source):
+    if source.get('indicators_sample'):
+        sample_html = "<p><strong>Amostra:</strong><br>" + "<br>".join([
+            f"• {ind['indicador_nome']} ({ind['ano']}): {ind['valor']}" 
+            for ind in source.get('indicators_sample', [])[:2]
+        ]) + "</p>"
+        return sample_html
+    return ""
+
 # Adicionar ao pipeline-saude-mocambique/src/api/dashboard.py
 from src.verify.data_sources_verification import DataSourcesVerification
-
+    
 # Adicionar este endpoint ao app FastAPI
 @app.get("/api/verify-dashboard")
 async def verification_dashboard():
@@ -384,16 +394,17 @@ async def verification_dashboard():
                         <p>Total de Registros: {report['summary']['total_records']}</p>
                     </div>
                     
-                    {"".join([f"""
-                    <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
-                        <h3> {name.upper()}</h3>
-                        <p><strong>Status:</strong> {source['status']}</p>
-                        <p><strong>Registros:</strong> {source['total_records']}</p>
-                        <p><strong>Tipo:</strong> {source['source_type']}</p>
-                        <p><strong>Qualidade:</strong> {source.get('data_quality', 'N/A')}</p>
-                        {"<p><strong>Amostra:</strong><br>" + "<br>".join([f"• {ind['indicador_nome']} ({ind['ano']}): {ind['valor']}" for ind in source.get('indicators_sample', [])[:2]]) + "</p>" if source.get('indicators_sample') else ""}
-                    </div>
-                    """ for name, source in report['sources'].items()])}
+                    # Agora use no seu código principal
+                    "".join([f"""
+                        <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
+                            <h3> {name.upper()}</h3>
+                            <p><strong>Status:</strong> {source['status']}</p>
+                            <p><strong>Registros:</strong> {source['total_records']}</p>
+                            <p><strong>Tipo:</strong> {source['source_type']}</p>
+                            <p><strong>Qualidade:</strong> {source.get('data_quality', 'N/A')}</p>
+                            {format_sample_indicator(source)}
+                        </div>
+                    """ for name, source in report['sources'].items()])
                 </div>
             </body>
         </html>
