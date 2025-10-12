@@ -1,10 +1,9 @@
-# pipeline-saude-mocambique/src/api/dashboard.py
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 import pandas as pd
 import plotly.express as px
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.config.database import get_async_connection
 
 app = FastAPI(
@@ -13,10 +12,37 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Tempo de início do serviço
+START_TIME = datetime.now()
+
+def get_uptime():
+    """Calcula o tempo online desde o início"""
+    uptime = datetime.now() - START_TIME
+    days = uptime.days
+    hours = uptime.seconds // 3600
+    minutes = (uptime.seconds % 3600) // 60
+    
+    if days > 0:
+        return f"{days}d {hours}h {minutes}m"
+    else:
+        return f"{hours}h {minutes}m"
+
+def get_risk_emoji(nivel_risco):
+    """Retorna emoji baseado no nível de risco"""
+    emojis = {
+        'Alto': '🔴',
+        'Médio': '🟡', 
+        'Baixo': '🟢'
+    }
+    return emojis.get(nivel_risco, '⚪')
+
 @app.get("/")
 async def root():
     return {
         "message": "Bem-vindo ao Dashboard de Saúde Ocupacional - Moçambique",
+        "status": "online",
+        "uptime": get_uptime(),
+        "availability": "24/7/365",
         "endpoints": {
             "health": "/health",
             "risk_data": "/api/risk-data",
@@ -29,7 +55,10 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "service": "mozambique-health-pipeline"
+        "service": "mozambique-health-pipeline",
+        "uptime": get_uptime(),
+        "availability": "24/7/365",
+        "version": "1.0.0"
     }
 
 @app.get("/api/risk-data")
@@ -48,100 +77,102 @@ async def get_risk_data():
 async def dashboard():
     """Dashboard HTML com visualizações"""
     try:
-        # Buscar dados
         conn = await get_async_connection()
         risk_data = await conn.fetch("SELECT * FROM risk_assessment ORDER BY score_risco DESC")
         await conn.close()
         
         if not risk_data:
-            return "<h1>Dados não disponíveis</h1>"
+            return "<h1>📊 Dados não disponíveis</h1>"
         
-        # Converter para DataFrame
         df = pd.DataFrame([dict(record) for record in risk_data])
-        
-        # Garantir que as colunas numéricas sejam do tipo correto
         df['score_risco'] = pd.to_numeric(df['score_risco'], errors='coerce')
         df['populacao_exposta'] = pd.to_numeric(df['populacao_exposta'], errors='coerce')
+        df['risco_emoji'] = df['nivel_risco'].apply(get_risk_emoji)
         
-        # Criar gráficos
+        # Métricas
+        total_provincias = len(df)
+        total_populacao = df['populacao_exposta'].sum()
+        score_medio = df['score_risco'].mean()
+        risco_alto_count = len(df[df['nivel_risco'] == 'Alto'])
+        
+        # Gráficos
         fig1 = px.bar(df, x='provincia', y='score_risco', color='nivel_risco',
-                     title='Score de Risco por Província',
-                     labels={'score_risco': 'Score de Risco', 'provincia': 'Província'})
+                     title='🎯 Score de Risco por Província',
+                     labels={'score_risco': 'Score de Risco', 'provincia': 'Província'},
+                     color_discrete_map={'Alto': '#FF6B6B', 'Médio': '#FFD93D', 'Baixo': '#6BCF7F'})
         
-        fig2 = px.pie(df, names='nivel_risco', title='Distribuição de Níveis de Risco',
-                     color_discrete_sequence=px.colors.qualitative.Set3)
+        fig2 = px.pie(df, names='nivel_risco', title='📊 Distribuição de Níveis de Risco',
+                     color_discrete_sequence=['#6BCF7F', '#FFD93D', '#FF6B6B'])
         
-        # CORREÇÃO: Usar valores numéricos para size, não a Series
         fig3 = px.scatter(df, x='populacao_exposta', y='score_risco', 
-                         size=df['score_risco'].values,  # Usar .values para array numpy
+                         size=df['score_risco'].values,
                          color='nivel_risco', 
                          hover_name='provincia',
-                         title='População Exposta vs Score de Risco',
-                         labels={
-                             'populacao_exposta': 'População Exposta',
-                             'score_risco': 'Score de Risco',
-                             'nivel_risco': 'Nível de Risco'
-                         })
-        
-        # Adicionar gráfico extra para mais insights
-        fig4 = px.treemap(df, path=['nivel_risco', 'provincia'], values='populacao_exposta',
-                         title='Distribuição da População por Nível de Risco e Província',
-                         color='score_risco', color_continuous_scale='RdYlGn_r')
+                         title='🌍 População Exposta vs Score de Risco',
+                         color_discrete_map={'Alto': '#FF6B6B', 'Médio': '#FFD93D', 'Baixo': '#6BCF7F'})
         
         html_content = f"""
         <html>
             <head>
-                <title>Dashboard Saúde Ocupacional - Moçambique</title>
+                <title>🏥 Dashboard Saúde Ocupacional - Moçambique</title>
                 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
                 <style>
-                    body {{ font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }}
+                    body {{ font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }}
                     .container {{ max-width: 1200px; margin: 0 auto; }}
-                    .header {{ background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
-                    .chart {{ background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
-                    h1 {{ color: #2c3e50; margin: 0; }}
-                    .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }}
-                    .stat-card {{ background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
-                    .stat-value {{ font-size: 24px; font-weight: bold; color: #3498db; }}
+                    .header {{ background: white; padding: 30px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }}
+                    .badges {{ display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; }}
+                    .badge {{ background: #28a745; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; }}
+                    .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }}
+                    .stat-card {{ background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }}
+                    .stat-value {{ font-size: 28px; font-weight: bold; color: #2c3e50; }}
                     .stat-label {{ font-size: 14px; color: #7f8c8d; }}
+                    .chart {{ background: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }}
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
                         <h1>🏥 Dashboard Saúde Ocupacional - Moçambique</h1>
-                        <p>Última atualização: {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
+                        <p>📍 Monitoramento em tempo real | 🎯 Análise de riscos ocupacionais</p>
+                        
+                        <div class="badges">
+                            <div class="badge">🟢 ONLINE 24/7/365</div>
+                            <div class="badge" style="background: #007bff;">⏱️ Uptime: {get_uptime()}</div>
+                            <div class="badge" style="background: #6f42c1;">🚀 Alta Performance</div>
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-card">
+                                <div class="stat-value">{total_provincias}</div>
+                                <div class="stat-label">🏙️ Províncias</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">{total_populacao:,}</div>
+                                <div class="stat-label">👥 População</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">{score_medio:.1f}</div>
+                                <div class="stat-label">📈 Score Médio</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">{risco_alto_count}</div>
+                                <div class="stat-label">🚨 Alertas Alto</div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="stats">
-                        <div class="stat-card">
-                            <div class="stat-value">{len(df)}</div>
-                            <div class="stat-label">Províncias</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">{df['populacao_exposta'].sum():,}</div>
-                            <div class="stat-label">População Total Exposta</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">{df['score_risco'].mean():.1f}</div>
-                            <div class="stat-label">Score Médio de Risco</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">{len(df[df['nivel_risco'] == 'Alto'])}</div>
-                            <div class="stat-label">Províncias com Risco Alto</div>
-                        </div>
-                    </div>
-                    
-                    <div class="chart" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>{fig1.to_html(full_html=False)}</div>
-                        <div>{fig2.to_html(full_html=False)}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                        <div class="chart">{fig1.to_html(full_html=False)}</div>
+                        <div class="chart">{fig2.to_html(full_html=False)}</div>
                     </div>
                     
                     <div class="chart">
                         {fig3.to_html(full_html=False)}
                     </div>
                     
-                    <div class="chart">
-                        {fig4.to_html(full_html=False)}
+                    <div style="text-align: center; margin-top: 40px; color: #6c757d;">
+                        <p>🚀 Desenvolvido com FastAPI & Plotly | 📞 Suporte 24/7</p>
+                        <p>© 2024 Saúde Ocupacional Moçambique</p>
                     </div>
                 </div>
             </body>
@@ -151,13 +182,4 @@ async def dashboard():
         return html_content
         
     except Exception as e:
-        return f"""
-        <html>
-            <head><title>Erro</title></head>
-            <body>
-                <h1>Erro ao carregar dashboard</h1>
-                <p>Detalhes: {str(e)}</p>
-                <p><a href="/">Voltar para a página inicial</a></p>
-            </body>
-        </html>
-        """
+        return f"<h1>❌ Erro ao carregar dashboard: {str(e)}</h1>"
