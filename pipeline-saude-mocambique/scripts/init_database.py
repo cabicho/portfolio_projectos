@@ -21,14 +21,15 @@ async def init_database():
                 valor DECIMAL,
                 categoria VARCHAR(100),
                 fonte VARCHAR(100),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(indicador, ano, categoria)
             )
         ''')
         
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS occupational_diseases (
                 id SERIAL PRIMARY KEY,
-                ano INTEGER,
+                ano INTEGER UNIQUE,
                 doencas_respiratorias INTEGER,
                 lesoes_musculoesqueleticas INTEGER,
                 perda_auditiva INTEGER,
@@ -46,7 +47,7 @@ async def init_database():
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS risk_assessment (
                 id SERIAL PRIMARY KEY,
-                provincia VARCHAR(100),
+                provincia VARCHAR(100) UNIQUE,
                 score_risco DECIMAL,
                 nivel_risco VARCHAR(50),
                 populacao_exposta INTEGER,
