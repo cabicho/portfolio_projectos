@@ -386,7 +386,7 @@ async def verification_dashboard():
                     
                     {"".join([f"""
                     <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
-                        <h3>🔹 {name.upper()}</h3>
+                        <h3>•  {name.upper()}</h3>
                         <p><strong>Status:</strong> {source['status']}</p>
                         <p><strong>Registros:</strong> {source['total_records']}</p>
                         <p><strong>Tipo:</strong> {source['source_type']}</p>
