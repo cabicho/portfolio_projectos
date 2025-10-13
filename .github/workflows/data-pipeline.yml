@@ -5,7 +5,7 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
   push:
-    branches: [ pipeline_saude_mocambique ]
+    branches: [ pipeline_saude_mocambique, pipeline-saude-mocambique-deve]
 
 jobs:
   pipeline:
