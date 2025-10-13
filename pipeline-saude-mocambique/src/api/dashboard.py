@@ -367,6 +367,19 @@ async def verification_dashboard():
         report = await verifier.verify_all_sources()
         
         # Criar visualização HTML do relatório
+        # Primeiro, gere o conteúdo das fontes separadamente
+        sources_html = "".join([f""" 
+        <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
+            <h3>{name.upper()}</h3>
+            <p><strong>Status:</strong> {source['status']}</p>
+            <p><strong>Registros:</strong> {source['total_records']}</p>
+            <p><strong>Tipo:</strong> {source['source_type']}</p>
+            <p><strong>Qualidade:</strong> {source.get('data_quality', 'N/A')}</p>
+            {format_sample_indicator(source) if 'format_sample_indicator' in locals() else ''}
+        </div>
+        """ for name, source in report['sources'].items()])
+
+        # Agora use no HTML principal
         html_content = f"""
         <html>
             <head>
@@ -394,17 +407,7 @@ async def verification_dashboard():
                         <p>Total de Registros: {report['summary']['total_records']}</p>
                     </div>
                     
-                    # Agora use no seu código principal
-                    "".join([f"""
-                        <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
-                            <h3> {name.upper()}</h3>
-                            <p><strong>Status:</strong> {source['status']}</p>
-                            <p><strong>Registros:</strong> {source['total_records']}</p>
-                            <p><strong>Tipo:</strong> {source['source_type']}</p>
-                            <p><strong>Qualidade:</strong> {source.get('data_quality', 'N/A')}</p>
-                            {format_sample_indicator(source)}
-                        </div>
-                    """ for name, source in report['sources'].items()])
+                    {sources_html}
                 </div>
             </body>
         </html>
