@@ -2,7 +2,7 @@ name: Mozambique Health Data Pipeline
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '5 * * * *'
   workflow_dispatch:
   push:
     branches: [ pipeline_saude_mocambique, pipeline-saude-mocambique-deve]
