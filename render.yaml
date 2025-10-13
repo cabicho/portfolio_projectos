@@ -5,7 +5,7 @@ services:
     plan: free
     region: ohio
     repo: https://github.com/cabicho/portfolio_projectos
-    branch: pipeline-saude-mocambique
+    branch: pipeline-saude-mocambique-deve
     rootDir: pipeline-saude-mocambique
     buildCommand: |
       pip install --upgrade pip
