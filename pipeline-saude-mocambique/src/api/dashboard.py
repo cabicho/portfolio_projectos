@@ -366,8 +366,13 @@ async def verification_dashboard():
         verifier = DataSourcesVerification()
         report = await verifier.verify_all_sources()
         
-        # Criar visualização HTML do relatório
-        # Primeiro, gere o conteúdo das fontes separadamente
+        # CORREÇÃO: Use .get() para evitar KeyError
+        sources_with_data = report['summary'].get('sources_with_data', 0)
+        total_sources = report['summary'].get('total_sources', 0)
+        total_records = report['summary'].get('total_records', 0)
+        overall_status = report['summary'].get('overall_status', '❓ DESCONHECIDO')
+        
+        # Resto do código continua igual...
         sources_html = "".join([f""" 
         <div class="source-card {'status-active' if source['status'] == '✅ ATIVA' else 'status-inactive'}">
             <h3>{name.upper()}</h3>
@@ -375,11 +380,9 @@ async def verification_dashboard():
             <p><strong>Registros:</strong> {source['total_records']}</p>
             <p><strong>Tipo:</strong> {source['source_type']}</p>
             <p><strong>Qualidade:</strong> {source.get('data_quality', 'N/A')}</p>
-            {format_sample_indicator(source) if 'format_sample_indicator' in locals() else ''}
         </div>
         """ for name, source in report['sources'].items()])
 
-        # Agora use no HTML principal
         html_content = f"""
         <html>
             <head>
@@ -391,7 +394,6 @@ async def verification_dashboard():
                     .source-card {{ background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; }}
                     .status-active {{ border-left: 5px solid #28a745; }}
                     .status-inactive {{ border-left: 5px solid #dc3545; }}
-                    .status-error {{ border-left: 5px solid #ffc107; }}
                     .badge {{ padding: 5px 10px; border-radius: 15px; color: white; font-size: 12px; }}
                     .badge-success {{ background: #28a745; }}
                     .badge-warning {{ background: #ffc107; }}
@@ -402,11 +404,10 @@ async def verification_dashboard():
                 <div class="container">
                     <div class="header">
                         <h1>🔍 Verificação de Fontes de Dados SST</h1>
-                        <p>Status Geral: <span class="badge badge-{'success' if report['summary']['overall_status'] == '✅ EXCELENTE' else 'warning' if report['summary']['overall_status'] == '⚠️  REGULAR' else 'danger'}">{report['summary']['overall_status']}</span></p>
-                        <p>Fontes Ativas: {report['summary']['sources_with_data']}/{report['summary']['total_sources']}</p>
-                        <p>Total de Registros: {report['summary']['total_records']}</p>
+                        <p>Status Geral: <span class="badge badge-{'success' if overall_status == '✅ EXCELENTE' else 'warning' if overall_status == '⚠️  REGULAR' else 'danger'}">{overall_status}</span></p>
+                        <p>Fontes Ativas: {sources_with_data}/{total_sources}</p>
+                        <p>Total de Registros: {total_records}</p>
                     </div>
-                    
                     {sources_html}
                 </div>
             </body>
@@ -417,3 +418,31 @@ async def verification_dashboard():
         
     except Exception as e:
         return HTMLResponse(content=f"<h1>Erro na verificação: {str(e)}</h1>")
+
+# Adicionar estas rotas ANTES ou DEPOIS da rota /api/verify-dashboard
+@app.get("/api/verify/sources")
+async def verify_sources():
+    """Endpoint para verificação das fontes de dados (JSON)"""
+    try:
+        verifier = DataSourcesVerification()
+        report = await verifier.verify_all_sources()
+        return report
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro na verificação: {str(e)}")
+
+@app.get("/api/verify/status")
+async def verify_status():
+    """Endpoint resumido do status das fontes"""
+    try:
+        verifier = DataSourcesVerification()
+        report = await verifier.verify_all_sources()
+        
+        return {
+            "overall_status": report['summary']['overall_status'],
+            "sources_with_data": report['summary'].get('sources_with_data', 0),
+            "total_sources": report['summary']['total_sources'],
+            "total_records": report['summary']['total_records'],
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro na verificação: {str(e)}")
