@@ -1,160 +1,54 @@
-# 🚀 Data Science & Machine Learning Portfolio
+# Vaga: Engenheiro de Dados - Marrar
 
-**Bem-vindo ao meu portfólio de projetos em Ciência de Dados!**  
-Aqui demonstro minhas habilidades técnicas através de projetos práticos que resolvem problemas de negócio reais.
+## 📋 Sobre a Oportunidade
 
----
+Candidatura para a posição de **Engenheiro de Dados** na Marrar, destacando experiência em pipelines de dados, data warehousing e análise de produtos digitais.
 
-## 👨‍💻 Sobre Mim
+## 🚀 Projetos em Destaque
 
-Olá! Meu nome é **José Dins Carlos Cabicho**.
+### Dashboard de Engenharia de Dados - Pipeline ETL com Power BI
 
-Sou formado em **Estatística** com paixão por transformar dados em insights acionáveis. Minha trajetória combina formação técnica sólida com experiência prática em startups, onde atuei no desenvolvimento de sistemas e análise de dados para tomada de decisão.
+**🔗 Links:**
+- **Dashboard Online:** [portfolio-engenharia-dados-hrsj.onrender.com/dashboard](https://portfolio-engenharia-dados-hrsj.onrender.com/dashboard)
+- **Repositório do Projeto:** [github.com/cabicho/portfolio_projectos/tree/pipeline-saude-mocambique-deve](https://github.com/cabicho/portfolio_projectos/tree/pipeline-saude-mocambique-deve)
 
----
+**📊 Descrição do Projeto:**
+Projeto completo demonstrando o ciclo de vida dos dados, desde a fonte até a visualização:
 
-## 🛠️ Habilidades Desenvolvidas
+- **Extração & Carga:** Desenvolvimento de pipeline para ingestão de dados de fonte externa para ambiente controlado
+- **Transformação & Modelagem:** Aplicação de regras de negócio e limpeza com **Power Query (M Language)**
+- **Modelagem Dimensional:** Criação de **star schema** com tabelas fato e dimensões otimizadas
+- **Visualização & Análise:** Construção de **dashboard interativo no Power BI** com KPIs e filtros dinâmicos
+- **Documentação & Deploy:** Documentação do processo ETL e deploy em plataforma online
+- **Versionamento:** Código fonte disponível no GitHub com histórico de commits da branch `pipeline-saude-mocambique-deve`
 
-### **Linguagens de Programação e Banco de Dados**
-- `Python` com foco em análise de dados
-- `SQL` para extração de dados
-- Bancos de Dados: `SQLite`, `PostgreSQL`, `MySQL`
+## 💼 Competências Técnicas Relevantes
 
-### **Estatística e Machine Learning**
-- **Estatística descritiva**: localização, dispersão, assimetria, kurtosis, densidade
-- **Algoritmos**: Regressão, Classificação e Séries Temporais
-- **Técnicas**: Balanceamento de dados, seleção de atributos
-- **Métricas de performance**: RMSE, MAE, MAPE, Matriz de Confusão, Precisão, Recall, Curva ROC, AUC, Silhouette Score
-- **Pacotes**: `Sklearn` e `Scipy`
+### Engenharia de Dados
+- **Linguagens:** SQL Avançado, Python
+- **Ferramentas:** DBT, Git, BigQuery, Redshift, MySQL, PostgreSQL, SQL Server
+- **Modelagem:** Star Schema, Snowflake, Tabelas Fato e Dimensão
+- **Processos:** ETL/ELT, Pipelines de Dados, Qualidade de Dados
 
-### **Visualização de Dados**
-- `Matplotlib`, `Seaborn`, `Plotly`
-- `Power BI`
-
-### **Engenharia de Software**
-- `Git`, `Github`, `Gitlab`, `Docker`, `Kubernetes`
-- `Streamlit`, `Flask API`
-- `Typescript` com `Nest.js`
-- Cloud: `Heroku`, `Render`
-- Integração contínua
-- Monitoramento: `Prometheus` e `Grafana`
-
-### **Soft Skills**
-- ✅ Autodidatismo e Comunicabilidade
-- ✅ Escuta Ativa e Habilidade em Organizar
-- ✅ Planejamento, Execução e Métricas de projetos
-- ✅ Capacidade de ensinar, aprender e trabalhar em equipe
-- ✅ Liderança e adaptabilidade para ser liderado
-- ✅ Bom humor (especialmente para piadas de tiozão 😄) e muita paciência
-
----
-
-## 📅 Roadmap de Desenvolvimento 2025/2026
-
-### **4º Trimestre de 2025** 🟡 Em andamento
-- [ ] Actualizar os varios projectos realizados no portfólio
-- [ ] Habilidade com MLFlow
-
-**Projetos planejados:**
-- [ ] Elasticidade de preço para e-commerce
-- [ ] Projeto utilizando Cloud GCP
-- [ ] Projeto utilizando Cloud AWS
-
-### **1º Trimestre de 2026** 
-- [ ] Ampliação do conhecimento em técnicas de Regressão e Classificação
-- [ ] Desenvolvimento do conhecimento de Cloud GCP e AWS
-
-**Projetos planejados:**
-- [ ] Elasticidade de preço para e-commerce
-- [ ] Projeto utilizando Cloud GCP
-- [ ] Projeto utilizando Cloud AWS
-
-### **2º Trimestre de 2026**
-- [ ] Habilidade em realizar e avaliar Teste A/B
-- [ ] Habilidade de ETL com Airflow
-
-**Projetos planejados:**
-- [ ] Aprimorar problema de Teste A/B
-- [ ] Projeto utilizando Airflow
-
-### **3º Trimestre de 2025**
-- [ ] Aprimorar o aprendizado da linguagem R
-- [ ] Habilidade com MLFlow
-
-**Projetos planejados:**
-- [ ] Projeto em linguagem R
-- [ ] Projeto utilizando MLFlow
-
----
-
-## 💼 Experiências Profissionais
-
-### **Analista de Dados**
-*Atualmente*
-
-Atuo nas áreas de tecnologia e relacionamento com clientes B2B e B2C no setor automotivo. Minhas responsabilidades incluem:
-
-- Suporte na criação do CRM/ERP e e-commerce
-- Levantamento de requisitos e criação de telas
-- Definição de processos do sistema
-- Testes de validação de requisitos
-- Mediação com equipe de desenvolvimento
-- Treinamento e implantação do sistema para clientes B2B
-- Análise de experiência do usuário para clientes B2C
-
-### **Yunique**
-*...*
-
-Desenvolvemos a plataforma **"Nosso Candidato"** ... :
-
-- Reunião de histórico de vida, propostas e ações de campanha
-- Desenvolvimento de plataforma de acesso público
-- Alto tráfego e boa aceitação do público
-- Desafios com transparência de informações de alguns candidatos
-
-### **TCC: Análise de Impacto da Pandemia nas Eleições**
-*"..."*
-
-**Metodologia:**
-- Coleta e processamento de dados 
-- Análise com Power BI (aprendizado autodidata)
-- Foco no ...  devido à limitação de recursos
-
-**Principais Descobertas:**
-- 📊 Gastos com materiais de rua **aumentaram** (contrariando expectativas)
-- 💰 Recursos próprios e doações **diminuíram drasticamente**
-- 🏛️ Aumento da dependência do Fundo Partidário Eleitoral
-- 🎯 Conclusão: 
-
----
-
-## 📂 Projetos em Destaque
-
-[Em breve - links para seus principais projetos]
-
-
-
-## 🛠️ Tech Stack
-
-### 📊 Data Science
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![Scikit-learn](https://img.shields.io/badge/Scikit_Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
-
-### ☁️ Deploy & Cloud
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-
-### 📊 Visualization
-![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-
----
+### Business Intelligence
+- **Power BI:** DAX, Power Query, Dashboards Interativos
+- **Análise de Dados:** KPIs, Métricas, Trackeamento (Google Analytics, Mixpanel)
 
 ## 📞 Contato
 
-[LinkedIn](#) | [Email](mailto:seu-email@provedor.com) | [Portfólio](#)
+**José Dinis Carlos Cabicho**
+- **Localização:** Maputo, Moçambique (Trabalho Remoto - PJ)
+- **Telefone:** (+258) 824968160 / (+258) 846554698
+- **E-mail:** jcabicho@gmail.com
+- **LinkedIn:** [linkedin.com/in/jose-cabicho](https://linkedin.com/in/jose-cabicho)
+- **Portfólio:** [cabicho.github.io/portfolio_projectos/](https://cabicho.github.io/portfolio_projectos/)
+- **GitHub:** [github.com/cabicho](https://github.com/cabicho)
+
+## 📁 Documentação
+
+- **CV Atualizado:** [José_Cabicho_Engenheiro_Dados_Marrar.pdf](link_para_cv)
+- **Carta de Apresentação:** [carta_apresentacao_marrar.md](link_para_carta)
 
 ---
 
-⭐ *Desde já agradeço pela visita e fico à disposição para conversas sobre dados, tecnologia e oportunidades de colaboração!*
+*Última atualização: $(date +"%d/%m/%Y %H:%M")*
