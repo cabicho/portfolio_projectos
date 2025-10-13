@@ -5,3 +5,4 @@ requests
 asyncpg
 pandas
 plotly
+sqlalchemy
