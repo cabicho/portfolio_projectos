@@ -77,3 +77,31 @@ class DatabaseLoader:
             print(f"❌ Erro ao carregar avaliação de risco: {e}")
         finally:
             await conn.close()
+
+    # Adicione esta função ao database_loader.py
+    async def load_world_bank_data(self, data):
+        """Carrega dados do Banco Mundial no PostgreSQL"""
+        if not data:
+            print("⚠️ Nenhum dado do World Bank para carregar")
+            return
+        
+        conn = await get_async_connection()
+        try:
+            # Limpar dados antigos
+            await conn.execute("DELETE FROM world_bank_data")
+            
+            # Inserir novos dados
+            for record in data:
+                await conn.execute('''
+                    INSERT INTO world_bank_data 
+                    (country_code, country_name, indicator_code, indicator_name, year, value, source)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                ''', record['country_code'], record['country_name'], 
+                record['indicator_code'], record['indicator_name'],
+                record['year'], record['value'], record['source'])
+            
+            print(f"✅ Dados World Bank carregados: {len(data)} registros")
+        except Exception as e:
+            print(f"❌ Erro ao carregar dados World Bank: {e}")
+        finally:
+            await conn.close()

@@ -1,3 +1,4 @@
+# pipeline-saude-mocambique/src/config/database.py
 import os
 import asyncpg
 from sqlalchemy import create_engine
@@ -26,6 +27,7 @@ async def create_tables():
     """Cria as tabelas no banco de dados"""
     conn = await get_async_connection()
     try:
+        #who_data
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS who_data (
                 id SERIAL PRIMARY KEY,
@@ -38,6 +40,7 @@ async def create_tables():
             )
         ''')
         
+        #occupational_diseases
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS occupational_diseases (
                 id SERIAL PRIMARY KEY,
@@ -56,6 +59,7 @@ async def create_tables():
             )
         ''')
         
+        #risk_assessment
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS risk_assessment (
                 id SERIAL PRIMARY KEY,
@@ -69,8 +73,40 @@ async def create_tables():
         ''')
         
         print("✅ Tabelas criadas/verificadas com sucesso")
-        
+        # world_bank_data
+        await create_world_bank_table()  # ADICIONE ESTA LINHA
     except Exception as e:
         print(f"❌ Erro ao criar tabelas: {e}")
     finally:
         await conn.close()
+
+# Adicione esta função ao database.py
+async def create_world_bank_table():
+    """Cria tabela para dados do Banco Mundial"""
+    conn = await get_async_connection()
+    try:
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS world_bank_data (
+                id SERIAL PRIMARY KEY,
+                country_code VARCHAR(10),
+                country_name VARCHAR(100),
+                indicator_code VARCHAR(50),
+                indicator_name TEXT,
+                year INTEGER,
+                value DECIMAL,
+                source VARCHAR(50),
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        print("✅ Tabela world_bank_data criada/verificada")
+    except Exception as e:
+        print(f"❌ Erro ao criar tabela world_bank_data: {e}")
+    finally:
+        await conn.close()
+
+# Atualize a função create_tables para incluir:
+# async def create_tables():
+    #await create_risk_assessment_table()
+    #await create_occupational_diseases_table() 
+    #await create_who_data_table()
+    #await create_world_bank_table()  # ADICIONE ESTA LINHA

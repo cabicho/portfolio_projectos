@@ -1,3 +1,4 @@
+#portfolio_projectos/pipeline-saude-mocambique/src/main.py
 import pandas as pd
 from extract.data_sources import MozambiqueDataExtractor
 from transform.data_cleaning import DataTransformer
@@ -30,6 +31,7 @@ async def main():
     who_data = extractor.extract_who_data()
     diseases_data = extractor.extract_occupational_diseases()
     exposure_data = extractor.extract_environmental_exposure()
+    world_bank_data = extractor.extract_world_bank_data()  # ADICIONE ESTA LINHA
     
     print(f"✅ Dados OMS: {len(who_data)} registros")
     print(f"✅ Dados Doenças: {len(diseases_data)} registros") 
@@ -50,6 +52,7 @@ async def main():
     await loader.load_who_data(who_clean)
     await loader.load_occupational_diseases(diseases_clean)
     await loader.load_risk_assessment(risk_assessment)
+    await loader.load_world_bank_data(world_bank_data)  # ADICIONE ESTA LINHA
     
     # Salvar localmente
     print("💿 Salvando arquivos locais...")
