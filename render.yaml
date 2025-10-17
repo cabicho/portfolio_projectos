@@ -1,11 +1,11 @@
-# render.yaml
+# render.yaml CORRIGIDO
 services:
   # Serviço Web Principal - Dashboard
   - type: web
     name: credit-control-dashboard
     env: python
     plan: free
-    region: ohio  # ou virginia, oregon
+    region: ohio  # opções: ohio, virginia, oregon
     branch: main
     
     # Build Configuration
@@ -27,21 +27,10 @@ services:
     
     # Health Check
     healthCheckPath: /
-    initialDeployHook: echo "🚀 Starting Credit Control Dashboard..."
     
     # Auto-Deploy
     autoDeploy: true
 
-  # Serviço de Processamento de Dados (Cron Job)
-  - type: cron
-    name: data-processor
-    env: python
-    plan: free
-    region: ohio
-    schedule: "0 6 * * *"  # Daily at 6 AM UTC
-    branch: main
-    buildCommand: pip install -r requirements.txt
-    startCommand: python src/utils/data_processor.py
-    envVars:
-      - key: RENDER
-        value: true
+# Removido o serviço cron (não tem plano free)
+# Para processamento de dados, podemos usar o próprio serviço web
+# ou adicionar funcionalidades de background no futuro
