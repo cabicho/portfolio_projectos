@@ -1,22 +1,47 @@
+# render.yaml
 services:
+  # Serviço Web Principal - Dashboard
   - type: web
-    name: portfolio-engenharia-dados
+    name: credit-control-dashboard
     env: python
     plan: free
-    region: ohio
-    repo: https://github.com/cabicho/portfolio_projectos
-    branch: pipeline-saude-mocambique
-    rootDir: pipeline-saude-mocambique
+    region: ohio  # ou virginia, oregon
+    branch: main
+    
+    # Build Configuration
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-      python scripts/init_database.py
-      python scripts/data_warehouse.py
-    startCommand: python app/main.py
+      
+    # Start Command
+    startCommand: python src/dashboard/app.py
+    
+    # Environment Variables
     envVars:
-      - key: DATABASE_URL
-        sync: false
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.9.0
       - key: ENVIRONMENT
         value: production
+      - key: RENDER
+        value: true
+    
+    # Health Check
+    healthCheckPath: /
+    initialDeployHook: echo "🚀 Starting Credit Control Dashboard..."
+    
+    # Auto-Deploy
+    autoDeploy: true
+
+  # Serviço de Processamento de Dados (Cron Job)
+  - type: cron
+    name: data-processor
+    env: python
+    plan: free
+    region: ohio
+    schedule: "0 6 * * *"  # Daily at 6 AM UTC
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/utils/data_processor.py
+    envVars:
+      - key: RENDER
+        value: true
