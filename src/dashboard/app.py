@@ -16,7 +16,143 @@ if src_dir not in sys.path:
 
 print(f"🚀 Credit Control Dashboard com Análise Dinâmica")
 
-# [MANTENHA TODO O CÓDIGO DE IMPORTAÇÃO E GERAÇÃO DE DADOS ANTERIOR...]
+# Definir variáveis de ambiente
+BRANCH_NAME = os.environ.get('GIT_BRANCH', 'pipeline-car-dev')
+REPOSITORY = os.environ.get('REPOSITORY', 'cabicho/portfolio_projectos')
+
+# Tentar importar os módulos com fallback
+try:
+    from data_sources.financial_data import CreditControlData
+    print("✅ Módulo financial_data importado com sucesso!")
+    
+    # Fallback para CustomerAnalytics
+    class CustomerAnalytics:
+        def __init__(self, data):
+            self.data = data
+        
+        def calculate_kpis(self):
+            total_clientes = len(self.data)
+            clientes_ativos = len(self.data[self.data.get('estado_conta', 'Ativo') == 'Ativo'])
+            clientes_inadimplentes = len(self.data[self.data['dias_atraso'] > 90])
+            
+            return {
+                'total_clientes': total_clientes,
+                'clientes_ativos': clientes_ativos,
+                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100,
+                'satisfacao_media': self.data['satisfacao_cliente'].mean(),
+                'utilizacao_media_credito': self.data.get('utilizacao_credito', 0.5).mean() * 100,
+                'exposicao_total_credito': self.data['valor_contrato'].sum(),
+                'valor_total_risco': self.data.get('valor_em_risco', 0).sum(),
+                'score_medio_credito': self.data['score_credito'].mean()
+            }
+        
+        def segment_clients(self):
+            segments = []
+            for _, client in self.data.iterrows():
+                risco = client.get('risco_credito', 0)
+                valor_contrato = client['valor_contrato']
+                
+                if risco <= 2 and valor_contrato > 10000:
+                    segment = 'Premium'
+                elif risco >= 4:
+                    segment = 'Alto Risco'
+                elif client.get('utilizacao_credito', 0) > 0.8:
+                    segment = 'Alta Utilização'
+                elif client['dias_atraso'] > 30:
+                    segment = 'Atraso Crítico'
+                else:
+                    segment = 'Standard'
+                segments.append(segment)
+            return segments
+                
+except ImportError as e:
+    print(f"❌ Erro na importação: {e}")
+    print("🔄 Usando fallback completo...")
+    
+    # Fallback completo
+    class CreditControlData:
+        def __init__(self, sample_size=1000):
+            self.sample_size = sample_size
+            np.random.seed(42)
+        
+        def generate_portfolio_data(self):
+            data = {
+                'cliente_id': range(1, self.sample_size + 1),
+                'segmento': np.random.choice(['Corporate', 'SME', 'Individual'], self.sample_size),
+                'valor_contrato': np.random.uniform(1000, 50000, self.sample_size),
+                'dias_atraso': np.random.randint(0, 120, self.sample_size),
+                'limite_credito': np.random.uniform(5000, 100000, self.sample_size),
+                'utilizacao_credito': np.random.uniform(0.1, 0.95, self.sample_size),
+                'score_credito': np.random.randint(300, 850, self.sample_size),
+                'estado_conta': np.random.choice(['Ativo', 'Inativo', 'Suspenso'], self.sample_size),
+                'satisfacao_cliente': np.random.uniform(1, 5, self.sample_size),
+                'tempo_cliente_meses': np.random.randint(1, 60, self.sample_size),
+                'regiao': np.random.choice(['Norte', 'Sul', 'Centro', 'Litoral'], self.sample_size)
+            }
+            
+            df = pd.DataFrame(data)
+            df['risco_credito'] = df.apply(self.calculate_credit_risk, axis=1)
+            df['categoria_atraso'] = df['dias_atraso'].apply(self.categorize_delay)
+            df['valor_em_risco'] = df.apply(self.calculate_risk_exposure, axis=1)
+            return df
+        
+        def calculate_credit_risk(self, row):
+            risk_score = 0
+            if row['dias_atraso'] > 90:
+                risk_score += 3
+            elif row['dias_atraso'] > 30:
+                risk_score += 2
+            elif row['dias_atraso'] > 0:
+                risk_score += 1
+                
+            if row['utilizacao_credito'] > 0.8:
+                risk_score += 2
+            elif row['utilizacao_credito'] > 0.5:
+                risk_score += 1
+                
+            if row['score_credito'] < 500:
+                risk_score += 3
+            elif row['score_credito'] < 650:
+                risk_score += 2
+                
+            return min(risk_score, 5)
+        
+        def categorize_delay(self, dias):
+            if dias == 0:
+                return 'Em dia'
+            elif dias <= 30:
+                return 'Atraso leve'
+            elif dias <= 90:
+                return 'Atraso moderado'
+            else:
+                return 'Atraso severo'
+        
+        def calculate_risk_exposure(self, row):
+            risk_multiplier = {0: 0.01, 1: 0.05, 2: 0.10, 3: 0.25, 4: 0.50, 5: 0.75}
+            return row['valor_contrato'] * risk_multiplier.get(row['risco_credito'], 0.1)
+    
+    class CustomerAnalytics:
+        def __init__(self, data):
+            self.data = data
+        
+        def calculate_kpis(self):
+            total_clientes = len(self.data)
+            clientes_ativos = len(self.data[self.data['estado_conta'] == 'Ativo'])
+            clientes_inadimplentes = len(self.data[self.data['dias_atraso'] > 90])
+            
+            return {
+                'total_clientes': total_clientes,
+                'clientes_ativos': clientes_ativos,
+                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100,
+                'satisfacao_media': self.data['satisfacao_cliente'].mean(),
+                'utilizacao_media_credito': self.data['utilizacao_credito'].mean() * 100,
+                'exposicao_total_credito': self.data['valor_contrato'].sum(),
+                'valor_total_risco': self.data['valor_em_risco'].sum(),
+                'score_medio_credito': self.data['score_credito'].mean()
+            }
+        
+        def segment_clients(self):
+            return ['Standard'] * len(self.data)
 
 # Funções de análise dinâmica
 def generate_segment_insights(data):
@@ -106,7 +242,21 @@ def generate_contract_insights(data):
     
     return main_insight, insights
 
-# [MANTENHA O CÓDIGO DE GERAÇÃO DE DADOS E KPIs...]
+# Gerar dados
+print("📊 Gerando dados do portfolio...")
+data_generator = CreditControlData(sample_size=800)
+portfolio_data = data_generator.generate_portfolio_data()
+analytics = CustomerAnalytics(portfolio_data)
+kpis = analytics.calculate_kpis()
+segments = analytics.segment_clients()
+portfolio_data['segmento_cliente'] = segments
+
+print(f"✅ Dados gerados com sucesso: {len(portfolio_data)} clientes")
+print(f"📈 KPIs: {kpis['total_clientes']} clientes, {kpis['taxa_inadimplencia']:.1f}% inadimplência")
+
+# Inicializar app
+app = dash.Dash(__name__)
+app.title = "Credit Control Analytics"
 
 # Layout do dashboard com análises dinâmicas
 app.layout = html.Div([
@@ -217,7 +367,7 @@ app.layout = html.Div([
                     title='💰 Score vs Valor do Contrato',
                     size='valor_contrato',
                     hover_data=['segmento', 'dias_atraso'],
-                    color_discrete_map={'Baixo': '#28a745', 'Médio': '#ffc107', 'Alto': '#dc3545'}
+                    color_discrete_map={0: '#28a745', 1: '#ffc107', 2: '#fd7e14', 3: '#dc3545', 4: '#6f42c1', 5: '#000000'}
                 )
             ),
             html.Div([
