@@ -1,272 +1,315 @@
+# src/dashboard/app.py
 import dash
 from dash import dcc, html, Input, Output, dash_table
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import logging
+import numpy as np
 import os
 import sys
+import logging
 
-# ADICIONAR ESTA LINHA PARA CORRIGIR O PATH
-sys.path.append('/app/src')
+# CORREÇÃO CRÍTICA: Configurar o path para imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.abspath(os.path.join(current_dir, '..'))
+if src_dir not in sys.path:
+    sys.path.append(src_dir)
 
-# Agora importar os módulos
-from data_sources.financial_data import CreditControlData
-from analysis.customer_analytics import CustomerAnalytics
+print(f"🚀 Iniciando Credit Control Dashboard no Render")
+print(f"📍 Current directory: {current_dir}")
+print(f"📁 Source directory: {src_dir}")
+print(f"🐍 Python path: {sys.path}")
 
+# Tentar importar os módulos com fallback
+try:
+    from data_sources.financial_data import CreditControlData
+    print("✅ Módulo financial_data importado com sucesso!")
+    
+    # Tentar importar analytics (opcional)
+    try:
+        from analysis.customer_analytics import CustomerAnalytics
+        print("✅ Módulo customer_analytics importado com sucesso!")
+    except ImportError:
+        print("⚠️  Módulo customer_analytics não encontrado, usando fallback...")
+        # Fallback para CustomerAnalytics
+        class CustomerAnalytics:
+            def __init__(self, data):
+                self.data = data
+            
+            def calculate_kpis(self):
+                total_clientes = len(self.data)
+                clientes_ativos = len(self.data[self.data['estado_conta'] == 'Ativo'])
+                clientes_inadimplentes = len(self.data[self.data['dias_atraso'] > 90])
+                
+                return {
+                    'total_clientes': total_clientes,
+                    'clientes_ativos': clientes_ativos,
+                    'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100,
+                    'satisfacao_media': self.data['satisfacao_cliente'].mean(),
+                    'utilizacao_media_credito': self.data['utilizacao_credito'].mean() * 100,
+                    'exposicao_total_credito': self.data['valor_contrato'].sum(),
+                    'valor_total_risco': self.data['valor_em_risco'].sum() if 'valor_em_risco' in self.data.columns else 0,
+                    'score_medio_credito': self.data['score_credito'].mean()
+                }
+            
+            def segment_clients(self):
+                segments = []
+                for _, client in self.data.iterrows():
+                    risco = client.get('risco_credito', 0)
+                    valor_contrato = client['valor_contrato']
+                    
+                    if risco <= 2 and valor_contrato > 10000:
+                        segment = 'Premium'
+                    elif risco >= 4:
+                        segment = 'Alto Risco'
+                    elif client.get('utilizacao_credito', 0) > 0.8:
+                        segment = 'Alta Utilização'
+                    elif client['dias_atraso'] > 30:
+                        segment = 'Atraso Crítico'
+                    else:
+                        segment = 'Standard'
+                    segments.append(segment)
+                return segments
+            
+            def generate_retention_insights(self):
+                return {
+                    'correlacao_satisfacao_tempo': self.data[['satisfacao_cliente', 'tempo_cliente_meses']].corr().iloc[0,1] if 'tempo_cliente_meses' in self.data.columns else 0,
+                    'satisfacao_por_segmento': self.data.groupby('segmento')['satisfacao_cliente'].mean().to_dict(),
+                }
+                
+except ImportError as e:
+    print(f"❌ Erro na importação: {e}")
+    print("🔄 Usando fallback completo...")
+    
+    # Fallback completo se financial_data não for encontrado
+    class CreditControlData:
+        def __init__(self, sample_size=1000):
+            self.sample_size = sample_size
+            np.random.seed(42)
+        
+        def generate_portfolio_data(self):
+            data = {
+                'cliente_id': range(1, self.sample_size + 1),
+                'segmento': np.random.choice(['Corporate', 'SME', 'Individual'], self.sample_size),
+                'valor_contrato': np.random.uniform(1000, 50000, self.sample_size),
+                'dias_atraso': np.random.randint(0, 120, self.sample_size),
+                'limite_credito': np.random.uniform(5000, 100000, self.sample_size),
+                'utilizacao_credito': np.random.uniform(0.1, 0.95, self.sample_size),
+                'score_credito': np.random.randint(300, 850, self.sample_size),
+                'estado_conta': np.random.choice(['Ativo', 'Inativo', 'Suspenso'], self.sample_size),
+                'satisfacao_cliente': np.random.uniform(1, 5, self.sample_size),
+                'tempo_cliente_meses': np.random.randint(1, 60, self.sample_size),
+                'regiao': np.random.choice(['Norte', 'Sul', 'Centro', 'Litoral'], self.sample_size)
+            }
+            
+            df = pd.DataFrame(data)
+            df['risco_credito'] = df.apply(self.calculate_credit_risk, axis=1)
+            df['categoria_atraso'] = df['dias_atraso'].apply(self.categorize_delay)
+            df['valor_em_risco'] = df.apply(self.calculate_risk_exposure, axis=1)
+            return df
+        
+        def calculate_credit_risk(self, row):
+            risk_score = 0
+            if row['dias_atraso'] > 90:
+                risk_score += 3
+            elif row['dias_atraso'] > 30:
+                risk_score += 2
+            elif row['dias_atraso'] > 0:
+                risk_score += 1
+                
+            if row['utilizacao_credito'] > 0.8:
+                risk_score += 2
+            elif row['utilizacao_credito'] > 0.5:
+                risk_score += 1
+                
+            if row['score_credito'] < 500:
+                risk_score += 3
+            elif row['score_credito'] < 650:
+                risk_score += 2
+                
+            return min(risk_score, 5)
+        
+        def categorize_delay(self, dias):
+            if dias == 0:
+                return 'Em dia'
+            elif dias <= 30:
+                return 'Atraso leve'
+            elif dias <= 90:
+                return 'Atraso moderado'
+            else:
+                return 'Atraso severo'
+        
+        def calculate_risk_exposure(self, row):
+            risk_multiplier = {0: 0.01, 1: 0.05, 2: 0.10, 3: 0.25, 4: 0.50, 5: 0.75}
+            return row['valor_contrato'] * risk_multiplier.get(row['risco_credito'], 0.1)
+    
+    class CustomerAnalytics:
+        def __init__(self, data):
+            self.data = data
+        
+        def calculate_kpis(self):
+            total_clientes = len(self.data)
+            clientes_ativos = len(self.data[self.data['estado_conta'] == 'Ativo'])
+            clientes_inadimplentes = len(self.data[self.data['dias_atraso'] > 90])
+            
+            return {
+                'total_clientes': total_clientes,
+                'clientes_ativos': clientes_ativos,
+                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100,
+                'satisfacao_media': self.data['satisfacao_cliente'].mean(),
+                'utilizacao_media_credito': self.data['utilizacao_credito'].mean() * 100,
+                'exposicao_total_credito': self.data['valor_contrato'].sum(),
+                'valor_total_risco': self.data['valor_em_risco'].sum(),
+                'score_medio_credito': self.data['score_credito'].mean()
+            }
+        
+        def segment_clients(self):
+            return ['Standard'] * len(self.data)
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Identificação do branch
+BRANCH_NAME = os.environ.get('GIT_BRANCH', 'pipeline-car-dev')
+REPOSITORY = os.environ.get('REPOSITORY', 'cabicho/portfolio_projectos')
+
+# Gerar dados
+print("📊 Gerando dados do portfolio...")
+data_generator = CreditControlData(sample_size=800)
+portfolio_data = data_generator.generate_portfolio_data()
+analytics = CustomerAnalytics(portfolio_data)
+kpis = analytics.calculate_kpis()
+segments = analytics.segment_clients()
+portfolio_data['segmento_cliente'] = segments
+
+print(f"✅ Dados gerados com sucesso: {len(portfolio_data)} clientes")
+print(f"📈 KPIs: {kpis['total_clientes']} clientes, {kpis['taxa_inadimplencia']:.1f}% inadimplência")
+
 # Inicializar app
 app = dash.Dash(__name__)
 app.title = "Credit Control Analytics"
 
-# Gerar dados
-logger.info("Inicializando gerador de dados...")
-try:
-    data_generator = CreditControlData(sample_size=1000)
-    portfolio_data = data_generator.generate_portfolio_data()
-    analytics = CustomerAnalytics(portfolio_data)
-    kpis = analytics.calculate_kpis()
-    segments = analytics.segment_clients()
-    portfolio_data['segmento_cliente'] = segments
-    logger.info("Dados gerados com sucesso!")
-except Exception as e:
-    logger.error(f"Erro ao gerar dados: {e}")
-    # Criar dados de fallback
-    portfolio_data = pd.DataFrame({
-        'cliente_id': [1, 2, 3],
-        'segmento': ['Corporate', 'SME', 'Individual'],
-        'valor_contrato': [10000, 5000, 2000],
-        'dias_atraso': [0, 15, 45],
-        'risco_credito': [1, 2, 4],
-        'satisfacao_cliente': [4.5, 3.8, 2.5],
-        'segmento_cliente': ['Premium', 'Standard', 'Alto Risco']
-    })
-    kpis = {'total_clientes': 3, 'taxa_inadimplencia': 33.3, 'satisfacao_media': 3.6, 'exposicao_total_credito': 17000}
-    
-
-
-# Layout do dashboard
 app.layout = html.Div([
-    html.H1("📈 Credit Control & Customer Analytics Dashboard", 
-            style={'textAlign': 'center', 'color': '#2E86AB', 'marginBottom': 30}),
-    
-    # KPIs em Destaque
+    # Header
     html.Div([
-        html.Div([
-            html.H4("👥 Total Clientes", style={'color': '#2E86AB', 'marginBottom': '10px'}),
-            html.H2(f"{kpis['total_clientes']:,}", 
-                   style={'color': '#2E86AB', 'margin': '0', 'fontSize': '2.5em'})
-        ], className='three columns', style={
-            'textAlign': 'center', 
-            'padding': '20px', 
-            'backgroundColor': '#f8f9fa',
-            'borderRadius': '10px',
-            'margin': '10px',
-            'boxShadow': '0 2px 4px rgba(0,0,0,0.1)'
-        }),
-        
-        html.Div([
-            html.H4("⚠️ Taxa Inadimplência", style={'color': '#A23B72', 'marginBottom': '10px'}),
-            html.H2(f"{kpis['taxa_inadimplencia']:.1f}%", 
-                   style={'color': '#A23B72', 'margin': '0', 'fontSize': '2.5em'})
-        ], className='three columns', style={
-            'textAlign': 'center', 
-            'padding': '20px', 
-            'backgroundColor': '#f8f9fa',
-            'borderRadius': '10px',
-            'margin': '10px',
-            'boxShadow': '0 2px 4px rgba(0,0,0,0.1)'
-        }),
-        
-        html.Div([
-            html.H4("😊 Satisfação Cliente", style={'color': '#F18F01', 'marginBottom': '10px'}),
-            html.H2(f"{kpis['satisfacao_media']:.1f}/5", 
-                   style={'color': '#F18F01', 'margin': '0', 'fontSize': '2.5em'})
-        ], className='three columns', style={
-            'textAlign': 'center', 
-            'padding': '20px', 
-            'backgroundColor': '#f8f9fa',
-            'borderRadius': '10px',
-            'margin': '10px',
-            'boxShadow': '0 2px 4px rgba(0,0,0,0.1)'
-        }),
-        
-        html.Div([
-            html.H4("💰 Exposição Crédito", style={'color': '#C73E1D', 'marginBottom': '10px'}),
-            html.H2(f"${kpis['exposicao_total_credito']:,.0f}", 
-                   style={'color': '#C73E1D', 'margin': '0', 'fontSize': '2.5em'})
-        ], className='three columns', style={
-            'textAlign': 'center', 
-            'padding': '20px', 
-            'backgroundColor': '#f8f9fa',
-            'borderRadius': '10px',
-            'margin': '10px',
-            'boxShadow': '0 2px 4px rgba(0,0,0,0.1)'
-        })
-    ], className='row', style={'display': 'flex', 'justifyContent': 'center'}),
-    
-    # Filtros
-    html.Div([
-        html.Div([
-            html.Label("Segmento de Cliente:", style={'fontWeight': 'bold', 'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='segment-filter',
-                options=[{'label': 'Todos', 'value': 'Todos'}] + 
-                        [{'label': seg, 'value': seg} for seg in portfolio_data['segmento'].unique()],
-                value='Todos',
-                style={'width': '200px', 'display': 'inline-block'}
-            )
-        ], style={'display': 'inline-block', 'marginRight': '20px'}),
-        
-        html.Div([
-            html.Label("Nível de Risco:", style={'fontWeight': 'bold', 'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='risk-filter',
-                options=[{'label': 'Todos', 'value': 'Todos'}] + 
-                        [{'label': f'Risco {i}', 'value': i} for i in range(6)],
-                value='Todos',
-                style={'width': '150px', 'display': 'inline-block'}
-            )
-        ], style={'display': 'inline-block'})
-    ], style={'textAlign': 'center', 'margin': '30px 0'}),
-    
-    # Primeira linha de gráficos
-    html.Div([
-        html.Div([
-            dcc.Graph(id='risk-distribution')
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '10px'}),
-        
-        html.Div([
-            dcc.Graph(id='portfolio-composition')
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '10px'})
-    ], style={'textAlign': 'center'}),
-    
-    # Segunda linha de gráficos
-    html.Div([
-        html.Div([
-            dcc.Graph(id='satisfaction-analysis')
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '10px'}),
-        
-        html.Div([
-            dcc.Graph(id='delay-analysis')
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '10px'})
-    ], style={'textAlign': 'center'}),
-    
-    # Tabela de Dados
-    html.Div([
-        html.H3("📋 Detalhes do Portfolio de Clientes", 
-                style={'textAlign': 'center', 'color': '#2E86AB', 'marginTop': '40px'}),
-        html.Div(id='client-table',
-                style={'margin': '20px', 'padding': '20px', 'backgroundColor': '#f8f9fa', 'borderRadius': '10px'})
+        html.H1("💳 Credit Control Dashboard", 
+                style={'textAlign': 'center', 'color': '#2E86AB', 'marginBottom': '5px'}),
+        html.P(f"Branch: {BRANCH_NAME} | Repositório: {REPOSITORY}",
+               style={'textAlign': 'center', 'color': '#6c757d', 'fontSize': '14px', 'marginBottom': '20px'})
     ]),
+    
+    # KPIs
+    html.Div([
+        html.Div([
+            html.H4("👥 Total Clientes", style={'color': '#2E86AB', 'marginBottom': '5px'}),
+            html.H2(f"{kpis['total_clientes']:,}", 
+                   style={'color': '#2E86AB', 'margin': '0', 'fontSize': '2em'})
+        ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
+        
+        html.Div([
+            html.H4("⚠️ Inadimplência", style={'color': '#dc3545', 'marginBottom': '5px'}),
+            html.H2(f"{kpis['taxa_inadimplencia']:.1f}%", 
+                   style={'color': '#dc3545', 'margin': '0', 'fontSize': '2em'})
+        ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
+        
+        html.Div([
+            html.H4("😊 Satisfação", style={'color': '#28a745', 'marginBottom': '5px'}),
+            html.H2(f"{kpis['satisfacao_media']:.1f}/5", 
+                   style={'color': '#28a745', 'margin': '0', 'fontSize': '2em'})
+        ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
+        
+        html.Div([
+            html.H4("💰 Exposição", style={'color': '#ffc107', 'marginBottom': '5px'}),
+            html.H2(f"${kpis['exposicao_total_credito']:,.0f}", 
+                   style={'color': '#ffc107', 'margin': '0', 'fontSize': '1.8em'})
+        ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
+    ], style={'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap', 'margin': '10px 0'}),
+    
+    # Gráficos
+    html.Div([
+        html.Div([
+            dcc.Graph(
+                figure=px.pie(
+                    portfolio_data, 
+                    names='segmento',
+                    title='📊 Distribuição por Segmento',
+                    color_discrete_sequence=px.colors.qualitative.Set3
+                )
+            )
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'}),
+        
+        html.Div([
+            dcc.Graph(
+                figure=px.bar(
+                    portfolio_data.groupby('risco_credito').size().reset_index(name='count'),
+                    x='risco_credito',
+                    y='count',
+                    title='🎯 Clientes por Nível de Risco',
+                    color='risco_credito',
+                    color_discrete_sequence=px.colors.sequential.Reds
+                )
+            )
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'})
+    ]),
+    
+    html.Div([
+        html.Div([
+            dcc.Graph(
+                figure=px.box(
+                    portfolio_data,
+                    x='segmento',
+                    y='valor_contrato',
+                    title='💵 Valor do Contrato por Segmento',
+                    color='segmento'
+                )
+            )
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'}),
+        
+        html.Div([
+            dcc.Graph(
+                figure=px.scatter(
+                    portfolio_data,
+                    x='score_credito',
+                    y='valor_contrato',
+                    color='risco_credito',
+                    title='📈 Score vs Valor do Contrato',
+                    size='valor_contrato',
+                    hover_data=['segmento', 'dias_atraso']
+                )
+            )
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'})
+    ]),
+    
+    # Tabela
+    html.Div([
+        html.H3("📋 Detalhes do Portfolio", 
+                style={'textAlign': 'center', 'color': '#2E86AB', 'margin': '20px 0'}),
+        dash_table.DataTable(
+            data=portfolio_data.head(12).to_dict('records'),
+            columns=[{"name": i, "id": i} for i in ['cliente_id', 'segmento', 'valor_contrato', 'dias_atraso', 'risco_credito', 'satisfacao_cliente', 'segmento_cliente']],
+            page_size=10,
+            style_table={'overflowX': 'auto'},
+            style_cell={'textAlign': 'left', 'padding': '8px', 'fontFamily': 'Arial'},
+            style_header={'backgroundColor': '#2E86AB', 'color': 'white', 'fontWeight': 'bold'}
+        )
+    ], style={'margin': '10px', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px'}),
     
     # Footer
     html.Div([
         html.Hr(),
-        html.P("💼 Credit Control Dashboard - Desenvolvido para demonstração de habilidades em Data & Reporting",
-              style={'textAlign': 'center', 'color': '#6c757d', 'fontSize': '0.9em'})
-    ], style={'marginTop': '40px'})
+        html.P(f"✅ Credit Control Dashboard | Branch: {BRANCH_NAME} | " 
+               "💼 Demonstração para vaga Junior Data & Reporting Officer",
+              style={'textAlign': 'center', 'color': '#6c757d', 'fontSize': '0.8em', 'marginTop': '20px'})
+    ])
 ])
 
-# Callbacks para interatividade
-@app.callback(
-    [Output('risk-distribution', 'figure'),
-     Output('portfolio-composition', 'figure'),
-     Output('satisfaction-analysis', 'figure'),
-     Output('delay-analysis', 'figure'),
-     Output('client-table', 'children')],
-    [Input('segment-filter', 'value'),
-     Input('risk-filter', 'value')]
-)
-def update_dashboard(segment, risk_level):
-    logger.info(f"Atualizando dashboard com filtros: segmento={segment}, risco={risk_level}")
-    
-    # Filtrar dados
-    filtered_data = portfolio_data.copy()
-    
-    if segment != 'Todos':
-        filtered_data = filtered_data[filtered_data['segmento'] == segment]
-    
-    if risk_level != 'Todos':
-        filtered_data = filtered_data[filtered_data['risco_credito'] == risk_level]
-    
-    # Gráfico 1: Distribuição de Risco
-    risk_counts = filtered_data['risco_credito'].value_counts().sort_index()
-    risk_fig = go.Figure(data=[
-        go.Bar(x=[f'Risco {i}' for i in risk_counts.index], 
-               y=risk_counts.values,
-               marker_color=['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1', '#000000'])
-    ])
-    risk_fig.update_layout(
-        title='Distribuição de Risco de Crédito',
-        xaxis_title='Nível de Risco',
-        yaxis_title='Número de Clientes'
-    )
-    
-    # Gráfico 2: Composição do Portfolio
-    segment_counts = filtered_data['segmento_cliente'].value_counts()
-    composition_fig = px.pie(
-        values=segment_counts.values, 
-        names=segment_counts.index,
-        title='Composição do Portfolio por Segmento',
-        color_discrete_sequence=px.colors.qualitative.Set3
-    )
-    
-    # Gráfico 3: Análise de Satisfação
-    satisfaction_fig = px.box(
-        filtered_data, 
-        x='segmento', 
-        y='satisfacao_cliente',
-        title='Satisfação do Cliente por Segmento',
-        color='segmento'
-    )
-    
-    # Gráfico 4: Análise de Atrasos
-    delay_fig = px.histogram(
-        filtered_data, 
-        x='dias_atraso',
-        title='Distribuição de Dias em Atraso',
-        nbins=20,
-        color_discrete_sequence=['#ff6b6b']
-    )
-    delay_fig.update_layout(
-        xaxis_title='Dias em Atraso',
-        yaxis_title='Número de Clientes'
-    )
-    
-    # Tabela
-    display_columns = ['cliente_id', 'segmento', 'valor_contrato', 'dias_atraso', 
-                      'risco_credito', 'satisfacao_cliente', 'segmento_cliente']
-    
-    table_data = filtered_data[display_columns].head(15).round(2)
-    table = dash_table.DataTable(
-        data=table_data.to_dict('records'),
-        columns=[{"name": i, "id": i} for i in display_columns],
-        page_size=10,
-        style_table={'overflowX': 'auto'},
-        style_cell={
-            'textAlign': 'left',
-            'padding': '10px',
-            'fontFamily': 'Arial'
-        },
-        style_header={
-            'backgroundColor': '#2E86AB',
-            'color': 'white',
-            'fontWeight': 'bold'
-        }
-    )
-    
-    logger.info("Dashboard atualizado com sucesso")
-    return risk_fig, composition_fig, satisfaction_fig, delay_fig, table
+# Server configuration
+server = app.server
 
 if __name__ == '__main__':
-    logger.info("Iniciando servidor Dash...")
-    app.run_server(
-        host='0.0.0.0',
-        port=8050,
-        debug=True
-    )
+    port = int(os.environ.get('PORT', 8050))
+    debug = False if os.environ.get('RENDER') else True
+    
+    print(f"🌈 Dashboard rodando em: http://0.0.0.0:{port}")
+    app.run_server(host='0.0.0.0', port=port, debug=debug)
