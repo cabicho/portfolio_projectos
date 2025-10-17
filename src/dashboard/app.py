@@ -14,7 +14,7 @@ src_dir = os.path.abspath(os.path.join(current_dir, '..'))
 if src_dir not in sys.path:
     sys.path.append(src_dir)
 
-print(f"🚀 Credit Control Dashboard com Análise Dinâmica")
+print(f"🚀 Credit Control Dashboard com Filtros Interativos")
 
 # Definir variáveis de ambiente
 BRANCH_NAME = os.environ.get('GIT_BRANCH', 'pipeline-car-dev')
@@ -30,25 +30,26 @@ try:
         def __init__(self, data):
             self.data = data
         
-        def calculate_kpis(self):
-            total_clientes = len(self.data)
-            clientes_ativos = len(self.data[self.data.get('estado_conta', 'Ativo') == 'Ativo'])
-            clientes_inadimplentes = len(self.data[self.data['dias_atraso'] > 90])
+        def calculate_kpis(self, filtered_data=None):
+            data_to_use = filtered_data if filtered_data is not None else self.data
+            total_clientes = len(data_to_use)
+            clientes_ativos = len(data_to_use[data_to_use.get('estado_conta', 'Ativo') == 'Ativo'])
+            clientes_inadimplentes = len(data_to_use[data_to_use['dias_atraso'] > 90])
             
             return {
                 'total_clientes': total_clientes,
                 'clientes_ativos': clientes_ativos,
-                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100,
-                'satisfacao_media': self.data['satisfacao_cliente'].mean(),
-                'utilizacao_media_credito': self.data.get('utilizacao_credito', 0.5).mean() * 100,
-                'exposicao_total_credito': self.data['valor_contrato'].sum(),
-                'valor_total_risco': self.data.get('valor_em_risco', 0).sum(),
-                'score_medio_credito': self.data['score_credito'].mean()
+                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100 if total_clientes > 0 else 0,
+                'satisfacao_media': data_to_use['satisfacao_cliente'].mean() if total_clientes > 0 else 0,
+                'utilizacao_media_credito': data_to_use.get('utilizacao_credito', 0.5).mean() * 100 if total_clientes > 0 else 0,
+                'exposicao_total_credito': data_to_use['valor_contrato'].sum(),
+                'valor_total_risco': data_to_use.get('valor_em_risco', 0).sum(),
+                'score_medio_credito': data_to_use['score_credito'].mean() if total_clientes > 0 else 0
             }
         
-        def segment_clients(self):
+        def segment_clients(self, data):
             segments = []
-            for _, client in self.data.iterrows():
+            for _, client in data.iterrows():
                 risco = client.get('risco_credito', 0)
                 valor_contrato = client['valor_contrato']
                 
@@ -135,28 +136,32 @@ except ImportError as e:
         def __init__(self, data):
             self.data = data
         
-        def calculate_kpis(self):
-            total_clientes = len(self.data)
-            clientes_ativos = len(self.data[self.data['estado_conta'] == 'Ativo'])
-            clientes_inadimplentes = len(self.data[self.data['dias_atraso'] > 90])
+        def calculate_kpis(self, filtered_data=None):
+            data_to_use = filtered_data if filtered_data is not None else self.data
+            total_clientes = len(data_to_use)
+            clientes_ativos = len(data_to_use[data_to_use['estado_conta'] == 'Ativo'])
+            clientes_inadimplentes = len(data_to_use[data_to_use['dias_atraso'] > 90])
             
             return {
                 'total_clientes': total_clientes,
                 'clientes_ativos': clientes_ativos,
-                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100,
-                'satisfacao_media': self.data['satisfacao_cliente'].mean(),
-                'utilizacao_media_credito': self.data['utilizacao_credito'].mean() * 100,
-                'exposicao_total_credito': self.data['valor_contrato'].sum(),
-                'valor_total_risco': self.data['valor_em_risco'].sum(),
-                'score_medio_credito': self.data['score_credito'].mean()
+                'taxa_inadimplencia': (clientes_inadimplentes / total_clientes) * 100 if total_clientes > 0 else 0,
+                'satisfacao_media': data_to_use['satisfacao_cliente'].mean() if total_clientes > 0 else 0,
+                'utilizacao_media_credito': data_to_use['utilizacao_credito'].mean() * 100 if total_clientes > 0 else 0,
+                'exposicao_total_credito': data_to_use['valor_contrato'].sum(),
+                'valor_total_risco': data_to_use['valor_em_risco'].sum(),
+                'score_medio_credito': data_to_use['score_credito'].mean() if total_clientes > 0 else 0
             }
         
-        def segment_clients(self):
-            return ['Standard'] * len(self.data)
+        def segment_clients(self, data):
+            return ['Standard'] * len(data)
 
 # Funções de análise dinâmica
 def generate_segment_insights(data):
     """Gera insights automáticos para distribuição por segmento"""
+    if len(data) == 0:
+        return "📊 Nenhum dado para análise", []
+    
     segment_stats = data.groupby('segmento').agg({
         'valor_contrato': ['count', 'sum', 'mean'],
         'dias_atraso': 'mean',
@@ -174,12 +179,15 @@ def generate_segment_insights(data):
         insight = f"• {seg['segmento']}: {seg['clientes']} clientes ({percentual:.1f}%) - Valor médio: ${seg['valor_medio']:,.0f}"
         insights.append(insight)
     
-    main_insight = f"💡 **Distribuição Balanceada**: {len(segment_stats)} segmentos com representatividade diversificada no portfolio."
+    main_insight = f"💡 **Distribuição**: {len(segment_stats)} segmentos analisados"
     
     return main_insight, insights
 
 def generate_risk_insights(data):
     """Gera insights automáticos para análise de risco"""
+    if len(data) == 0:
+        return "⚠️ Nenhum dado para análise", []
+    
     risk_stats = data.groupby('risco_credito').agg({
         'cliente_id': 'count',
         'valor_contrato': 'sum',
@@ -192,19 +200,22 @@ def generate_risk_insights(data):
     
     insights = []
     for _, risk in risk_stats.iterrows():
-        risk_percent = (risk['valor_em_risco'] / total_risk_exposure) * 100
+        risk_percent = (risk['valor_em_risco'] / total_risk_exposure) * 100 if total_risk_exposure > 0 else 0
         insight = f"• Risco {int(risk['risco_credito'])}: {risk['cliente_id']} clientes - ${risk['valor_em_risco']:,.0f} em risco ({risk_percent:.1f}%)"
         insights.append(insight)
     
     high_risk_count = len(data[data['risco_credito'] >= 4])
-    high_risk_percent = (high_risk_count / len(data)) * 100
+    high_risk_percent = (high_risk_count / len(data)) * 100 if len(data) > 0 else 0
     
-    main_insight = f"⚠️ **Alerta**: {high_risk_count} clientes ({high_risk_percent:.1f}%) classificados como alto risco necessitam atenção imediata."
+    main_insight = f"⚠️ **Alerta**: {high_risk_count} clientes ({high_risk_percent:.1f}%) classificados como alto risco"
     
     return main_insight, insights
 
 def generate_satisfaction_insights(data):
     """Gera insights automáticos para análise de satisfação"""
+    if len(data) == 0:
+        return "😊 Nenhum dado para análise", []
+    
     satisfaction_stats = data.groupby('segmento')['satisfacao_cliente'].agg(['mean', 'count']).round(2)
     satisfaction_stats = satisfaction_stats.reset_index()
     
@@ -217,9 +228,9 @@ def generate_satisfaction_insights(data):
         insights.append(insight)
     
     if len(low_satisfaction) > 0:
-        low_sat_insight = f"🎯 **Oportunidade**: {len(low_satisfaction)} clientes com baixa satisfação (<3.0) identificados para ações de retenção."
+        low_sat_insight = f"🎯 **Oportunidade**: {len(low_satisfaction)} clientes com baixa satisfação (<3.0)"
     else:
-        low_sat_insight = "✅ **Excelente**: Todos os clientes apresentam satisfação acima de 3.0."
+        low_sat_insight = "✅ **Excelente**: Todos os clientes com satisfação acima de 3.0"
     
     main_insight = f"😊 **Satisfação Geral**: {overall_satisfaction:.1f}/5 - {low_sat_insight}"
     
@@ -227,51 +238,235 @@ def generate_satisfaction_insights(data):
 
 def generate_contract_insights(data):
     """Gera insights automáticos para análise de contratos"""
+    if len(data) == 0:
+        return "💰 Nenhum dado para análise", []
+    
     contract_corr = data[['score_credito', 'valor_contrato', 'dias_atraso']].corr().iloc[0,1]
     
-    high_value_clients = data[data['valor_contrato'] > data['valor_contrato'].quantile(0.8)]
+    high_value_clients = data[data['valor_contrato'] > data['valor_contrato'].quantile(0.8)] if len(data) > 0 else data
     low_risk_high_value = high_value_clients[high_value_clients['risco_credito'] <= 2]
     
     insights = [
-        f"• Correlação Score-Contrato: {contract_corr:.2f} (relação moderada)",
-        f"• Clientes de Alto Valor: {len(high_value_clients)} clientes representam top 20% em valor",
+        f"• Correlação Score-Contrato: {contract_corr:.2f}",
+        f"• Clientes de Alto Valor: {len(high_value_clients)} clientes (top 20%)",
         f"• Clientes Premium: {len(low_risk_high_value)} clientes com alto valor e baixo risco"
     ]
     
-    main_insight = "💰 **Estratégia**: Focar em clientes de alto valor com baixo risco para maximizar retorno."
+    main_insight = "💰 **Estratégia**: Focar em clientes de alto valor com baixo risco"
     
     return main_insight, insights
 
-# Gerar dados
+# Gerar dados iniciais
 print("📊 Gerando dados do portfolio...")
 data_generator = CreditControlData(sample_size=800)
-portfolio_data = data_generator.generate_portfolio_data()
-analytics = CustomerAnalytics(portfolio_data)
-kpis = analytics.calculate_kpis()
-segments = analytics.segment_clients()
-portfolio_data['segmento_cliente'] = segments
-
-print(f"✅ Dados gerados com sucesso: {len(portfolio_data)} clientes")
-print(f"📈 KPIs: {kpis['total_clientes']} clientes, {kpis['taxa_inadimplencia']:.1f}% inadimplência")
+portfolio_data_full = data_generator.generate_portfolio_data()
+analytics = CustomerAnalytics(portfolio_data_full)
 
 # Inicializar app
 app = dash.Dash(__name__)
 app.title = "Credit Control Analytics"
 
-# Layout do dashboard com análises dinâmicas
+# Layout do dashboard com filtros
 app.layout = html.Div([
     # Header
     html.Div([
         html.H1("💳 Credit Control Dashboard", 
                 style={'textAlign': 'center', 'color': '#2E86AB', 'marginBottom': '5px'}),
-        html.P(f"Branch: {BRANCH_NAME} | Análises Dinâmicas em Tempo Real",
+        html.P(f"Branch: {BRANCH_NAME} | Filtros Interativos & Análise Dinâmica",
                style={'textAlign': 'center', 'color': '#6c757d', 'fontSize': '14px', 'marginBottom': '20px'})
     ]),
     
-    # KPIs
+    # Filtros Interativos
     html.Div([
         html.Div([
-            html.H4("👥 Total Clientes", style={'color': '#2E86AB', 'marginBottom': '5px'}),
+            html.Label("🏢 Segmento:", style={'fontWeight': 'bold', 'marginRight': '10px'}),
+            dcc.Dropdown(
+                id='segmento-filter',
+                options=[{'label': 'Todos', 'value': 'all'}] + 
+                        [{'label': seg, 'value': seg} for seg in sorted(portfolio_data_full['segmento'].unique())],
+                value='all',
+                style={'width': '200px', 'display': 'inline-block'}
+            )
+        ], style={'display': 'inline-block', 'marginRight': '20px', 'marginBottom': '10px'}),
+        
+        html.Div([
+            html.Label("💰 Valor Contrato (>):", style={'fontWeight': 'bold', 'marginRight': '10px'}),
+            dcc.Input(
+                id='valor-contrato-filter',
+                type='number',
+                placeholder='Ex: 10000',
+                style={'width': '120px', 'display': 'inline-block'}
+            )
+        ], style={'display': 'inline-block', 'marginRight': '20px', 'marginBottom': '10px'}),
+        
+        html.Div([
+            html.Label("📅 Dias Atraso (>):", style={'fontWeight': 'bold', 'marginRight': '10px'}),
+            dcc.Input(
+                id='dias-atraso-filter',
+                type='number',
+                placeholder='Ex: 30',
+                min=0,
+                max=120,
+                style={'width': '100px', 'display': 'inline-block'}
+            )
+        ], style={'display': 'inline-block', 'marginRight': '20px', 'marginBottom': '10px'}),
+    ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '10px'}),
+    
+    html.Div([
+        html.Div([
+            html.Label("⚠️ Risco Crédito (≥):", style={'fontWeight': 'bold', 'marginRight': '10px'}),
+            dcc.Dropdown(
+                id='risco-filter',
+                options=[{'label': 'Todos', 'value': 0}] + 
+                        [{'label': f'Risco ≥ {i}', 'value': i} for i in range(1, 6)],
+                value=0,
+                style={'width': '150px', 'display': 'inline-block'}
+            )
+        ], style={'display': 'inline-block', 'marginRight': '20px', 'marginBottom': '10px'}),
+        
+        html.Div([
+            html.Label("😊 Satisfação (≥):", style={'fontWeight': 'bold', 'marginRight': '10px'}),
+            dcc.Input(
+                id='satisfacao-filter',
+                type='number',
+                placeholder='Ex: 3.0',
+                min=1,
+                max=5,
+                step=0.5,
+                style={'width': '100px', 'display': 'inline-block'}
+            )
+        ], style={'display': 'inline-block', 'marginRight': '20px', 'marginBottom': '10px'}),
+        
+        html.Div([
+            html.Button("🔄 Limpar Filtros", id='clear-filters', n_clicks=0,
+                       style={'backgroundColor': '#6c757d', 'color': 'white', 'border': 'none', 'padding': '8px 15px', 'borderRadius': '5px'})
+        ], style={'display': 'inline-block', 'marginBottom': '10px'})
+    ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '10px'}),
+    
+    # KPIs Dinâmicos
+    html.Div(id='kpis-container', style={'margin': '20px 0'}),
+    
+    # Gráficos com Análises
+    html.Div([
+        html.Div([
+            dcc.Graph(id='segment-distribution'),
+            html.Div([
+                html.H4("🎯 Análise do Segmento", style={'color': '#2E86AB', 'marginBottom': '10px'}),
+                html.P(id='segment-main-insight', style={'fontWeight': 'bold', 'color': '#2E86AB'}),
+                html.Div(id='segment-details', style={'marginTop': '10px'})
+            ], style={'padding': '15px', 'backgroundColor': '#f0f8ff', 'borderRadius': '8px', 'marginTop': '10px'})
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'}),
+        
+        html.Div([
+            dcc.Graph(id='risk-distribution'),
+            html.Div([
+                html.H4("⚠️ Análise de Risco", style={'color': '#dc3545', 'marginBottom': '10px'}),
+                html.P(id='risk-main-insight', style={'fontWeight': 'bold', 'color': '#dc3545'}),
+                html.Div(id='risk-details', style={'marginTop': '10px'})
+            ], style={'padding': '15px', 'backgroundColor': '#fff0f0', 'borderRadius': '8px', 'marginTop': '10px'})
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'})
+    ]),
+    
+    html.Div([
+        html.Div([
+            dcc.Graph(id='satisfaction-analysis'),
+            html.Div([
+                html.H4("📈 Análise de Satisfação", style={'color': '#28a745', 'marginBottom': '10px'}),
+                html.P(id='satisfaction-main-insight', style={'fontWeight': 'bold', 'color': '#28a745'}),
+                html.Div(id='satisfaction-details', style={'marginTop': '10px'})
+            ], style={'padding': '15px', 'backgroundColor': '#f0fff0', 'borderRadius': '8px', 'marginTop': '10px'})
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'}),
+        
+        html.Div([
+            dcc.Graph(id='contract-analysis'),
+            html.Div([
+                html.H4("💼 Análise de Contratos", style={'color': '#ffc107', 'marginBottom': '10px'}),
+                html.P(id='contract-main-insight', style={'fontWeight': 'bold', 'color': '#ffc107'}),
+                html.Div(id='contract-details', style={'marginTop': '10px'})
+            ], style={'padding': '15px', 'backgroundColor': '#fffbf0', 'borderRadius': '8px', 'marginTop': '10px'})
+        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'})
+    ]),
+    
+    # Tabela de Dados Filtrada
+    html.Div([
+        html.H3("📋 Detalhes do Portfolio (Filtrado)", 
+                style={'textAlign': 'center', 'color': '#2E86AB', 'margin': '20px 0'}),
+        html.Div(id='data-table-container')
+    ], style={'margin': '10px', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px'}),
+    
+    # Footer
+    html.Div([
+        html.Hr(),
+        html.P(f"✅ Credit Control Dashboard com Filtros Interativos | Branch: {BRANCH_NAME} | " 
+               "💼 Demonstração para vaga Junior Data & Reporting Officer",
+              style={'textAlign': 'center', 'color': '#6c757d', 'fontSize': '0.8em', 'marginTop': '20px'})
+    ])
+])
+
+# Callback principal para filtros
+@app.callback(
+    [Output('kpis-container', 'children'),
+     Output('segment-distribution', 'figure'),
+     Output('risk-distribution', 'figure'),
+     Output('satisfaction-analysis', 'figure'),
+     Output('contract-analysis', 'figure'),
+     Output('data-table-container', 'children'),
+     Output('segmento-filter', 'value'),
+     Output('valor-contrato-filter', 'value'),
+     Output('dias-atraso-filter', 'value'),
+     Output('risco-filter', 'value'),
+     Output('satisfacao-filter', 'value')],
+    [Input('segmento-filter', 'value'),
+     Input('valor-contrato-filter', 'value'),
+     Input('dias-atraso-filter', 'value'),
+     Input('risco-filter', 'value'),
+     Input('satisfacao-filter', 'value'),
+     Input('clear-filters', 'n_clicks')]
+)
+def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, clear_clicks):
+    # Aplicar filtros
+    filtered_data = portfolio_data_full.copy()
+    
+    # Filtro de segmento
+    if segmento != 'all':
+        filtered_data = filtered_data[filtered_data['segmento'] == segmento]
+    
+    # Filtro de valor contrato
+    if valor_contrato is not None and valor_contrato != '':
+        filtered_data = filtered_data[filtered_data['valor_contrato'] >= float(valor_contrato)]
+    
+    # Filtro de dias atraso
+    if dias_atraso is not None and dias_atraso != '':
+        filtered_data = filtered_data[filtered_data['dias_atraso'] >= int(dias_atraso)]
+    
+    # Filtro de risco
+    if risco is not None and risco > 0:
+        filtered_data = filtered_data[filtered_data['risco_credito'] >= risco]
+    
+    # Filtro de satisfação
+    if satisfacao is not None and satisfacao != '':
+        filtered_data = filtered_data[filtered_data['satisfacao_cliente'] >= float(satisfacao)]
+    
+    # Limpar filtros se botão foi clicado
+    ctx = dash.callback_context
+    if ctx.triggered and ctx.triggered[0]['prop_id'] == 'clear-filters.n_clicks':
+        filtered_data = portfolio_data_full
+        segmento = 'all'
+        valor_contrato = None
+        dias_atraso = None
+        risco = 0
+        satisfacao = None
+    
+    # Calcular KPIs com dados filtrados
+    kpis = analytics.calculate_kpis(filtered_data)
+    segments = analytics.segment_clients(filtered_data)
+    filtered_data_with_segments = filtered_data.copy()
+    filtered_data_with_segments['segmento_cliente'] = segments
+    
+    # KPIs atualizados
+    kpis_container = html.Div([
+        html.Div([
+            html.H4("👥 Clientes Filtrados", style={'color': '#2E86AB', 'marginBottom': '5px'}),
             html.H2(f"{kpis['total_clientes']:,}", 
                    style={'color': '#2E86AB', 'margin': '0', 'fontSize': '2em'})
         ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
@@ -293,128 +488,56 @@ app.layout = html.Div([
             html.H2(f"${kpis['exposicao_total_credito']:,.0f}", 
                    style={'color': '#ffc107', 'margin': '0', 'fontSize': '1.8em'})
         ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
-    ], style={'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap', 'margin': '10px 0'}),
+    ], style={'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap', 'margin': '10px 0'})
     
-    # Gráfico 1: Distribuição por Segmento com Análise
-    html.Div([
-        html.Div([
-            dcc.Graph(
-                id='segment-distribution',
-                figure=px.pie(
-                    portfolio_data, 
-                    names='segmento',
-                    title='📊 Distribuição por Segmento de Cliente',
-                    color_discrete_sequence=px.colors.qualitative.Set3
-                )
-            ),
-            html.Div([
-                html.H4("🎯 Análise do Segmento", style={'color': '#2E86AB', 'marginBottom': '10px'}),
-                html.P(id='segment-main-insight', style={'fontWeight': 'bold', 'color': '#2E86AB'}),
-                html.Div(id='segment-details', style={'marginTop': '10px'})
-            ], style={'padding': '15px', 'backgroundColor': '#f0f8ff', 'borderRadius': '8px', 'marginTop': '10px'})
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'}),
-        
-        # Gráfico 2: Análise de Risco com Insights
-        html.Div([
-            dcc.Graph(
-                id='risk-distribution',
-                figure=px.bar(
-                    portfolio_data.groupby('risco_credito').size().reset_index(name='count'),
-                    x='risco_credito',
-                    y='count',
-                    title='🎯 Clientes por Nível de Risco',
-                    color='risco_credito',
-                    color_discrete_sequence=['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1', '#000000']
-                )
-            ),
-            html.Div([
-                html.H4("⚠️ Análise de Risco", style={'color': '#dc3545', 'marginBottom': '10px'}),
-                html.P(id='risk-main-insight', style={'fontWeight': 'bold', 'color': '#dc3545'}),
-                html.Div(id='risk-details', style={'marginTop': '10px'})
-            ], style={'padding': '15px', 'backgroundColor': '#fff0f0', 'borderRadius': '8px', 'marginTop': '10px'})
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'})
-    ]),
+    # Gráficos atualizados
+    segment_fig = px.pie(
+        filtered_data, 
+        names='segmento',
+        title='📊 Distribuição por Segmento',
+        color_discrete_sequence=px.colors.qualitative.Set3
+    ) if len(filtered_data) > 0 else go.Figure()
     
-    # Gráfico 3: Satisfação com Análise
-    html.Div([
-        html.Div([
-            dcc.Graph(
-                id='satisfaction-analysis',
-                figure=px.box(
-                    portfolio_data,
-                    x='segmento',
-                    y='satisfacao_cliente',
-                    title='😊 Satisfação do Cliente por Segmento',
-                    color='segmento'
-                )
-            ),
-            html.Div([
-                html.H4("📈 Análise de Satisfação", style={'color': '#28a745', 'marginBottom': '10px'}),
-                html.P(id='satisfaction-main-insight', style={'fontWeight': 'bold', 'color': '#28a745'}),
-                html.Div(id='satisfaction-details', style={'marginTop': '10px'})
-            ], style={'padding': '15px', 'backgroundColor': '#f0fff0', 'borderRadius': '8px', 'marginTop': '10px'})
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'}),
-        
-        # Gráfico 4: Contratos com Análise
-        html.Div([
-            dcc.Graph(
-                id='contract-analysis',
-                figure=px.scatter(
-                    portfolio_data,
-                    x='score_credito',
-                    y='valor_contrato',
-                    color='risco_credito',
-                    title='💰 Score vs Valor do Contrato',
-                    size='valor_contrato',
-                    hover_data=['segmento', 'dias_atraso'],
-                    color_discrete_map={0: '#28a745', 1: '#ffc107', 2: '#fd7e14', 3: '#dc3545', 4: '#6f42c1', 5: '#000000'}
-                )
-            ),
-            html.Div([
-                html.H4("💼 Análise de Contratos", style={'color': '#ffc107', 'marginBottom': '10px'}),
-                html.P(id='contract-main-insight', style={'fontWeight': 'bold', 'color': '#ffc107'}),
-                html.Div(id='contract-details', style={'marginTop': '10px'})
-            ], style={'padding': '15px', 'backgroundColor': '#fffbf0', 'borderRadius': '8px', 'marginTop': '10px'})
-        ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'})
-    ]),
+    risk_fig = px.bar(
+        filtered_data.groupby('risco_credito').size().reset_index(name='count'),
+        x='risco_credito',
+        y='count',
+        title='🎯 Clientes por Nível de Risco',
+        color='risco_credito',
+        color_discrete_sequence=['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1', '#000000']
+    ) if len(filtered_data) > 0 else go.Figure()
     
-    # Resumo Executivo
-    html.Div([
-        html.H3("📋 Resumo Executivo & Recomendações", 
-                style={'textAlign': 'center', 'color': '#2E86AB', 'margin': '20px 0'}),
-        html.Div([
-            html.H4("🎯 Recomendações Estratégicas", style={'color': '#2E86AB'}),
-            html.Ul([
-                html.Li("Focar em clientes Corporate que representam maior valor médio por contrato"),
-                html.Li("Implementar programa de recuperação para clientes com risco 4+"),
-                html.Li("Desenvolver campanhas de fidelização para segmentos com satisfação média"),
-                html.Li("Otimizar limites de crédito baseado no score e histórico de pagamento")
-            ], style={'lineHeight': '1.6'})
-        ], style={'padding': '20px', 'backgroundColor': '#e8f4f8', 'borderRadius': '8px'})
-    ], style={'margin': '20px'}),
+    satisfaction_fig = px.box(
+        filtered_data,
+        x='segmento',
+        y='satisfacao_cliente',
+        title='😊 Satisfação do Cliente por Segmento',
+        color='segmento'
+    ) if len(filtered_data) > 0 else go.Figure()
     
-    # Tabela de Dados
-    html.Div([
-        html.H3("📋 Detalhes do Portfolio", 
-                style={'textAlign': 'center', 'color': '#2E86AB', 'margin': '20px 0'}),
-        dash_table.DataTable(
-            data=portfolio_data.head(10).to_dict('records'),
-            columns=[{"name": i, "id": i} for i in ['cliente_id', 'segmento', 'valor_contrato', 'dias_atraso', 'risco_credito', 'satisfacao_cliente']],
-            page_size=8,
-            style_table={'overflowX': 'auto'},
-            style_cell={'textAlign': 'left', 'padding': '8px', 'fontFamily': 'Arial'},
-            style_header={'backgroundColor': '#2E86AB', 'color': 'white', 'fontWeight': 'bold'}
-        )
-    ], style={'margin': '10px', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px'}),
+    contract_fig = px.scatter(
+        filtered_data,
+        x='score_credito',
+        y='valor_contrato',
+        color='risco_credito',
+        title='💰 Score vs Valor do Contrato',
+        size='valor_contrato',
+        hover_data=['segmento', 'dias_atraso'],
+        color_discrete_map={0: '#28a745', 1: '#ffc107', 2: '#fd7e14', 3: '#dc3545', 4: '#6f42c1', 5: '#000000'}
+    ) if len(filtered_data) > 0 else go.Figure()
     
-    # Footer
-    html.Div([
-        html.Hr(),
-        html.P(f"✅ Credit Control Dashboard com Análise Dinâmica | Branch: {BRANCH_NAME} | " 
-               "💼 Demonstração para vaga Junior Data & Reporting Officer",
-              style={'textAlign': 'center', 'color': '#6c757d', 'fontSize': '0.8em', 'marginTop': '20px'})
-    ])
-])
+    # Tabela atualizada
+    table = dash_table.DataTable(
+        data=filtered_data_with_segments.head(10).to_dict('records'),
+        columns=[{"name": i, "id": i} for i in ['cliente_id', 'segmento', 'valor_contrato', 'dias_atraso', 'risco_credito', 'satisfacao_cliente', 'segmento_cliente']],
+        page_size=8,
+        style_table={'overflowX': 'auto'},
+        style_cell={'textAlign': 'left', 'padding': '8px', 'fontFamily': 'Arial'},
+        style_header={'backgroundColor': '#2E86AB', 'color': 'white', 'fontWeight': 'bold'}
+    ) if len(filtered_data) > 0 else html.P("Nenhum dado encontrado com os filtros aplicados.")
+    
+    return (kpis_container, segment_fig, risk_fig, satisfaction_fig, contract_fig, 
+            table, segmento, valor_contrato, dias_atraso, risco, satisfacao)
 
 # Callbacks para análises dinâmicas
 @app.callback(
@@ -423,7 +546,7 @@ app.layout = html.Div([
     [Input('segment-distribution', 'figure')]
 )
 def update_segment_insights(figure):
-    main_insight, details = generate_segment_insights(portfolio_data)
+    main_insight, details = generate_segment_insights(portfolio_data_full)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
@@ -433,7 +556,7 @@ def update_segment_insights(figure):
     [Input('risk-distribution', 'figure')]
 )
 def update_risk_insights(figure):
-    main_insight, details = generate_risk_insights(portfolio_data)
+    main_insight, details = generate_risk_insights(portfolio_data_full)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
@@ -443,7 +566,7 @@ def update_risk_insights(figure):
     [Input('satisfaction-analysis', 'figure')]
 )
 def update_satisfaction_insights(figure):
-    main_insight, details = generate_satisfaction_insights(portfolio_data)
+    main_insight, details = generate_satisfaction_insights(portfolio_data_full)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
@@ -453,7 +576,7 @@ def update_satisfaction_insights(figure):
     [Input('contract-analysis', 'figure')]
 )
 def update_contract_insights(figure):
-    main_insight, details = generate_contract_insights(portfolio_data)
+    main_insight, details = generate_contract_insights(portfolio_data_full)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
@@ -464,5 +587,5 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8050))
     debug = False if os.environ.get('RENDER') else True
     
-    print(f"🌈 Dashboard com Análise Dinâmica rodando em: http://0.0.0.0:{port}")
+    print(f"🌈 Dashboard com Filtros Interativos rodando em: http://0.0.0.0:{port}")
     app.run_server(host='0.0.0.0', port=port, debug=debug)
