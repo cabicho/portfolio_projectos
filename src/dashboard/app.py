@@ -256,6 +256,27 @@ def generate_contract_insights(data):
     
     return main_insight, insights
 
+# Função auxiliar para aplicar filtros
+def apply_filters(data, segmento, valor_contrato, dias_atraso, risco, satisfacao):
+    filtered_data = data.copy()
+    
+    if segmento != 'all':
+        filtered_data = filtered_data[filtered_data['segmento'] == segmento]
+    
+    if valor_contrato is not None and valor_contrato != '':
+        filtered_data = filtered_data[filtered_data['valor_contrato'] >= float(valor_contrato)]
+    
+    if dias_atraso is not None and dias_atraso != '':
+        filtered_data = filtered_data[filtered_data['dias_atraso'] >= int(dias_atraso)]
+    
+    if risco is not None and risco > 0:
+        filtered_data = filtered_data[filtered_data['risco_credito'] >= risco]
+    
+    if satisfacao is not None and satisfacao != '':
+        filtered_data = filtered_data[filtered_data['satisfacao_cliente'] >= float(satisfacao)]
+    
+    return filtered_data
+
 # Gerar dados iniciais
 print("📊 Gerando dados do portfolio...")
 data_generator = CreditControlData(sample_size=800)
@@ -539,44 +560,64 @@ def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, c
     return (kpis_container, segment_fig, risk_fig, satisfaction_fig, contract_fig, 
             table, segmento, valor_contrato, dias_atraso, risco, satisfacao)
 
-# Callbacks para análises dinâmicas
+# Callbacks para análises dinâmicas - CORRIGIDOS para usar dados filtrados
 @app.callback(
     [Output('segment-main-insight', 'children'),
      Output('segment-details', 'children')],
-    [Input('segment-distribution', 'figure')]
+    [Input('segmento-filter', 'value'),
+     Input('valor-contrato-filter', 'value'),
+     Input('dias-atraso-filter', 'value'),
+     Input('risco-filter', 'value'),
+     Input('satisfacao-filter', 'value')]
 )
-def update_segment_insights(figure):
-    main_insight, details = generate_segment_insights(portfolio_data_full)
+def update_segment_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
+    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
+    main_insight, details = generate_segment_insights(filtered_data)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
 @app.callback(
     [Output('risk-main-insight', 'children'),
      Output('risk-details', 'children')],
-    [Input('risk-distribution', 'figure')]
+    [Input('segmento-filter', 'value'),
+     Input('valor-contrato-filter', 'value'),
+     Input('dias-atraso-filter', 'value'),
+     Input('risco-filter', 'value'),
+     Input('satisfacao-filter', 'value')]
 )
-def update_risk_insights(figure):
-    main_insight, details = generate_risk_insights(portfolio_data_full)
+def update_risk_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
+    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
+    main_insight, details = generate_risk_insights(filtered_data)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
 @app.callback(
     [Output('satisfaction-main-insight', 'children'),
      Output('satisfaction-details', 'children')],
-    [Input('satisfaction-analysis', 'figure')]
+    [Input('segmento-filter', 'value'),
+     Input('valor-contrato-filter', 'value'),
+     Input('dias-atraso-filter', 'value'),
+     Input('risco-filter', 'value'),
+     Input('satisfacao-filter', 'value')]
 )
-def update_satisfaction_insights(figure):
-    main_insight, details = generate_satisfaction_insights(portfolio_data_full)
+def update_satisfaction_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
+    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
+    main_insight, details = generate_satisfaction_insights(filtered_data)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
 @app.callback(
     [Output('contract-main-insight', 'children'),
      Output('contract-details', 'children')],
-    [Input('contract-analysis', 'figure')]
+    [Input('segmento-filter', 'value'),
+     Input('valor-contrato-filter', 'value'),
+     Input('dias-atraso-filter', 'value'),
+     Input('risco-filter', 'value'),
+     Input('satisfacao-filter', 'value')]
 )
-def update_contract_insights(figure):
-    main_insight, details = generate_contract_insights(portfolio_data_full)
+def update_contract_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
+    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
+    main_insight, details = generate_contract_insights(filtered_data)
     details_html = [html.P(detail) for detail in details]
     return main_insight, details_html
 
