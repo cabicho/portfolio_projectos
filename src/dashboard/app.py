@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import base64
+from io import BytesIO
 
 # Configurar path para imports
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -156,7 +158,7 @@ except ImportError as e:
         def segment_clients(self, data):
             return ['Standard'] * len(data)
 
-# Funções de análise dinâmica - ATUALIZADAS para usar dados filtrados corretamente
+# Funções de análise dinâmica
 def generate_segment_insights(filtered_data):
     """Gera insights automáticos para distribuição por segmento"""
     if len(filtered_data) == 0:
@@ -256,7 +258,7 @@ def generate_contract_insights(filtered_data):
     
     return main_insight, insights
 
-# Função auxiliar para aplicar filtros - ATUALIZADA
+# Função auxiliar para aplicar filtros
 def apply_filters(data, segmento, valor_contrato, dias_atraso, risco, satisfacao):
     filtered_data = data.copy()
     
@@ -276,6 +278,52 @@ def apply_filters(data, segmento, valor_contrato, dias_atraso, risco, satisfacao
         filtered_data = filtered_data[filtered_data['satisfacao_cliente'] >= float(satisfacao)]
     
     return filtered_data
+
+# Funções para exportação
+def generate_excel_download_link(filtered_data):
+    """Gera link de download para Excel"""
+    if len(filtered_data) == 0:
+        return None
+    
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        filtered_data.to_excel(writer, sheet_name='Portfolio_Filtrado', index=False)
+        
+        # Formatação adicional
+        workbook = writer.book
+        worksheet = writer.sheets['Portfolio_Filtrado']
+        
+        # Formatar cabeçalho
+        header_format = workbook.add_format({
+            'bold': True,
+            'text_wrap': True,
+            'valign': 'top',
+            'fg_color': '#2E86AB',
+            'font_color': 'white',
+            'border': 1
+        })
+        
+        for col_num, value in enumerate(filtered_data.columns.values):
+            worksheet.write(0, col_num, value, header_format)
+        
+        worksheet.autofit()
+    
+    processed_data = output.getvalue()
+    b64 = base64.b64encode(processed_data).decode()
+    
+    href = f'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}'
+    return href
+
+def generate_csv_download_link(filtered_data):
+    """Gera link de download para CSV"""
+    if len(filtered_data) == 0:
+        return None
+    
+    csv_string = filtered_data.to_csv(index=False, encoding='utf-8')
+    b64 = base64.b64encode(csv_string.encode()).decode()
+    
+    href = f'data:text/csv;base64,{b64}'
+    return href
 
 # Gerar dados iniciais
 print("📊 Gerando dados do portfolio...")
@@ -408,10 +456,30 @@ app.layout = html.Div([
         ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px', 'verticalAlign': 'top'})
     ]),
     
-    # Tabela de Dados Filtrada
+    # Tabela de Dados Filtrada com Contador e Exportação
     html.Div([
-        html.H3("📋 Detalhes do Portfolio (Filtrado)", 
-                style={'textAlign': 'center', 'color': '#2E86AB', 'margin': '20px 0'}),
+        html.Div([
+            html.H3("📋 Detalhes do Portfolio (Filtrado)", 
+                    style={'textAlign': 'center', 'color': '#2E86AB', 'margin': '20px 0', 'display': 'inline-block'}),
+            html.Div(id='table-counter', 
+                    style={'display': 'inline-block', 'marginLeft': '20px', 'fontSize': '16px', 'color': '#6c757d'})
+        ], style={'textAlign': 'center'}),
+        
+        # Botões de Exportação
+        html.Div([
+            html.Button("🖨️ Imprimir Relatório", id='print-btn', n_clicks=0,
+                       style={'backgroundColor': '#17a2b8', 'color': 'white', 'border': 'none', 
+                              'padding': '8px 15px', 'borderRadius': '5px', 'marginRight': '10px'}),
+            html.A("📊 Exportar Excel", id='excel-download', 
+                   style={'backgroundColor': '#28a745', 'color': 'white', 'border': 'none', 
+                          'padding': '8px 15px', 'borderRadius': '5px', 'marginRight': '10px',
+                          'textDecoration': 'none', 'display': 'inline-block'}),
+            html.A("📄 Exportar CSV", id='csv-download',
+                   style={'backgroundColor': '#6c757d', 'color': 'white', 'border': 'none', 
+                          'padding': '8px 15px', 'borderRadius': '5px', 'textDecoration': 'none',
+                          'display': 'inline-block'})
+        ], style={'textAlign': 'center', 'margin': '15px 0'}),
+        
         html.Div(id='data-table-container')
     ], style={'margin': '10px', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px'}),
     
@@ -424,7 +492,7 @@ app.layout = html.Div([
     ])
 ])
 
-# Callback principal para filtros - ATUALIZADO para sincronizar tudo
+# Callback principal para filtros
 @app.callback(
     [Output('kpis-container', 'children'),
      Output('segment-distribution', 'figure'),
@@ -432,6 +500,9 @@ app.layout = html.Div([
      Output('satisfaction-analysis', 'figure'),
      Output('contract-analysis', 'figure'),
      Output('data-table-container', 'children'),
+     Output('table-counter', 'children'),
+     Output('excel-download', 'href'),
+     Output('csv-download', 'href'),
      Output('segment-main-insight', 'children'),
      Output('segment-details', 'children'),
      Output('risk-main-insight', 'children'),
@@ -472,30 +543,40 @@ def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, c
     filtered_data_with_segments = filtered_data.copy()
     filtered_data_with_segments['segmento_cliente'] = segments
     
-    # KPIs atualizados
+    # KPIs atualizados - AGORA COM NÚMEROS CONSISTENTES
+    total_clientes_filtrados = len(filtered_data)
+    
     kpis_container = html.Div([
         html.Div([
             html.H4("👥 Clientes Filtrados", style={'color': '#2E86AB', 'marginBottom': '5px'}),
-            html.H2(f"{kpis['total_clientes']:,}", 
-                   style={'color': '#2E86AB', 'margin': '0', 'fontSize': '2em'})
+            html.H2(f"{total_clientes_filtrados:,}", 
+                   style={'color': '#2E86AB', 'margin': '0', 'fontSize': '2em'}),
+            html.Small(f"Total: {len(portfolio_data_full):,} clientes", 
+                      style={'color': '#6c757d', 'fontSize': '0.8em'})
         ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
         
         html.Div([
             html.H4("⚠️ Inadimplência", style={'color': '#dc3545', 'marginBottom': '5px'}),
             html.H2(f"{kpis['taxa_inadimplencia']:.1f}%", 
-                   style={'color': '#dc3545', 'margin': '0', 'fontSize': '2em'})
+                   style={'color': '#dc3545', 'margin': '0', 'fontSize': '2em'}),
+            html.Small(f"{len(filtered_data[filtered_data['dias_atraso'] > 90]):,} clientes", 
+                      style={'color': '#6c757d', 'fontSize': '0.8em'})
         ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
         
         html.Div([
             html.H4("😊 Satisfação", style={'color': '#28a745', 'marginBottom': '5px'}),
             html.H2(f"{kpis['satisfacao_media']:.1f}/5", 
-                   style={'color': '#28a745', 'margin': '0', 'fontSize': '2em'})
+                   style={'color': '#28a745', 'margin': '0', 'fontSize': '2em'}),
+            html.Small(f"Média dos {total_clientes_filtrados:,} clientes", 
+                      style={'color': '#6c757d', 'fontSize': '0.8em'})
         ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
         
         html.Div([
             html.H4("💰 Exposição", style={'color': '#ffc107', 'marginBottom': '5px'}),
             html.H2(f"${kpis['exposicao_total_credito']:,.0f}", 
-                   style={'color': '#ffc107', 'margin': '0', 'fontSize': '1.8em'})
+                   style={'color': '#ffc107', 'margin': '0', 'fontSize': '1.8em'}),
+            html.Small(f"Valor total em contratos", 
+                      style={'color': '#6c757d', 'fontSize': '0.8em'})
         ], style={'textAlign': 'center', 'padding': '15px', 'backgroundColor': '#f8f9fa', 'borderRadius': '8px', 'margin': '5px', 'flex': '1'}),
     ], style={'display': 'flex', 'justifyContent': 'center', 'flexWrap': 'wrap', 'margin': '10px 0'})
     
@@ -535,7 +616,9 @@ def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, c
         color_discrete_map={0: '#28a745', 1: '#ffc107', 2: '#fd7e14', 3: '#dc3545', 4: '#6f42c1', 5: '#000000'}
     ) if len(filtered_data) > 0 else go.Figure()
     
-    # Tabela atualizada
+    # Tabela atualizada com contador consistente
+    table_counter = f"📊 Mostrando {min(10, total_clientes_filtrados)} de {total_clientes_filtrados} clientes"
+    
     table = dash_table.DataTable(
         data=filtered_data_with_segments.head(10).to_dict('records'),
         columns=[{"name": i, "id": i} for i in ['cliente_id', 'segmento', 'valor_contrato', 'dias_atraso', 'risco_credito', 'satisfacao_cliente', 'segmento_cliente']],
@@ -544,6 +627,10 @@ def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, c
         style_cell={'textAlign': 'left', 'padding': '8px', 'fontFamily': 'Arial'},
         style_header={'backgroundColor': '#2E86AB', 'color': 'white', 'fontWeight': 'bold'}
     ) if len(filtered_data) > 0 else html.P("Nenhum dado encontrado com os filtros aplicados.")
+    
+    # Links de exportação
+    excel_href = generate_excel_download_link(filtered_data_with_segments)
+    csv_href = generate_csv_download_link(filtered_data_with_segments)
     
     # Análises dinâmicas atualizadas
     segment_main, segment_details_list = generate_segment_insights(filtered_data)
@@ -559,9 +646,25 @@ def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, c
     contract_details = [html.P(detail) for detail in contract_details_list]
     
     return (kpis_container, segment_fig, risk_fig, satisfaction_fig, contract_fig, 
-            table, segment_main, segment_details, risk_main, risk_details, 
+            table, table_counter, excel_href, csv_href,
+            segment_main, segment_details, risk_main, risk_details, 
             satisfaction_main, satisfaction_details, contract_main, contract_details,
             segmento, valor_contrato, dias_atraso, risco, satisfacao)
+
+# Callback para impressão
+@app.callback(
+    Output('print-btn', 'n_clicks'),
+    [Input('print-btn', 'n_clicks')]
+)
+def print_report(n_clicks):
+    if n_clicks > 0:
+        # Usar JavaScript para imprimir a página
+        return f"""
+        <script>
+            window.print();
+        </script>
+        """
+    return n_clicks
 
 # Server configuration
 server = app.server
