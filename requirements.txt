@@ -1,10 +1,9 @@
-# requirements.txt CORRIGIDO
 dash==2.14.1
-plotly==5.15.0
 pandas==2.0.3
 numpy==1.24.3
+plotly==5.15.0
+xlsxwriter==3.1.2
+reportlab==4.0.4
 openpyxl==3.1.2
-requests==2.31.0
-python-dotenv==1.0.0
-Flask==2.2.5
-gunicorn==21.2.0
+Flask==2.3.3
+Werkzeug==2.3.7

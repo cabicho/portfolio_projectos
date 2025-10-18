@@ -1,39 +1,24 @@
-# Dockerfile CORRIGIDO
 FROM python:3.9-slim
 
-# Definir variáveis de ambiente
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app/src
-ENV PIP_NO_CACHE_DIR=1
-
-# Instalar dependências do sistema mínimas
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Criar diretório do app
 WORKDIR /app
 
-# Copiar requirements primeiro para cache
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar requirements primeiro para aproveitar cache do Docker
 COPY requirements.txt .
 
 # Instalar dependências Python
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código fonte
+# Copiar o código da aplicação
 COPY src/ ./src/
 
-# Criar diretórios para dados
-RUN mkdir -p /app/data/raw /app/data/processed /app/data/outputs /app/logs
-
-# Expor porta
+# Expor a porta
 EXPOSE 8050
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8050/ || exit 1
-
-# Comando padrão
+# Comando para rodar a aplicação
 CMD ["python", "src/dashboard/app.py"]
