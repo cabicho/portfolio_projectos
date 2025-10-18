@@ -6,7 +6,7 @@ services:
     env: python
     plan: free
     region: ohio  # opções: ohio, virginia, oregon
-    branch: main
+    branch: pipeline-car-deve
     
     # Build Configuration
     buildCommand: |
