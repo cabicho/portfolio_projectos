@@ -156,13 +156,13 @@ except ImportError as e:
         def segment_clients(self, data):
             return ['Standard'] * len(data)
 
-# Funções de análise dinâmica
-def generate_segment_insights(data):
+# Funções de análise dinâmica - ATUALIZADAS para usar dados filtrados corretamente
+def generate_segment_insights(filtered_data):
     """Gera insights automáticos para distribuição por segmento"""
-    if len(data) == 0:
+    if len(filtered_data) == 0:
         return "📊 Nenhum dado para análise", []
     
-    segment_stats = data.groupby('segmento').agg({
+    segment_stats = filtered_data.groupby('segmento').agg({
         'valor_contrato': ['count', 'sum', 'mean'],
         'dias_atraso': 'mean',
         'satisfacao_cliente': 'mean'
@@ -171,7 +171,7 @@ def generate_segment_insights(data):
     segment_stats.columns = ['clientes', 'valor_total', 'valor_medio', 'atraso_medio', 'satisfacao_media']
     segment_stats = segment_stats.reset_index()
     
-    total_clientes = len(data)
+    total_clientes = len(filtered_data)
     insights = []
     
     for _, seg in segment_stats.iterrows():
@@ -183,12 +183,12 @@ def generate_segment_insights(data):
     
     return main_insight, insights
 
-def generate_risk_insights(data):
+def generate_risk_insights(filtered_data):
     """Gera insights automáticos para análise de risco"""
-    if len(data) == 0:
+    if len(filtered_data) == 0:
         return "⚠️ Nenhum dado para análise", []
     
-    risk_stats = data.groupby('risco_credito').agg({
+    risk_stats = filtered_data.groupby('risco_credito').agg({
         'cliente_id': 'count',
         'valor_contrato': 'sum',
         'dias_atraso': 'mean',
@@ -204,23 +204,23 @@ def generate_risk_insights(data):
         insight = f"• Risco {int(risk['risco_credito'])}: {risk['cliente_id']} clientes - ${risk['valor_em_risco']:,.0f} em risco ({risk_percent:.1f}%)"
         insights.append(insight)
     
-    high_risk_count = len(data[data['risco_credito'] >= 4])
-    high_risk_percent = (high_risk_count / len(data)) * 100 if len(data) > 0 else 0
+    high_risk_count = len(filtered_data[filtered_data['risco_credito'] >= 4])
+    high_risk_percent = (high_risk_count / len(filtered_data)) * 100 if len(filtered_data) > 0 else 0
     
     main_insight = f"⚠️ **Alerta**: {high_risk_count} clientes ({high_risk_percent:.1f}%) classificados como alto risco"
     
     return main_insight, insights
 
-def generate_satisfaction_insights(data):
+def generate_satisfaction_insights(filtered_data):
     """Gera insights automáticos para análise de satisfação"""
-    if len(data) == 0:
+    if len(filtered_data) == 0:
         return "😊 Nenhum dado para análise", []
     
-    satisfaction_stats = data.groupby('segmento')['satisfacao_cliente'].agg(['mean', 'count']).round(2)
+    satisfaction_stats = filtered_data.groupby('segmento')['satisfacao_cliente'].agg(['mean', 'count']).round(2)
     satisfaction_stats = satisfaction_stats.reset_index()
     
-    overall_satisfaction = data['satisfacao_cliente'].mean()
-    low_satisfaction = data[data['satisfacao_cliente'] < 3]
+    overall_satisfaction = filtered_data['satisfacao_cliente'].mean()
+    low_satisfaction = filtered_data[filtered_data['satisfacao_cliente'] < 3]
     
     insights = []
     for _, seg in satisfaction_stats.iterrows():
@@ -236,14 +236,14 @@ def generate_satisfaction_insights(data):
     
     return main_insight, insights
 
-def generate_contract_insights(data):
+def generate_contract_insights(filtered_data):
     """Gera insights automáticos para análise de contratos"""
-    if len(data) == 0:
+    if len(filtered_data) == 0:
         return "💰 Nenhum dado para análise", []
     
-    contract_corr = data[['score_credito', 'valor_contrato', 'dias_atraso']].corr().iloc[0,1]
+    contract_corr = filtered_data[['score_credito', 'valor_contrato', 'dias_atraso']].corr().iloc[0,1]
     
-    high_value_clients = data[data['valor_contrato'] > data['valor_contrato'].quantile(0.8)] if len(data) > 0 else data
+    high_value_clients = filtered_data[filtered_data['valor_contrato'] > filtered_data['valor_contrato'].quantile(0.8)] if len(filtered_data) > 0 else filtered_data
     low_risk_high_value = high_value_clients[high_value_clients['risco_credito'] <= 2]
     
     insights = [
@@ -256,7 +256,7 @@ def generate_contract_insights(data):
     
     return main_insight, insights
 
-# Função auxiliar para aplicar filtros
+# Função auxiliar para aplicar filtros - ATUALIZADA
 def apply_filters(data, segmento, valor_contrato, dias_atraso, risco, satisfacao):
     filtered_data = data.copy()
     
@@ -424,7 +424,7 @@ app.layout = html.Div([
     ])
 ])
 
-# Callback principal para filtros
+# Callback principal para filtros - ATUALIZADO para sincronizar tudo
 @app.callback(
     [Output('kpis-container', 'children'),
      Output('segment-distribution', 'figure'),
@@ -432,6 +432,14 @@ app.layout = html.Div([
      Output('satisfaction-analysis', 'figure'),
      Output('contract-analysis', 'figure'),
      Output('data-table-container', 'children'),
+     Output('segment-main-insight', 'children'),
+     Output('segment-details', 'children'),
+     Output('risk-main-insight', 'children'),
+     Output('risk-details', 'children'),
+     Output('satisfaction-main-insight', 'children'),
+     Output('satisfaction-details', 'children'),
+     Output('contract-main-insight', 'children'),
+     Output('contract-details', 'children'),
      Output('segmento-filter', 'value'),
      Output('valor-contrato-filter', 'value'),
      Output('dias-atraso-filter', 'value'),
@@ -446,27 +454,7 @@ app.layout = html.Div([
 )
 def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, clear_clicks):
     # Aplicar filtros
-    filtered_data = portfolio_data_full.copy()
-    
-    # Filtro de segmento
-    if segmento != 'all':
-        filtered_data = filtered_data[filtered_data['segmento'] == segmento]
-    
-    # Filtro de valor contrato
-    if valor_contrato is not None and valor_contrato != '':
-        filtered_data = filtered_data[filtered_data['valor_contrato'] >= float(valor_contrato)]
-    
-    # Filtro de dias atraso
-    if dias_atraso is not None and dias_atraso != '':
-        filtered_data = filtered_data[filtered_data['dias_atraso'] >= int(dias_atraso)]
-    
-    # Filtro de risco
-    if risco is not None and risco > 0:
-        filtered_data = filtered_data[filtered_data['risco_credito'] >= risco]
-    
-    # Filtro de satisfação
-    if satisfacao is not None and satisfacao != '':
-        filtered_data = filtered_data[filtered_data['satisfacao_cliente'] >= float(satisfacao)]
+    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
     
     # Limpar filtros se botão foi clicado
     ctx = dash.callback_context
@@ -557,69 +545,23 @@ def update_dashboard(segmento, valor_contrato, dias_atraso, risco, satisfacao, c
         style_header={'backgroundColor': '#2E86AB', 'color': 'white', 'fontWeight': 'bold'}
     ) if len(filtered_data) > 0 else html.P("Nenhum dado encontrado com os filtros aplicados.")
     
+    # Análises dinâmicas atualizadas
+    segment_main, segment_details_list = generate_segment_insights(filtered_data)
+    segment_details = [html.P(detail) for detail in segment_details_list]
+    
+    risk_main, risk_details_list = generate_risk_insights(filtered_data)
+    risk_details = [html.P(detail) for detail in risk_details_list]
+    
+    satisfaction_main, satisfaction_details_list = generate_satisfaction_insights(filtered_data)
+    satisfaction_details = [html.P(detail) for detail in satisfaction_details_list]
+    
+    contract_main, contract_details_list = generate_contract_insights(filtered_data)
+    contract_details = [html.P(detail) for detail in contract_details_list]
+    
     return (kpis_container, segment_fig, risk_fig, satisfaction_fig, contract_fig, 
-            table, segmento, valor_contrato, dias_atraso, risco, satisfacao)
-
-# Callbacks para análises dinâmicas - CORRIGIDOS para usar dados filtrados
-@app.callback(
-    [Output('segment-main-insight', 'children'),
-     Output('segment-details', 'children')],
-    [Input('segmento-filter', 'value'),
-     Input('valor-contrato-filter', 'value'),
-     Input('dias-atraso-filter', 'value'),
-     Input('risco-filter', 'value'),
-     Input('satisfacao-filter', 'value')]
-)
-def update_segment_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
-    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
-    main_insight, details = generate_segment_insights(filtered_data)
-    details_html = [html.P(detail) for detail in details]
-    return main_insight, details_html
-
-@app.callback(
-    [Output('risk-main-insight', 'children'),
-     Output('risk-details', 'children')],
-    [Input('segmento-filter', 'value'),
-     Input('valor-contrato-filter', 'value'),
-     Input('dias-atraso-filter', 'value'),
-     Input('risco-filter', 'value'),
-     Input('satisfacao-filter', 'value')]
-)
-def update_risk_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
-    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
-    main_insight, details = generate_risk_insights(filtered_data)
-    details_html = [html.P(detail) for detail in details]
-    return main_insight, details_html
-
-@app.callback(
-    [Output('satisfaction-main-insight', 'children'),
-     Output('satisfaction-details', 'children')],
-    [Input('segmento-filter', 'value'),
-     Input('valor-contrato-filter', 'value'),
-     Input('dias-atraso-filter', 'value'),
-     Input('risco-filter', 'value'),
-     Input('satisfacao-filter', 'value')]
-)
-def update_satisfaction_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
-    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
-    main_insight, details = generate_satisfaction_insights(filtered_data)
-    details_html = [html.P(detail) for detail in details]
-    return main_insight, details_html
-
-@app.callback(
-    [Output('contract-main-insight', 'children'),
-     Output('contract-details', 'children')],
-    [Input('segmento-filter', 'value'),
-     Input('valor-contrato-filter', 'value'),
-     Input('dias-atraso-filter', 'value'),
-     Input('risco-filter', 'value'),
-     Input('satisfacao-filter', 'value')]
-)
-def update_contract_insights(segmento, valor_contrato, dias_atraso, risco, satisfacao):
-    filtered_data = apply_filters(portfolio_data_full, segmento, valor_contrato, dias_atraso, risco, satisfacao)
-    main_insight, details = generate_contract_insights(filtered_data)
-    details_html = [html.P(detail) for detail in details]
-    return main_insight, details_html
+            table, segment_main, segment_details, risk_main, risk_details, 
+            satisfaction_main, satisfaction_details, contract_main, contract_details,
+            segmento, valor_contrato, dias_atraso, risco, satisfacao)
 
 # Server configuration
 server = app.server
