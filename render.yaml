@@ -4,34 +4,15 @@ services:
     env: python
     rootDirectory: ship-optimization-accenture
     buildCommand: |-
-      echo "🚀 Starting build process..."
+      echo "✔ Starting build process..."
       python --version
       pip --version
       pip install --upgrade pip setuptools wheel
-      echo "📦 Installing dependencies..."
+      echo "■ Installing dependencies..."
       pip install -r requirements.txt
-      echo "📊 Generating data..."
+      echo "■ Generating data..."
       python data/generate_data.py
-      echo "🔍 Running analysis..."
+      echo "● Running analysis..."
       python src/data_analysis.py
-      echo "⚡ Running optimization..."
-      python src/optimization_model.py
-      echo "✅ Build completed successfully!"
-    startCommand: gunicorn app.run:app --bind 0.0.0.0:$PORT
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
-    healthCheckPath: /
-    autoDeploy: true
-    plan: free
-
-  - type: worker
-    name: ship-data-processor
-    env: python
-    rootDirectory: ship-optimization-accenture
-    buildCommand: pip install -r requirements.txt
-    startCommand: python src/data_analysis.py
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
-    plan: free
+      echo "✔ Running optimization..."
+    startCommand: python app.py  # Add your main application file here
