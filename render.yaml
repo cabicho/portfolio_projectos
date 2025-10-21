@@ -2,7 +2,7 @@ services:
   - type: web
     name: ship-optimization-dashboard
     env: python
-    rootDirectory: ship-optimization-accenture/ship-optimization-accenture
+    rootDirectory: ship-optimization-accenture
     buildCommand: |-
       echo "🚀 Starting build process..."
       python --version
@@ -28,7 +28,7 @@ services:
   - type: worker
     name: ship-data-processor
     env: python
-    rootDirectory: ship-optimization-accenture/ship-optimization-accenture
+    rootDirectory: ship-optimization-accenture
     buildCommand: pip install -r requirements.txt
     startCommand: python src/data_analysis.py
     envVars:
