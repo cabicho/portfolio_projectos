@@ -1,0 +1,53 @@
+{
+  "sst_data_sources": {
+    "government_sources": {
+      "ine_mozambique": {
+        "name": "Instituto Nacional de Estatística - Moçambique",
+        "type": "api_web_scraping",
+        "url": "http://www.ine.gov.mz/estatisticas/trabalho-emprego",
+        "data_types": ["acidentes_trabalho", "estatisticas_emprego", "indicadores_sst"],
+        "update_frequency": "trimestral",
+        "authentication": "public"
+      },
+      "mitess_mozambique": {
+        "name": "Ministério do Trabalho e Segurança Social",
+        "type": "reports_pdf",
+        "url": "https://www.mitess.gov.mz/",
+        "data_types": ["legislacao_sst", "registro_acidentes", "inspecao_trabalho"],
+        "update_frequency": "anual",
+        "authentication": "required"
+      }
+    },
+    "international_sources": {
+      "ilo_databases": {
+        "name": "Organização Internacional do Trabalho",
+        "type": "api_rest",
+        "url": "https://www.ilo.org/global/statistics-and-databases/",
+        "data_types": ["indicadores_globais_sst", "legislacao_comparada"],
+        "update_frequency": "anual",
+        "authentication": "api_key"
+      }
+    },
+    "health_sector": {
+      "misau_mozambique": {
+        "name": "Ministério da Saúde - Moçambique",
+        "type": "health_information_systems",
+        "data_types": ["atendimentos_ocupacionais", "doencas_relacionadas_trabalho"],
+        "update_frequency": "mensal",
+        "authentication": "restricted"
+      }
+    }
+  },
+  "cloud_platforms": {
+    "bigquery": {
+      "project_id": "sst-mozambique-analytics",
+      "datasets": ["sst_mozambique_raw", "sst_mozambique_processed"],
+      "location": "europe-west1"
+    },
+    "redshift": {
+      "cluster": "sst-mozambique-cluster",
+      "database": "sst_analytics",
+      "schema": "sst_processed"
+    }
+  }
+}

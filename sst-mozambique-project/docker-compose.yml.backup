@@ -1,0 +1,212 @@
+version: '3.3'
+#version: '3.9'
+
+services:
+  # PostgreSQL para desenvolvimento local (simulando Redshift)
+  postgres-redshift:
+    image: postgres:13
+    container_name: sst-postgres
+    environment:
+      POSTGRES_DB: sst_analytics
+      POSTGRES_USER: sst_user
+      POSTGRES_PASSWORD: sst_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/loading/redshift_sst_setup.sql:/docker-entrypoint-initdb.d/01-redshift-setup.sql
+    networks:
+      - sst-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sst_user -d sst_analytics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MySQL para desenvolvimento local (simulando BigQuery)
+  mysql-bigquery:
+    image: mysql:8.0
+    container_name: sst-mysql
+    environment:
+      MYSQL_DATABASE: sst_mozambique_raw
+      MYSQL_USER: sst_user
+      MYSQL_PASSWORD: sst_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/loading/bigquery_sst_setup.sql:/docker-entrypoint-initdb.d/01-bigquery-setup.sql
+    networks:
+      - sst-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis para cache e filas
+  redis:
+    image: redis:7-alpine
+    container_name: sst-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - sst-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API para simular fontes de dados SST
+  sst-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: sst-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://sst_user:sst_password@postgres-redshift:5432/sst_analytics
+      - BIGQUERY_URL=mysql://sst_user:sst_password@mysql-bigquery:3306/sst_mozambique_raw
+    volumes:
+      - ./config:/app/config
+      - ./data_sources:/app/data_sources
+    depends_on:
+      - postgres-redshift
+      - mysql-bigquery
+      #postgres-redshift:
+      #  condition: service_healthy
+      #mysql-bigquery:
+      #  condition: service_healthy
+    networks:
+      - sst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Pipeline de dados principal
+  sst-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    container_name: sst-pipeline
+    environment:
+      - POSTGRES_HOST=postgres-redshift
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=sst_analytics
+      - POSTGRES_USER=sst_user
+      - POSTGRES_PASSWORD=sst_password
+      - MYSQL_HOST=mysql-bigquery
+      - MYSQL_PORT=3306
+      - MYSQL_DB=sst_mozambique_raw
+      - MYSQL_USER=sst_user
+      - MYSQL_PASSWORD=sst_password
+      - API_ENDPOINT=http://sst-api:8000
+    volumes:
+      - ./scripts:/app/scripts
+      - ./config:/app/config
+      - ./data_sources:/app/data_sources
+      - ./logs:/app/logs
+    depends_on:
+      - sst-api
+      #sst-api:
+      #  condition: service_healthy
+    networks:
+      - sst-network
+    restart: on-failure
+
+  # Airflow para orquestração
+  airflow-scheduler:
+    image: apache/airflow:2.7.0
+    container_name: sst-airflow-scheduler
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sst_user:sst_password@postgres-redshift:5432/sst_analytics
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL=30
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+    user: "50000:0"
+    #user: "${AIRFLOW_UID:-50000}:0"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs/airflow:/opt/airflow/logs
+      - ./scripts:/opt/airflow/scripts
+    depends_on:
+      - postgres-redshift
+      #postgres-redshift:
+      #  condition: service_healthy
+    networks:
+      - sst-network
+    command: ["airflow", "scheduler"]
+
+  airflow-webserver:
+    image: apache/airflow:2.7.0
+    container_name: sst-airflow-webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sst_user:sst_password@postgres-redshift:5432/sst_analytics
+      - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - _AIRFLOW_DB_UPGRADE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+    user: "50000:0"
+    #user: "${AIRFLOW_UID:-50000}:0"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs/airflow:/opt/airflow/logs
+      - ./scripts:/opt/airflow/scripts
+    depends_on:
+      - postgres-redshift
+      - airflow-scheduler
+      #postgres-redshift:
+      #  condition: service_healthy
+      #airflow-scheduler:
+      #  condition: service_started
+    networks:
+      - sst-network
+    command: ["airflow", "webserver"]
+
+  # Metabase para visualização
+  metabase:
+    image: metabase/metabase:latest
+    container_name: sst-metabase
+    ports:
+      - "3030:3030"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=sst_analytics
+      - MB_DB_PORT=5432
+      - MB_DB_HOST=postgres-redshift
+      - MB_DB_USER=sst_user
+      - MB_DB_PASS=sst_password
+    depends_on:
+      - postgres-redshift
+      #postgres-redshift:
+      #  condition: service_healthy
+    networks:
+      - sst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  mysql_data:
+    driver: local
+
+networks:
+  sst-network:
+    driver: bridge

@@ -1,0 +1,15 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Instalar DBT e dependências básicas
+RUN pip install --no-cache-dir dbt-postgres==1.5.0
+
+# Copiar projeto DBT
+COPY dbt/ /app/dbt/
+COPY config/profiles.yml /root/.dbt/profiles.yml
+
+WORKDIR /app/dbt
+
+# Comando padrão
+CMD ["dbt", "debug"]

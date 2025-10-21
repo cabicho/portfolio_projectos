@@ -1,0 +1,13 @@
+sst_mozambique:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres-redshift
+      port: 5432
+      user: sst_user
+      pass: sst_password
+      dbname: sst_analytics
+      schema: analytics
+      threads: 4
+      keepalives_idle: 0

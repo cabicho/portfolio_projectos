@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-10-13T22:12:41.027035",
+  "total_accidents": 3,
+  "fatal_accidents": 1,
+  "fatality_rate": 0.3333333333333333,
+  "total_injured": 2,
+  "total_days_lost": 50,
+  "avg_days_lost_per_accident": 16.666666666666668,
+  "accidents_by_sector": {
+    "mineração": 1,
+    "construcao": 1,
+    "agricultura": 1
+  },
+  "accidents_by_province": {
+    "Tete": 1,
+    "Maputo": 1,
+    "Gaza": 1
+  }
+}

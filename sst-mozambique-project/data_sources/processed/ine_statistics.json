@@ -1,0 +1,56 @@
+[
+  {
+    "record_id": "INE_taxa_acidentes_trabalho_2024_1",
+    "data_source": "INE_Mozambique",
+    "indicator_name": "taxa_acidentes_trabalho",
+    "year": 2024,
+    "quarter": 1,
+    "geographic_region": "Maputo",
+    "sector": "construcao",
+    "value": 2.1,
+    "unit": "por 100 trabalhadores",
+    "collection_date": "2025-10-13",
+    "raw_data": "{\"indicator\": \"taxa_acidentes_trabalho\", \"year\": 2024, \"quarter\": 1, \"value\": 2.1, \"sector\": \"construcao\", \"region\": \"Maputo\", \"unit\": \"por 100 trabalhadores\", \"confidence_interval\": [1.8, 2.4]}",
+    "metadata": {
+      "extraction_method": "api_rest",
+      "confidence_level": "high",
+      "last_updated": "2025-10-13T22:12:41.017596"
+    }
+  },
+  {
+    "record_id": "INE_taxa_acidentes_trabalho_2024_1",
+    "data_source": "INE_Mozambique",
+    "indicator_name": "taxa_acidentes_trabalho",
+    "year": 2024,
+    "quarter": 1,
+    "geographic_region": "Tete",
+    "sector": "mineração",
+    "value": 3.2,
+    "unit": "por 100 trabalhadores",
+    "collection_date": "2025-10-13",
+    "raw_data": "{\"indicator\": \"taxa_acidentes_trabalho\", \"year\": 2024, \"quarter\": 1, \"value\": 3.2, \"sector\": \"minera\\u00e7\\u00e3o\", \"region\": \"Tete\", \"unit\": \"por 100 trabalhadores\", \"confidence_interval\": [2.8, 3.6]}",
+    "metadata": {
+      "extraction_method": "api_rest",
+      "confidence_level": "high",
+      "last_updated": "2025-10-13T22:12:41.017646"
+    }
+  },
+  {
+    "record_id": "INE_horas_trabalhadas_2024_1",
+    "data_source": "INE_Mozambique",
+    "indicator_name": "horas_trabalhadas",
+    "year": 2024,
+    "quarter": 1,
+    "geographic_region": "Maputo",
+    "sector": "construcao",
+    "value": 160,
+    "unit": "horas/mês",
+    "collection_date": "2025-10-13",
+    "raw_data": "{\"indicator\": \"horas_trabalhadas\", \"year\": 2024, \"quarter\": 1, \"value\": 160, \"sector\": \"construcao\", \"region\": \"Maputo\", \"unit\": \"horas/m\\u00eas\", \"confidence_interval\": [155, 165]}",
+    "metadata": {
+      "extraction_method": "api_rest",
+      "confidence_level": "high",
+      "last_updated": "2025-10-13T22:12:41.017676"
+    }
+  }
+]

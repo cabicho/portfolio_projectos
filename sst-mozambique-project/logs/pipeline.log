@@ -1,0 +1,145 @@
+2025-10-13 14:42:00,550 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 14:42:00,553 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 14:42:00,582 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 14:42:00,585 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 14:42:00,586 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 14:42:00,621 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 14:42:00,623 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 14:42:00,648 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 14:42:00,650 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 14:42:00,667 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 14:42:00,669 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 14:42:00,683 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 14:42:00,690 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 14:42:00,692 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 14:42:00,694 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 14:42:00,696 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 14:42:00,697 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 14:42:00,697 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 14:42:00,698 - INFO - 🎉 Pipeline executado com sucesso!
+2025-10-13 17:14:17,743 - ERROR - ❌ Erro ao conectar com API: HTTPConnectionPool(host='sst-api', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78852cc38880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-13 17:14:17,746 - INFO - 🔄 Tentativa 1/5. Aguardando 10s...
+2025-10-13 17:14:27,775 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 17:14:27,775 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 17:14:27,791 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 17:14:27,793 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 17:14:27,793 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 17:14:27,814 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 17:14:27,816 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 17:14:27,834 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:14:27,837 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 17:14:27,861 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:14:27,864 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 17:14:27,885 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:14:27,891 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 17:14:27,893 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 17:14:27,895 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 17:14:27,895 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 17:14:27,896 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 17:14:27,896 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 17:14:27,896 - INFO - 🎉 Pipeline executado com sucesso!
+2025-10-13 17:33:13,177 - ERROR - ❌ Erro ao conectar com API: HTTPConnectionPool(host='sst-api', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x79db8b35b880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-13 17:33:13,181 - INFO - 🔄 Tentativa 1/5. Aguardando 10s...
+2025-10-13 17:33:23,207 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 17:33:23,209 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 17:33:23,220 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 17:33:23,220 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 17:33:23,220 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 17:33:23,235 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 17:33:23,235 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 17:33:23,252 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:33:23,253 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 17:33:23,265 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:33:23,269 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 17:33:23,281 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:33:23,287 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 17:33:23,291 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 17:33:23,291 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 17:33:23,292 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 17:33:23,292 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 17:33:23,292 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 17:33:23,292 - INFO - 🎉 Pipeline executado com sucesso!
+2025-10-13 17:54:53,204 - ERROR - ❌ Erro ao conectar com API: HTTPConnectionPool(host='sst-api', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fa08766e880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-13 17:54:53,207 - INFO - 🔄 Tentativa 1/5. Aguardando 10s...
+2025-10-13 17:55:03,230 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 17:55:03,235 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 17:55:03,246 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 17:55:03,247 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 17:55:03,247 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 17:55:03,260 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 17:55:03,263 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 17:55:03,276 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:55:03,278 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 17:55:03,287 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:55:03,288 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 17:55:03,298 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 17:55:03,303 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 17:55:03,307 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 17:55:03,310 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 17:55:03,312 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 17:55:03,313 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 17:55:03,313 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 17:55:03,313 - INFO - 🎉 Pipeline executado com sucesso!
+2025-10-13 21:47:15,833 - ERROR - ❌ Erro ao conectar com API: HTTPConnectionPool(host='sst-api', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x79b2de301880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-13 21:47:15,836 - INFO - 🔄 Tentativa 1/5. Aguardando 10s...
+2025-10-13 21:47:25,863 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 21:47:25,867 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 21:47:25,881 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 21:47:25,881 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 21:47:25,881 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 21:47:25,904 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 21:47:25,906 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 21:47:25,927 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 21:47:25,930 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 21:47:25,948 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 21:47:25,950 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 21:47:25,962 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 21:47:25,966 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 21:47:25,968 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 21:47:25,968 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 21:47:25,969 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 21:47:25,970 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 21:47:25,970 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 21:47:25,970 - INFO - 🎉 Pipeline executado com sucesso!
+2025-10-13 21:58:58,403 - ERROR - ❌ Erro ao conectar com API: HTTPConnectionPool(host='sst-api', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7de2a322a880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-13 21:58:58,451 - INFO - 🔄 Tentativa 1/5. Aguardando 10s...
+2025-10-13 21:59:08,474 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 21:59:08,475 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 21:59:08,487 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 21:59:08,487 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 21:59:08,490 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 21:59:08,499 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 21:59:08,500 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 21:59:08,510 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 21:59:08,511 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 21:59:08,522 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 21:59:08,522 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 21:59:08,532 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 21:59:08,538 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 21:59:08,539 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 21:59:08,542 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 21:59:08,543 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 21:59:08,543 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 21:59:08,544 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 21:59:08,546 - INFO - 🎉 Pipeline executado com sucesso!
+2025-10-13 22:12:30,884 - ERROR - ❌ Erro ao conectar com API: HTTPConnectionPool(host='sst-api', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x78ce0032d880>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-13 22:12:30,907 - INFO - 🔄 Tentativa 1/5. Aguardando 10s...
+2025-10-13 22:12:40,930 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 22:12:40,933 - INFO - 🚀 Iniciando Pipeline SST Moçambique
+2025-10-13 22:12:40,947 - INFO - ✅ Conexão com API estabelecida
+2025-10-13 22:12:40,948 - INFO - 🚀 Iniciando extração de dados de todas as fontes
+2025-10-13 22:12:40,950 - INFO - Extraindo dados de: /api/ine/statistics
+2025-10-13 22:12:40,966 - INFO - ✅ Dados extraídos com sucesso: 3 registros
+2025-10-13 22:12:40,966 - INFO - Extraindo dados de: /api/mitess/accidents
+2025-10-13 22:12:40,981 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 22:12:40,984 - INFO - Extraindo dados de: /api/misau/health_records
+2025-10-13 22:12:41,002 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 22:12:41,002 - INFO - Extraindo dados de: /api/ilo/global_indicators
+2025-10-13 22:12:41,015 - INFO - ✅ Dados extraídos com sucesso: 0 registros
+2025-10-13 22:12:41,022 - INFO - 💾 Dados salvos em: data_sources/raw/full_extraction.json
+2025-10-13 22:12:41,023 - INFO - 💾 Dados salvos em: data_sources/processed/ine_statistics.json
+2025-10-13 22:12:41,026 - INFO - 💾 Dados salvos em: data_sources/processed/mitess_accidents.json
+2025-10-13 22:12:41,027 - INFO - 💾 Dados salvos em: data_sources/processed/kpis_dashboard.json
+2025-10-13 22:12:41,029 - INFO - ✅ Pipeline SST concluído com sucesso!
+2025-10-13 22:12:41,029 - INFO - 📊 KPIs gerados: 3 acidentes totais
+2025-10-13 22:12:41,029 - INFO - 🎉 Pipeline executado com sucesso!

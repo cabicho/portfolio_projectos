@@ -1,0 +1,186 @@
+{
+  "ine_statistics": {
+    "source": "INE_Mozambique",
+    "extraction_date": "2025-10-13T22:12:40.961511",
+    "parameters": {
+      "year": 2024,
+      "region": null
+    },
+    "data": [
+      {
+        "indicator": "taxa_acidentes_trabalho",
+        "year": 2024,
+        "quarter": 1,
+        "value": 2.1,
+        "sector": "construcao",
+        "region": "Maputo",
+        "unit": "por 100 trabalhadores",
+        "confidence_interval": [
+          1.8,
+          2.4
+        ]
+      },
+      {
+        "indicator": "taxa_acidentes_trabalho",
+        "year": 2024,
+        "quarter": 1,
+        "value": 3.2,
+        "sector": "mineração",
+        "region": "Tete",
+        "unit": "por 100 trabalhadores",
+        "confidence_interval": [
+          2.8,
+          3.6
+        ]
+      },
+      {
+        "indicator": "horas_trabalhadas",
+        "year": 2024,
+        "quarter": 1,
+        "value": 160,
+        "sector": "construcao",
+        "region": "Maputo",
+        "unit": "horas/mês",
+        "confidence_interval": [
+          155,
+          165
+        ]
+      }
+    ]
+  },
+  "mitess_accidents": {
+    "source": "MITESS",
+    "extraction_date": "2025-10-13T22:12:40.976682",
+    "parameters": {
+      "start_date": null,
+      "end_date": null
+    },
+    "total_accidents": 3,
+    "fatal_accidents": 1,
+    "accidents": [
+      {
+        "id": "ACC2024001",
+        "date": "2024-01-15",
+        "time": "14:30:00",
+        "sector": "mineração",
+        "sub_sector": "extração_carvão",
+        "severity": "grave",
+        "fatal": false,
+        "injured_count": 1,
+        "days_lost": 45,
+        "province": "Tete",
+        "district": "Moatize",
+        "company_size": "grande",
+        "accident_type": "queda_altura",
+        "description": "Queda de aproximadamente 4 metros durante manutenção de equipamento"
+      },
+      {
+        "id": "ACC2024002",
+        "date": "2024-01-20",
+        "time": "10:15:00",
+        "sector": "construcao",
+        "sub_sector": "construcao_civil",
+        "severity": "leve",
+        "fatal": false,
+        "injured_count": 1,
+        "days_lost": 5,
+        "province": "Maputo",
+        "district": "KaMpfumo",
+        "company_size": "media",
+        "accident_type": "corte_objeto_pontiagudo",
+        "description": "Corte na mão direita durante manipulação de material"
+      },
+      {
+        "id": "ACC2024003",
+        "date": "2024-02-05",
+        "time": "08:45:00",
+        "sector": "agricultura",
+        "sub_sector": "cultivo_cana_acucar",
+        "severity": "fatal",
+        "fatal": true,
+        "injured_count": 0,
+        "days_lost": 0,
+        "province": "Gaza",
+        "district": "Xai-Xai",
+        "company_size": "pequena",
+        "accident_type": "acidente_maquinario",
+        "description": "Atropelamento por trator durante operação de colheita"
+      }
+    ]
+  },
+  "misau_health_records": {
+    "source": "MISAU",
+    "extraction_date": "2025-10-13T22:12:40.993277",
+    "parameters": {
+      "province": null
+    },
+    "total_records": 3,
+    "work_related_cases": 3,
+    "records": [
+      {
+        "record_id": "HLTH2024001",
+        "date": "2024-01-10",
+        "health_unit": "Hospital Central Maputo",
+        "province": "Maputo",
+        "diagnosis": "lesao_muscular_costas",
+        "work_related": true,
+        "sector": "construcao",
+        "treatment_days": 7,
+        "return_to_work": true
+      },
+      {
+        "record_id": "HLTH2024002",
+        "date": "2024-01-18",
+        "health_unit": "Hospital Provincial Tete",
+        "province": "Tete",
+        "diagnosis": "doenca_respiratoria_poeira",
+        "work_related": true,
+        "sector": "mineração",
+        "treatment_days": 14,
+        "return_to_work": true
+      },
+      {
+        "record_id": "HLTH2024003",
+        "date": "2024-02-02",
+        "health_unit": "Centro de Saúde Beira",
+        "province": "Sofala",
+        "diagnosis": "stress_ocupacional",
+        "work_related": true,
+        "sector": "servicos",
+        "treatment_days": 21,
+        "return_to_work": true
+      }
+    ]
+  },
+  "ilo_global_indicators": {
+    "source": "ILO",
+    "country": "Mozambique",
+    "extraction_date": "2025-10-13T22:12:41.011961",
+    "indicators": [
+      {
+        "name": "fatal_occupational_injury_rate",
+        "value": 15.2,
+        "unit": "por 100,000 trabalhadores",
+        "year": 2023,
+        "global_average": 14.8,
+        "region_average": 16.1
+      },
+      {
+        "name": "non_fatal_occupational_injury_rate",
+        "value": 3450,
+        "unit": "por 100,000 trabalhadores",
+        "year": 2023,
+        "global_average": 3320,
+        "region_average": 3580
+      },
+      {
+        "name": "work_days_lost",
+        "value": 4.2,
+        "unit": "dias/ano/trabalhador",
+        "year": 2023,
+        "global_average": 3.8,
+        "region_average": 4.5
+      }
+    ]
+  }
+}
