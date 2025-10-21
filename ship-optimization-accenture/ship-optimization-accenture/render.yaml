@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: ship-optimization-dashboard
+    env: python
+    buildCommand: |-
+      pip install -r requirements.txt
+      python data/generate_data.py
+      python src/data_analysis.py
+      python src/optimization_model.py
+    startCommand: python app/run.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+    healthCheckPath: /
+    autoDeploy: true
+
+  - type: web  
+    name: ship-optimization-jupyter
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: jupyter lab --ip=0.0.0.0 --port=$PORT --no-browser --allow-root --NotebookApp.token=accenture123 --NotebookApp.password=''
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: PYTHON_VERSION  
+        value: 3.9.0
+    autoDeploy: true

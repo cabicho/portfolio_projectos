@@ -1,0 +1,6 @@
+total_records: 1000
+total_profit_potential: 1399164068.98
+avg_profit_per_ship: 1399164.06898
+maintenance_ships: 103
+most_profitable_type: Petroleiro
+most_used_port: Fortaleza

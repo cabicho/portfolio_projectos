@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: ship-optimization-accenture
+    env: python
+    buildCommand: |-
+      pip install -r requirements.txt
+      python data/generate_data.py
+      python src/optimization_model.py
+    startCommand: python src/optimization_model.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+    staticPublishPath: ./data
+    routes:
+      - type: redirect
+        source: /report
+        destination: /optimization_comprehensive_report.png
+
+  - type: web
+    name: ship-optimization-jupyter
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: jupyter lab --ip=0.0.0.0 --port=$PORT --no-browser --allow-root --NotebookApp.token=accenture123 --NotebookApp.password=''
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: PYTHON_VERSION
+        value: 3.9.0

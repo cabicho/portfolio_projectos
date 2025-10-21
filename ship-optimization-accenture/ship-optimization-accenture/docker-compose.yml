@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+  data-generator:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python data/generate_data.py
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python app/run.py
+    depends_on:
+      - data-generator
+
+  jupyter:
+    build: .
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_TOKEN=accenture123
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=accenture123 --NotebookApp.password=''
+    depends_on:
+      - data-generator
+
+  analytics:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python src/data_analysis.py
+    depends_on:
+      - data-generator

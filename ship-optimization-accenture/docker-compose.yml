@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python src/optimization_model.py
+
+  jupyter:
+    build: .
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_TOKEN=accenture123
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=accenture123
+
+  analytics:
+    build: .
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python src/data_analysis.py

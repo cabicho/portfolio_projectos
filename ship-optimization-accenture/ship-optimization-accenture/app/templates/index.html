@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4"><i class="fas fa-tachometer-alt"></i> Dashboard de Otimização</h1>
+    </div>
+</div>
+
+<div class="row mb-4" id="metrics-cards">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary metric-card">
+            <div class="card-body">
+                <h5><i class="fas fa-ship"></i> Total Navios</h5>
+                <h2 id="total-ships">-</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success metric-card">
+            <div class="card-body">
+                <h5><i class="fas fa-check-circle"></i> Navios Otimizados</h5>
+                <h2 id="optimized-ships">-</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info metric-card">
+            <div class="card-body">
+                <h5><i class="fas fa-chart-line"></i> Utilização</h5>
+                <h2 id="utilization-rate">-</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning metric-card">
+            <div class="card-body">
+                <h5><i class="fas fa-dollar-sign"></i> Melhoria</h5>
+                <h2 id="profit-improvement">-</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar"></i> Lucro por Tipo de Navio</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="profitByTypeChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-pie"></i> Distribuição de Custos</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="costDistributionChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Informações do Sistema</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Última atualização:</strong> <span id="last-update">-</span></p>
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb"></i> 
+                    <strong>Dica:</strong> Use o menu para acessar análises detalhadas.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
