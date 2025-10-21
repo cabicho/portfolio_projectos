@@ -8,11 +8,11 @@ services:
       python --version
       pip --version
       pip install --upgrade pip setuptools wheel
-      echo "■ Installing dependencies..."
+      echo "🔍 Installing dependencies..."
       pip install -r requirements.txt
-      echo "■ Generating data..."
+      echo "🔍 Generating data..."
       python data/generate_data.py
-      echo "● Running analysis..."
+      echo "🔍 Running analysis..."
       python src/data_analysis.py
       echo "✔ Running optimization..."
-    startCommand: python app.py  # Add your main application file here
+    startCommand: python app.py
