@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análise - Ship Optimization</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -20,18 +21,71 @@
     </nav>
 
     <div class="container mt-4">
-        <h1>Análise de Dados</h1>
+        <h1>Análise de Dados da Frota</h1>
+        
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="card">
+                    <div class="card-header">
+                        Distribuição por Tipo de Navio
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">Análise em Desenvolvimento</h5>
-                        <p class="card-text">Esta página está em construção. Em breve terá gráficos e análises detalhadas.</p>
+                        <canvas id="shipTypeChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Métricas de Performance
+                    </div>
+                    <div class="card-body">
+                        <div class="metric-card">
+                            <div class="metric-value">1.228B USD</div>
+                            <div class="metric-label">Lucro Total Otimizado</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">80%</div>
+                            <div class="metric-label">Taxa de Utilização</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Gráfico de distribuição por tipo de navio
+        const shipTypeCtx = document.getElementById('shipTypeChart').getContext('2d');
+        const shipTypeChart = new Chart(shipTypeCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Gaseiro', 'Granelheiro', 'Container', 'Graneleiro', 'Petroleiro'],
+                datasets: [{
+                    data: [172, 168, 165, 151, 144],
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Navios Selecionados por Tipo'
+                    }
+                }
+            }
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
